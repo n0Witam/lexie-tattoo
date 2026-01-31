@@ -106,7 +106,7 @@ a:hover {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-weight: 650;
+    font-size: 50;
     letter-spacing: 0.6px;
 }
 
