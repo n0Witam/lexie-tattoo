@@ -6,14 +6,14 @@
         <title>𝕷𝖊𝖝𝖎𝖊 𝕾𝖆𝖑𝖔𝖒𝖊 ✧˚₊</title>
         <meta
             name="description"
-            content="Lexie Tattoo/ Minimalistyczne tatuaże / booking / portfolio – Lexie (@lexie.tattoo)."
+            content="Lexie Tattoo/ Minimalistyczne tatuaże / booking / portfolio – Lexie (@lexietattoo)."
         />
 
         <!-- Open Graph -->
         <meta property="og:title" content="Lexie Tattoo" />
         <meta
             property="og:description"
-            content="Minimalistyczne tatuaże / booking / portfolio – Lexie (@lexie.tattoo)."
+            content="Minimalistyczne tatuaże / booking / portfolio – Lexie (@lexietattoo)."
         />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="./assets/img/hero.svg" />
@@ -36,7 +36,7 @@
                     <div class="nav__cta">
                         <a
                             class="btn btn--primary"
-                            href="https://instagram.com/lexie.tattoo"
+                            href="https://instagram.com/lexietattoo"
                             target="_blank"
                             rel="noreferrer"
                             >Instagram</a>
@@ -335,70 +335,77 @@
         </footer>
 
         <script type="module" src="./assets/js/main.js"></script>
+        <script type="module">
+          import * as UC from "https://cdn.jsdelivr.net/npm/@uploadcare/file-uploader@v1/web/file-uploader.min.js";
+          UC.defineComponents(UC);
+
+          // 👇 czekamy aż web components będą gotowe, dopiero wtedy logika formularza
+          async function initUploadcareToGForm() {
+            await customElements.whenDefined("uc-upload-ctx-provider");
+
+            const ctxEl = document.getElementById("lexieUploadCtx");
+            const form = document.getElementById("contactForm");
+            if (!ctxEl || !form) return;
+
+            // 1) ustaw action z data-gform-action (żeby nie zapomnieć)
+            const gformAction = form.getAttribute("data-gform-action");
+            if (gformAction) form.setAttribute("action", gformAction);
+
+            // 2) textarea wiadomości
+            const messageEl = form.querySelector('textarea[name="entry.839337160"]');
+            if (!messageEl) return;
+
+            const SENTINEL_START = "\n\n---\nZdjęcia:\n";
+            const SENTINEL_RE = /\n\n---\nZdjęcia:\n[\s\S]*$/;
+
+            const stripBlock = () => messageEl.value.replace(SENTINEL_RE, "");
+            const writeUrlsIntoMessage = (urls) => {
+              const base = stripBlock();
+              messageEl.value = urls.length ? (base + SENTINEL_START + urls.join("\n")) : base;
+            };
+
+            const getUrlsFromState = () => {
+              const api = ctxEl.getAPI();
+              const state = api.getOutputCollectionState();
+              const files = state?.files || [];
+              return files
+                .map((f) => f?.cdnUrl)
+                .filter((u) => typeof u === "string" && u.length);
+            };
+
+            // ✅ Najpewniejsze: reaguj na zmianę CDN URL (po uploadzie / po edycji)
+            ctxEl.addEventListener("file-url-changed", () => {
+              writeUrlsIntoMessage(getUrlsFromState());
+            });
+
+            // ✅ Dodatkowo: ogólna zmiana stanu listy (postęp, success, remove)
+            ctxEl.addEventListener("change", () => {
+              writeUrlsIntoMessage(getUrlsFromState());
+            });
+
+            // 3) submit: jeśli user ma pliki, ale jeszcze się wgrywają -> blokujemy
+            form.addEventListener("submit", (e) => {
+              const api = ctxEl.getAPI();
+              const state = api.getOutputCollectionState();
+              const files = state?.files || [];
+
+              if (!files.length) return; // zdjęcia opcjonalne
+
+              const allHaveUrl = files.every((f) => f?.cdnUrl);
+              const hasPending = files.some((f) => f?.status !== "success");
+
+              if (hasPending || !allHaveUrl) {
+                e.preventDefault();
+                alert("Poczekaj aż zdjęcia się wgrają (lub usuń je i wyślij formularz bez zdjęć).");
+                return;
+              }
+
+              // ostatnie odświeżenie URL-i przed wysyłką
+              writeUrlsIntoMessage(getUrlsFromState());
+            });
+          }
+
+          initUploadcareToGForm();
+        </script>
     </body>
-    <script type="module">
-      import * as UC from "https://cdn.jsdelivr.net/npm/@uploadcare/file-uploader@v1/web/file-uploader.min.js";
-      UC.defineComponents(UC);
-    </script>
-
-    <script>
-      (() => {
-        const ctxEl = document.getElementById("lexieUploadCtx");
-        const form = document.getElementById("contactForm");
-        if (!ctxEl || !form) return;
-
-        // DOPASUJ: textarea wiadomości w Twoim formularzu
-        const messageEl =
-          form.querySelector('textarea[name="entry.839337160"]') ||
-          form.querySelector("textarea");
-
-        if (!messageEl) return;
-
-        const SENTINEL_START = "\n\n---\nZdjęcia:\n";
-        const SENTINEL_RE = /\n\n---\nZdjęcia:\n[\s\S]*$/;
-
-        function writeUrlsIntoMessage(urls) {
-          const base = messageEl.value.replace(SENTINEL_RE, "");
-          if (!urls.length) {
-            messageEl.value = base; // jeśli user usunie zdjęcia, usuń blok z URL-ami
-            return;
-          }
-          messageEl.value = base + SENTINEL_START + urls.join("\n"); // każdy URL w nowej linii
-        }
-
-        function getUrlsFromState() {
-          const api = ctxEl.getAPI();
-          const state = api.getOutputCollectionState();
-          const files = state?.files || [];
-          return files
-            .filter(f => f?.status === "success" && typeof f?.cdnUrl === "string" && f.cdnUrl)
-            .map(f => f.cdnUrl);
-        }
-
-        // Aktualizuj URL-e przy każdej zmianie kolekcji
-        ctxEl.addEventListener("change", () => {
-          writeUrlsIntoMessage(getUrlsFromState());
-        });
-
-        // Opcjonalnie: jeśli user kliknie submit w trakcie uploadu i *ma* dodane pliki,
-        // to blokujemy, żeby nie wysłać formularza bez URL-i.
-        // Jeśli nie dodał żadnych zdjęć -> formularz idzie normalnie.
-        form.addEventListener("submit", (e) => {
-          const api = ctxEl.getAPI();
-          const state = api.getOutputCollectionState();
-          const files = state?.files || [];
-
-          if (!files.length) return; // zdjęcia opcjonalne
-
-          const hasPending = files.some(f => f.status !== "success");
-          if (hasPending) {
-            e.preventDefault();
-            alert("Poczekaj aż zdjęcia się wgrają, albo usuń je i wyślij formularz bez zdjęć 🙂");
-          } else {
-            // upewnij się, że blok URL-i jest aktualny tuż przed wysyłką
-            writeUrlsIntoMessage(getUrlsFromState());
-          }
-        });
-      })();
-    </script>
 </html>
