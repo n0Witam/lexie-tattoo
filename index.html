@@ -52,7 +52,9 @@
                             <div class="hero__kicker">
                                 tattoo • fine line • blackwork
                             </div>
-                            <h1 class="hero__title">𝕷𝖊𝖝𝖎𝖊 𝕾𝖆𝖑𝖔𝖒𝖊</h1>
+                            <div class="hero__title">
+                                𝕷𝖊𝖝𝖎𝖊 𝕾𝖆𝖑𝖔𝖒𝖊
+                            </div>
                             <p class="hero__subtitle">
                                 Krótki opis w 1–2 zdaniach: styl, miasto, co
                                 robisz najlepiej. To jest miejsce na „wizytówkę”
@@ -68,8 +70,16 @@
                                 >
                             </div>
                         </div>
+
+                        <div aria-hidden="true" style="text-align: right;">
+                            <div style="">
+                                <a href="https://instagram.com/lexietattoo" class="ig-card" target="_blank">
+                                  <img src="./assets/img/ig_profile_pic.jpg" alt=""></a></br>
+                                  <span>@lexietattoo</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
             </section>
 
             <section id="about" class="section">
@@ -94,7 +104,7 @@
                             </ul>
                         </div>
 
-                        <div class="card">
+                        <div class="card" style="height: 100%;">
                             <p><strong>Jak wygląda proces?</strong></p>
                             <ul class="list">
                                 <li>
@@ -111,11 +121,6 @@
                                 </li>
                                 <li>4) Sesja + instrukcje pielęgnacji</li>
                             </ul>
-                            <p style="margin-top: 12px">
-                                <a class="btn" href="./portfolio/"
-                                    >Portfolio →</a
-                                >
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -123,110 +128,68 @@
 
             <!-- Selected works (no visible header) -->
             <section id="works" class="section">
-                <div class="container">
-                    <h2 class="sr-only">Wyselekcjonowane prace</h2>
+              <div class="container">
+                <h2 class="sr-only">Wyselekcjonowane prace</h2>
 
-                    <div class="carousel" data-carousel>
-                        <div
-                            class="carousel__track"
-                            data-track
-                            id="featuredTrack"
-                            aria-label="Wyselekcjonowane prace (karuzela)"
-                        ></div>
+                <div class="carousel" data-carousel>
+                  <div class="carousel__track" data-track id="featuredTrack" aria-label="Wyselekcjonowane prace (karuzela)"></div>
 
-                        <div
-                            class="carousel__controls"
-                            aria-label="Sterowanie karuzelą"
-                        >
-                            <button
-                                class="btn"
-                                type="button"
-                                data-prev
-                                aria-label="Poprzednie zdjęcie"
-                            >
-                                ←
-                            </button>
-                            <button
-                                class="btn"
-                                type="button"
-                                data-next
-                                aria-label="Następne zdjęcie"
-                            >
-                                →
-                            </button>
-                        </div>
-                    </div>
-
-                    <div
-                        style="
-                            margin-top: 14px;
-                            display: flex;
-                            justify-content: flex-end;
-                        "
-                    >
-                        <a class="btn" href="./portfolio/">Pełne portfolio →</a>
-                    </div>
+                  <div class="carousel__controls" aria-label="Sterowanie karuzelą">
+                    <button class="btn" type="button" data-prev aria-label="Poprzednie zdjęcie">←</button>
+                    <button class="btn" type="button" data-next aria-label="Następne zdjęcie">→</button>
+                  </div>
                 </div>
+
+                <div style="margin-top:14px; display:flex; justify-content:flex-end;">
+                  <a class="btn" href="./portfolio/">Pełne portfolio →</a>
+                </div>
+              </div>
             </section>
 
             <section id="contact" class="section">
                 <div class="container">
                     <h2 class="section__title">Kontakt</h2>
-
-                    <div class="split">
-                        <div class="card">
-                            <p><strong>Najszybciej:</strong> Instagram DM.</p>
-                            <p>
-                                <a
-                                    class="btn btn--ghost"
-                                    href="https://instagram.com/lexietattoo"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    >@lexietattoo</a
-                                >
-                            </p>
-
-                            <p style="margin-top: 16px">
-                                Jeśli wolisz formularz — zostaw wiadomość. Trafi
-                                do arkusza odpowiedzi Google Forms.
-                            </p>
-
-                            <p style="margin-top: 16px">
-                                <span class="badge">Tip</span>
-                                W wiadomości podaj: pomysł, rozmiar (cm),
-                                miejsce na ciele, preferowane terminy.
-                            </p>
-                        </div>
-
-                        <div class="card">
+                        <div class="split">
+                        <div class="card" style="width: 120%;">
                             <div class="card">
-                              <!--
-                                Custom front-end do Google Forms:
-                                1) Utwórz formularz Google (Name / Email / Message).
-                                2) Podmień data-gform-action na URL typu:
-                                  https://docs.google.com/forms/d/e/FORM_ID/formResponse
-                                3) Podmień nazwy pól (entry.XXXX) na prawidłowe identyfikatory z formularza.
-                                Instrukcja w README.
-                              -->
                               <form id="contactForm" class="form"
                                 action="https://docs.google.com/forms/d/e/1FAIpQLSfPa5Xlf3jLDeWNyr4rr6Le30GBFlundXqoU2JUIaOK8H2D9A/formResponse"
                                 method="POST"
                                 target="gformIframe"
-                                data-gform-action="https://docs.google.com/forms/d/e/1FAIpQLSfPa5Xlf3jLDeWNyr4rr6Le30GBFlundXqoU2JUIaOK8H2D9A/formResponse">
+                                data-gform-action="https://docs.google.com/forms/d/e/1FAIpQLSfPa5Xlf3jLDeWNyr4rr6Le30GBFlundXqoU2JUIaOK8H2D9A/formResponse"
+                                novalidate>
 
                                 <div class="field">
                                   <label for="name">Imię i nazwisko</label>
-                                  <input id="name" name="entry.2005620554" autocomplete="name" required />
+                                  <input
+                                    id="name"
+                                    name="entry.2005620554"
+                                    autocomplete="name"
+                                    required
+                                    pattern="^[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*(?:\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*)*$"
+                                  />
                                 </div>
 
                                 <div class="field">
                                   <label for="mobile">Telefon</label>
-                                  <input id="mobile" name="entry.1166974658" type="mobile" autocomplete="mobile" required />
+                                  <input
+                                    id="mobile"
+                                    name="entry.1166974658"
+                                    type="tel"
+                                    inputmode="tel"
+                                    autocomplete="tel"
+                                    required
+                                    pattern="^(?:(?:\+48|0048)[ -]?)?(?:[5-7]\d{2})[ -]?\d{3}[ -]?\d{3}$"
+                                  />
                                 </div>
 
                                 <div class="field">
                                   <label for="msg">Wiadomość</label>
-                                  <textarea id="msg" name="entry.839337160" required></textarea>
+                                  <textarea id="msg" name="entry.839337160" required>
+• Pomysł na wzór: 
+• Miejsce na ciele: 
+• Rozmiar (cm): 
+                                  </textarea>
                                 </div>
 
                                 <button class="btn btn--primary" type="submit">Wyślij</button>
@@ -236,11 +199,108 @@
                               <!-- Hidden iframe: pozwala wysłać formResponse bez przekierowania poza stronę -->
                               <iframe id="gformIframe" name="gformIframe" title="Google Forms submit" style="display:none;"></iframe>
                             </div>
+
+                            <script>
+                            (() => {
+                              const form = document.getElementById('contactForm');
+                              const statusEl = form.querySelector('.form__status');
+
+                              const nameEl = form.querySelector('#name');
+                              const mobileEl = form.querySelector('#mobile');
+                              const msgEl = form.querySelector('#msg');
+
+                              // Regex EXACTLY as provided (anchored)
+                              const NAME_RE = new RegExp(
+                                "^[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*\\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*(?:\\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*)*$"
+                              );
+
+                              const PHONE_RE = new RegExp(
+                                "^(?:(?:\\+48|0048)[ -]?)?(?:[5-7]\\d{2})[ -]?\\d{3}[ -]?\\d{3}$"
+                              );
+
+                              const setStatus = (msg) => {
+                                statusEl.textContent = msg || '';
+                              };
+
+                              const setFieldError = (el, message) => {
+                                el.setCustomValidity(message || '');
+                                // wyświetl natychmiast “dymek” przeglądarki przy błędzie
+                                if (message) el.reportValidity();
+                              };
+
+                              const normalizeSpaces = (s) => s.replace(/\s+/g, ' ').trim();
+
+                              const validateName = () => {
+                                const v = normalizeSpaces(nameEl.value);
+                                nameEl.value = v;
+
+                                if (!v) return setFieldError(nameEl, 'Podaj imię i nazwisko.'), false;
+                                if (!NAME_RE.test(v)) {
+                                  return setFieldError(
+                                    nameEl,
+                                    'Wpisz imię i nazwisko (min. 2 człony), każdy zaczynający się wielką literą.'
+                                  ), false;
+                                }
+                                setFieldError(nameEl, '');
+                                return true;
+                              };
+
+                              const validatePhone = () => {
+                                const v = mobileEl.value.trim();
+                                mobileEl.value = v;
+
+                                if (!v) return setFieldError(mobileEl, 'Podaj numer telefonu.'), false;
+                                if (!PHONE_RE.test(v)) {
+                                  return setFieldError(
+                                    mobileEl,
+                                    'Podaj poprawny numer (np. 512 345 678, +48 512 345 678, 0048 512 345 678).'
+                                  ), false;
+                                }
+                                setFieldError(mobileEl, '');
+                                return true;
+                              };
+
+                              const validateMsg = () => {
+                                const v = msgEl.value.trim();
+                                if (!v) return setFieldError(msgEl, 'Wpisz wiadomość.'), false;
+                                setFieldError(msgEl, '');
+                                return true;
+                              };
+
+                              // Walidacja “na bieżąco”
+                              nameEl.addEventListener('blur', validateName);
+                              mobileEl.addEventListener('blur', validatePhone);
+                              msgEl.addEventListener('blur', validateMsg);
+
+                              // Opcjonalnie: przy wpisywaniu czyść komunikaty po poprawie
+                              nameEl.addEventListener('input', () => nameEl.setCustomValidity(''));
+                              mobileEl.addEventListener('input', () => mobileEl.setCustomValidity(''));
+                              msgEl.addEventListener('input', () => msgEl.setCustomValidity(''));
+
+                              form.addEventListener('submit', (e) => {
+                                setStatus('');
+
+                                const ok = [validateName(), validatePhone(), validateMsg()].every(Boolean);
+                                if (!ok) {
+                                  e.preventDefault();
+                                  setStatus('Popraw błędy w formularzu.');
+                                  return;
+                                }
+
+                                // Jeśli chcesz utrzymać “post do iframe”, zostawiasz submit normalnie.
+                                // Tu możesz też ustawić komunikat “wysyłanie…”
+                                setStatus('Wysyłanie…');
+                              });
+                            })();
+                            </script>
+                          </div>
+                          <div class="card">
+                              <span></span>
                           </div>
                         </div>
                     </div>
                 </div>
-                <div style="z-index: -1; max-width: 25%;position: absolute;">
+                <div class="split">
                     <img src="./assets/img/lexie_fg.png" alt="" />
                 </div>
             </section>
@@ -251,14 +311,6 @@
                 <div class="footer__row">
                     <div>© <span data-year></span> Lexie Tattoo</div>
                     <div>
-                        <a href="./portfolio/">Portfolio</a>
-                        <span aria-hidden="true"> · </span>
-                        <a
-                            href="https://instagram.com/lexietattoo"
-                            target="_blank"
-                            rel="noreferrer"
-                            >Instagram</a
-                        >
                     </div>
                 </div>
             </div>

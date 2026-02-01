@@ -251,7 +251,7 @@ a:hover {
 }
 
 .hero__card img {
-    width: 100%;
+    width: 50%;
     height: auto;
 }
 
@@ -322,6 +322,17 @@ a:hover {
     color: var(--muted);
     font-size: 12px;
     letter-spacing: 0.4px;
+}
+
+.ig-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+.ig-card img {
+    width: 175px;
+    height: 175px;
+    border-radius: 50%;
 }
 
 /* ====== Carousel ====== */
