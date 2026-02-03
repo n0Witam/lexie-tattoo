@@ -336,6 +336,69 @@
         <script type="module">
           import * as UC from "https://cdn.jsdelivr.net/npm/@uploadcare/file-uploader@v1/web/file-uploader.min.js";
           UC.defineComponents(UC);
+
+          (async () => {
+            await customElements.whenDefined("uc-upload-ctx-provider");
+
+            const ctxEl = document.getElementById("lexieUploadCtx");
+            const form = document.getElementById("contactForm");
+            const msgEl = document.getElementById("msg");
+
+            if (!ctxEl || !form || !msgEl) return;
+
+            const SENTINEL_START = "\n\n---\nZdjęcia:\n";
+            const SENTINEL_RE = /\n\n---\nZdjęcia:\n[\s\S]*$/;
+
+            const stripBlock = () => msgEl.value.replace(SENTINEL_RE, "");
+
+            const urlById = new Map();
+
+            const toUrl = (entry) => {
+              // preferuj cdnUrl jeśli jest
+              if (entry?.cdnUrl) return entry.cdnUrl;
+
+              // w Twoim przypadku (z HAR) jest UUID/file — budujemy CDN URL ręcznie
+              const uuid = entry?.uuid || entry?.fileId || entry?.file || entry?.fileInfo?.uuid;
+              if (!uuid) return null;
+              return `https://ucarecdn.com/${uuid}/`;
+            };
+
+            const render = () => {
+              const urls = Array.from(urlById.values()).filter(Boolean);
+              const base = stripBlock();
+              msgEl.value = urls.length ? (base + SENTINEL_START + urls.join("\n")) : base;
+            };
+
+            // ✅ Eventy słuchamy na ctx-provider (u Ciebie tam naprawdę lecą)
+            ctxEl.addEventListener("file-upload-success", (e) => {
+              const entry = e.detail || {};
+              const id = entry.internalId || entry.uuid || entry.fileId || entry.file;
+              const url = toUrl(entry);
+              if (id && url) urlById.set(id, url);
+              render();
+            });
+
+            ctxEl.addEventListener("file-url-changed", (e) => {
+              const entry = e.detail || {};
+              const id = entry.internalId || entry.uuid || entry.fileId || entry.file;
+              const url = toUrl(entry);
+              if (id && url) urlById.set(id, url);
+              render();
+            });
+
+            ctxEl.addEventListener("file-removed", (e) => {
+              const entry = e.detail || {};
+              const id = entry.internalId || entry.uuid || entry.fileId || entry.file;
+              if (id) urlById.delete(id);
+              render();
+            });
+
+            // Przy submit dopnij “ostatni raz”, żeby FormData na pewno to złapało
+            form.addEventListener("submit", () => render(), true);
+
+            // udostępnij też dla main.js (gdybyś chciał wywołać ręcznie)
+            window.__lexieSyncUploadUrls = render;
+          })();
         </script>
     </body>
 </html>
