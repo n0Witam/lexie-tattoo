@@ -592,6 +592,21 @@ a:hover {
     }
 }
 
+/* ====== Map ====== */
+
+.card--map {
+    padding: 0; /* usuwa odstęp */
+    overflow: hidden; /* maskuje iframe do radiusa */
+}
+
+.card--map iframe {
+    display: block; /* usuwa domyślne whitespace */
+    width: 100%;
+    height: 650px;
+    border: 0;
+    border-radius: inherit; /* przejmuje radius z .card */
+}
+
 /* ====== Footer ====== */
 
 .footer {
