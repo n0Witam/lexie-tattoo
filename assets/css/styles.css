@@ -568,7 +568,7 @@ a:hover {
 .contact__imageWrap {
     display: flex;
     align-items: flex-end; /* dół do dołu */
-    height: 100%;
+    height: 90%;
 }
 
 .contact__image {
