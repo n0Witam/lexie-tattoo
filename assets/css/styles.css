@@ -199,7 +199,7 @@ a:hover {
 
 .hero__grid {
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
+    grid-template-columns: 1.5fr 0.5fr;
     gap: var(--gap-lg);
     align-items: center;
 }
@@ -227,7 +227,7 @@ a:hover {
 .hero__subtitle {
     color: var(--muted);
     font-size: 16px;
-    max-width: 60ch;
+    max-width: 100%;
     margin: 0 0 18px;
 }
 
