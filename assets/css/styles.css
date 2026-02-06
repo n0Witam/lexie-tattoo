@@ -651,7 +651,7 @@ a:hover {
 .card--map img {
     display: block; /* usuwa domyślne whitespace */
     width: 100%;
-    height: 650px;
+    height: auto;
     border: 0;
     border-radius: inherit; /* przejmuje radius z .card */
 }
@@ -660,6 +660,7 @@ a:hover {
     display: block;
     position: relative;
 } /* dodatkowo stabilizuje overlay w ramach linka */
+
 .mapOverlay {
     position: absolute;
     top: 3%;
