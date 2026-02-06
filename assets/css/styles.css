@@ -671,7 +671,7 @@ a:hover {
 
 .footer {
     border-top: 1px solid var(--border);
-    padding: 26px 0 34px;
+    padding: 20px 0 20px;
     color: var(--muted);
     font-size: 13px;
 }
