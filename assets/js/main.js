@@ -34,6 +34,79 @@ function setupCarousel(root) {
     return first ? first.getBoundingClientRect().width : 320;
   };
 
+  // ========== Loop (klony na początku i końcu) ==========
+  const initLoop = () => {
+    if (track.dataset.loopInit === "1") return;
+
+    const slides = Array.from(track.querySelectorAll(".slide"));
+    if (slides.length < 2) return;
+
+    const originalsCount = slides.length;
+    const cloneCount = Math.min(3, originalsCount);
+
+    // klony
+    const headClones = slides
+      .slice(0, cloneCount)
+      .map((el) => el.cloneNode(true));
+
+    const tailClones = slides
+      .slice(-cloneCount)
+      .map((el) => el.cloneNode(true));
+
+    headClones.forEach((c) => c.setAttribute("data-clone", "1"));
+    tailClones.forEach((c) => c.setAttribute("data-clone", "1"));
+
+    // prepend tail clones
+    tailClones.reverse().forEach((c) => track.prepend(c));
+    // append head clones
+    headClones.forEach((c) => track.append(c));
+
+    track.dataset.loopInit = "1";
+
+    // przeskok na początek prawdziwych slajdów
+    requestAnimationFrame(() => {
+      const step = getStep();
+      track.scrollLeft = cloneCount * step;
+
+      // wycentruj bez animacji
+      requestAnimationFrame(() => centerToIndex(getCenteredIndex(), "auto"));
+    });
+
+    let lock = false;
+    let scrollEndT = null;
+
+    track.addEventListener(
+      "scroll",
+      () => {
+        if (lock) return;
+
+        if (scrollEndT) clearTimeout(scrollEndT);
+
+        scrollEndT = setTimeout(() => {
+          const step = getStep();
+
+          const start = cloneCount * step;
+          const end = start + originalsCount * step;
+
+          if (track.scrollLeft < start - step * 0.5) {
+            lock = true;
+            track.scrollLeft = Math.round(
+              track.scrollLeft + originalsCount * step,
+            );
+            requestAnimationFrame(() => (lock = false));
+          } else if (track.scrollLeft > end + step * 0.5) {
+            lock = true;
+            track.scrollLeft = Math.round(
+              track.scrollLeft - originalsCount * step,
+            );
+            requestAnimationFrame(() => (lock = false));
+          }
+        }, 80);
+      },
+      { passive: true },
+    );
+  };
+
   // ========== Autoplay ==========
   // Ustawiasz w HTML: <div class="carousel" data-carousel data-autoplay="5000">
   const autoplayMs = Number(root.getAttribute("data-autoplay") || "5000");
@@ -86,21 +159,8 @@ function setupCarousel(root) {
   };
 
   const isCoarse = window.matchMedia("(pointer: coarse)").matches;
-  const next = () => {
-    const slides = slidesAll();
-    if (!slides.length) return;
-
-    const idx = getCenteredIndex();
-    const last = slides.length - 1;
-
-    // wrap bez klonów – stabilne na iOS
-    if (idx >= last) {
-      centerToIndex(0, "auto"); // skok bez animacji
-      return;
-    }
-
-    centerToIndex(idx + 1, isCoarse ? "auto" : "smooth");
-  };
+  const next = () =>
+    centerToIndex(getCenteredIndex() + 1, isCoarse ? "auto" : "smooth");
 
   const start = () => {
     if (!enabledAutoplay) return;
