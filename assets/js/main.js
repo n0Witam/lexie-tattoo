@@ -192,6 +192,7 @@ function setupCarousel(root) {
   track.addEventListener("touchstart", pauseOnUser, { passive: true });
   track.addEventListener("wheel", pauseOnUser, { passive: true });
 
+  initLoop();
   start();
 }
 
