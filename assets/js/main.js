@@ -82,28 +82,29 @@ function setupCarousel(root) {
       "scroll",
       () => {
         if (lock) return;
+        if (isProgrammatic()) return;
 
         if (scrollEndT) clearTimeout(scrollEndT);
 
         scrollEndT = setTimeout(() => {
-          const idx = getCenteredIndex();
+          const step = getStep();
 
-          // jeśli jesteś w klonach po lewej — przeskocz na odpowiadający realny slajd z końca
-          if (idx < firstReal) {
-            lock = true;
-            centerToIndex(idx + originalsCount, "auto");
-            requestAnimationFrame(() => (lock = false));
-            return;
-          }
+          const start = cloneCount * step;
+          const end = start + originalsCount * step;
 
-          // jeśli jesteś w klonach po prawej — przeskocz na odpowiadający realny slajd z początku
-          if (idx > lastReal) {
+          // 🔁 TELEPORT: tylko scrollLeft shift (bez centerToIndex)
+          if (track.scrollLeft < start - step * 0.25) {
             lock = true;
-            centerToIndex(idx - originalsCount, "auto");
+            markProgrammatic(350);
+            track.scrollLeft = track.scrollLeft + originalsCount * step;
             requestAnimationFrame(() => (lock = false));
-            return;
+          } else if (track.scrollLeft > end + step * 0.25) {
+            lock = true;
+            markProgrammatic(350);
+            track.scrollLeft = track.scrollLeft - originalsCount * step;
+            requestAnimationFrame(() => (lock = false));
           }
-        }, 80);
+        }, 140); // <- 80 bywa za agresywne na mobile
       },
       { passive: true },
     );
@@ -116,6 +117,11 @@ function setupCarousel(root) {
 
   let timer = null;
   let paused = false;
+  let programmaticUntil = 0;
+  const markProgrammatic = (ms = 250) => {
+    programmaticUntil = performance.now() + ms;
+  };
+  const isProgrammatic = () => performance.now() < programmaticUntil;
 
   // ====== Center-snap helpers (działa niezależnie od gap/padding/klonów) ======
   const slidesAll = () => Array.from(track.querySelectorAll(".slide"));
@@ -157,6 +163,7 @@ function setupCarousel(root) {
     const el = slides[idx];
 
     const delta = getSlideCenterX(el) - getTrackCenterX();
+    markProgrammatic(300);
     track.scrollBy({ left: delta, behavior });
   };
 
@@ -187,7 +194,7 @@ function setupCarousel(root) {
   const pauseOnUser = () => {
     paused = true;
     if (userHold) window.clearTimeout(userHold);
-    userHold = window.setTimeout(() => (paused = false), 1200);
+    userHold = window.setTimeout(() => (paused = false), 2000);
   };
 
   track.addEventListener("pointerdown", pauseOnUser, { passive: true });
