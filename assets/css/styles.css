@@ -37,6 +37,7 @@
 html {
     scroll-behavior: smooth;
 }
+
 body {
     margin: 0;
     background: var(--bg);
@@ -52,6 +53,26 @@ body {
         "Segoe UI Emoji";
     line-height: 1.45;
     letter-spacing: 0.2px;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+
+    background-image: url("../assets/img/paper-texture.webp");
+    background-size: 1400px;
+    background-repeat: repeat;
+
+    opacity: 0.18;
+    mix-blend-mode: soft-light;
+}
+
+body > * {
+    position: relative;
+    z-index: 1;
 }
 
 img {
