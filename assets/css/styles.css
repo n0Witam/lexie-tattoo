@@ -666,6 +666,8 @@ a:hover {
     top: 3%;
     left: 3%;
     z-index: 2;
+    backdrop-filter: blur(5px);
+    background: color-mix(in srgb, var(--bg) 50%, transparent);
 }
 
 /* ====== Footer ====== */
