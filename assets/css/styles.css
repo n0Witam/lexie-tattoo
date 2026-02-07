@@ -419,7 +419,7 @@ a:hover {
     /* żeby “peek” boków był widoczny (jeśli masz fade overlay) */
     .carousel::before,
     .carousel::after {
-        width: 10px;
+        display: none;
     }
 }
 
