@@ -62,7 +62,7 @@ body::before {
     pointer-events: none;
     z-index: 0;
 
-    background-image: url("../img/paper-texture.webp");
+    background-image: url("../../img/paper-texture.webp");
     background-size: 1400px;
     background-repeat: repeat;
 
