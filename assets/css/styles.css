@@ -415,10 +415,37 @@ a:hover {
     --gap: 12px;
 }
 
+.carousel__nav {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 56px;
+    z-index: 3;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.carousel__nav--prev {
+    left: 0;
+}
+.carousel__nav--next {
+    right: 0;
+}
+
+.carousel__nav:focus-visible {
+    outline: none;
+    box-shadow: var(--focus);
+}
+
 @media (max-width: 600px) {
     .carousel {
         --slide-w: 80vw; /* trochę większe slajdy */
         --gap: 0px; /* mniejsza przerwa */
+        .carousel__nav {
+            display: none;
+        }
     }
 
     /* żeby “peek” boków był widoczny (jeśli masz fade overlay) */

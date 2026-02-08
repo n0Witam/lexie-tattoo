@@ -34,6 +34,44 @@ function setupCarousel(root) {
     return first ? first.getBoundingClientRect().width : 320;
   };
 
+  // ========== Kontrolki (Prev/Next) ==============
+  const isDesktopPointer = window.matchMedia(
+    "(hover: hover) and (pointer: fine)",
+  ).matches;
+
+  if (isDesktopPointer) {
+    track.addEventListener("click", (e) => {
+      const slide = e.target.closest(".slide");
+      if (!slide) return;
+
+      const slides = slidesAll();
+      const idx = slides.indexOf(slide);
+      if (idx < 0) return;
+
+      const behavior = prefersReduced ? "auto" : "smooth";
+      centerToIndex(idx, behavior);
+    });
+  }
+
+  if (isDesktopPointer) {
+    // nie twórz ponownie
+    if (!root.querySelector(".carousel__nav--prev")) {
+      const btnPrev = document.createElement("button");
+      btnPrev.type = "button";
+      btnPrev.className = "carousel__nav carousel__nav--prev";
+      btnPrev.setAttribute("aria-label", "Poprzednie zdjęcie");
+      btnPrev.addEventListener("click", () => prev());
+
+      const btnNext = document.createElement("button");
+      btnNext.type = "button";
+      btnNext.className = "carousel__nav carousel__nav--next";
+      btnNext.setAttribute("aria-label", "Następne zdjęcie");
+      btnNext.addEventListener("click", () => next());
+
+      root.append(btnPrev, btnNext);
+    }
+  }
+
   // ========== Loop (klony na początku i końcu) ==========
   const initLoop = () => {
     if (track.dataset.loopInit === "1") return;
@@ -179,6 +217,11 @@ function setupCarousel(root) {
     centerToIndex(getCenteredIndex() + 1, behavior);
   };
 
+  const prev = () => {
+    const behavior = prefersReduced ? "auto" : "smooth";
+    centerToIndex(getCenteredIndex() - 1, behavior);
+  };
+
   const start = () => {
     if (!enabledAutoplay) return;
     stop();
@@ -226,7 +269,10 @@ async function renderFeatured() {
     // Zbiór ID należących do grupy „Wolne wzory”
     const groups = Array.isArray(data.groups) ? data.groups : [];
     const freeGroup = groups.find(
-      (g) => String(g?.name || "").trim().toLowerCase() === "wolne wzory",
+      (g) =>
+        String(g?.name || "")
+          .trim()
+          .toLowerCase() === "wolne wzory",
     );
     const freeIdsRaw = freeGroup && (freeGroup.items || freeGroup.ids);
     const freeIds = Array.isArray(freeIdsRaw) ? freeIdsRaw : [];
