@@ -1,349 +1,141 @@
 <!doctype html>
 <html lang="pl">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Admin — portfolio (grupy & karuzela)</title>
-        <meta name="robots" content="noindex" />
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin — portfolio (grupy + karuzela)</title>
+    <meta name="robots" content="noindex" />
 
-        <link rel="icon" href="../assets/img/hero.svg" type="image/svg+xml" />
-        <link rel="stylesheet" href="../assets/css/styles.css" />
-        <style>
-            .admin {
-                padding: 24px 0 40px;
-            }
-            .admin h1 {
-                margin: 0 0 8px;
-                font-size: 24px;
-            }
-            .admin p {
-                margin: 0 0 10px;
-                color: var(--muted);
-                font-size: 13px;
-                max-width: 80ch;
-            }
-            .panel {
-                margin-top: 14px;
-                display: flex;
-                gap: 10px;
-                flex-wrap: wrap;
-                align-items: center;
-            }
-            .status {
-                margin-top: 10px;
-                color: var(--muted);
-                font-size: 13px;
-                min-height: 18px;
-            }
+    <link rel="icon" href="../assets/img/hero.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../assets/css/styles.css" />
 
-            .adminSection {
-                margin-top: 22px;
-            }
+    <style>
+      .admin { padding: 24px 0 40px; }
+      .admin h1 { margin: 0 0 8px; font-size: 24px; }
+      .admin h2 { margin: 0 0 10px; font-size: 16px; letter-spacing: 0.4px; }
+      .admin p { margin: 0 0 10px; color: var(--muted); font-size: 13px; max-width: 90ch; }
 
-            .sectionHead {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 10px;
-                flex-wrap: wrap;
-            }
+      .panel { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+      .status { margin-top: 10px; color: var(--muted); font-size: 13px; min-height: 18px; }
 
-            .sectionTitle {
-                margin: 0;
-                font-size: 16px;
-                letter-spacing: 0.4px;
-            }
+      .admin-section { margin-top: 16px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+        background: color-mix(in srgb, var(--bg) 76%, transparent); box-shadow: var(--shadow); }
+      .admin-section__head { padding: 14px 14px 10px; border-bottom: 1px solid var(--border); display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+      .admin-section__head .meta { color: var(--muted); font-size: 13px; max-width: 90ch; }
+      .admin-section__body { padding: 14px; }
 
-            .sectionDesc {
-                margin: 8px 0 0;
-                color: var(--muted);
-                font-size: 13px;
-                max-width: 80ch;
-            }
+      /* CARD GRID (left->right) */
+      .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; align-items: start; }
+      @media (max-width: 520px){ .cards{ grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } }
 
-            .reorder {
-                margin-top: 14px;
-                border: 1px solid var(--border);
-                border-radius: var(--radius);
-                overflow: hidden;
-            }
+      .workCard { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: color-mix(in srgb, var(--bg-2) 90%, transparent);
+        cursor: grab; user-select: none; box-shadow: 0 8px 20px rgba(0,0,0,.25); }
+      .workCard:focus-visible { outline: none; box-shadow: var(--focus); }
+      .workCard.dragging { opacity: 0.55; }
 
-            .groups {
-                margin-top: 14px;
-                display: grid;
-                gap: 14px;
-            }
+      .workCard__thumb { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; background: var(--bg); }
+      .workCard__body { padding: 10px 10px 12px; display: grid; gap: 8px; }
+      .workCard__title { font-weight: 650; font-size: 12px; letter-spacing: 0.4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .workCard__alt { width: 100%; padding: 10px 10px; border-radius: 12px; border: 1px solid var(--border);
+        background: color-mix(in srgb, var(--bg) 85%, transparent); color: var(--text); font: inherit; font-size: 13px; }
+      .workCard__row { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+      .check { font-size: 13px; color: var(--muted); display: inline-flex; gap: 8px; align-items: center; user-select: none; }
 
-            .group {
-                border: 1px solid var(--border);
-                border-radius: var(--radius);
-                overflow: hidden;
-                background: color-mix(in srgb, var(--bg-2) 92%, transparent);
-            }
+      .dropHint { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; color: var(--muted); font-size: 13px; }
 
-            .group.dragging {
-                opacity: 0.65;
-            }
+      /* Groups layout */
+      .groupsHead { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+      .groupsWrap { display: grid; gap: 14px; }
+      .group { border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: color-mix(in srgb, var(--bg-2) 88%, transparent); }
+      .group__head { padding: 10px 12px; display: flex; gap: 10px; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+      .group__name { font-weight: 700; font-size: 13px; letter-spacing: 0.4px; }
+      .group__nameInput { width: min(360px, 100%); padding: 10px 10px; border-radius: 12px; border: 1px solid var(--border);
+        background: color-mix(in srgb, var(--bg) 85%, transparent); color: var(--text); font: inherit; font-size: 13px; }
+      .group__actions { display: flex; gap: 8px; align-items: center; }
+      .group__body { padding: 12px; }
+      .group.isPinned .group__nameInput { opacity: 0.85; }
+      .emptyZone { color: var(--muted); font-size: 13px; padding: 10px; border: 1px dashed var(--border); border-radius: 14px; }
 
-            .group__head {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 10px 12px;
-                border-bottom: 1px solid var(--border);
-                background: color-mix(in srgb, var(--bg) 65%, transparent);
-            }
+      /* Drag over feedback */
+      .dropTarget { outline: 2px dashed color-mix(in srgb, var(--border) 55%, var(--accent)); outline-offset: 4px; }
+    </style>
+  </head>
 
-            .group__handle {
-                color: var(--muted);
-                font-size: 18px;
-                text-align: center;
-                user-select: none;
-                cursor: grab;
-                width: 28px;
-                flex: 0 0 28px;
-            }
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <nav class="nav" aria-label="Nawigacja">
+          <a class="brand" href="../">
+            <span class="brand__dot" aria-hidden="true"></span>
+            <span>LEXIE</span>
+          </a>
+          <div class="nav__links">
+            <a href="../portfolio/">Portfolio</a>
+            <a href="../">Strona główna</a>
+          </div>
+          <div class="nav__cta">
+            <a class="btn btn--primary" href="../portfolio/">Podgląd</a>
+          </div>
+        </nav>
+      </div>
+    </header>
 
-            .group--pinned .group__handle {
-                opacity: 0.35;
-                cursor: default;
-            }
+    <main class="admin">
+      <div class="container">
+        <h1>Portfolio — grupy + karuzela</h1>
+        <p>
+          Narzędzie jest statyczne: zmiany nie zapisują się automatycznie. Pobierz nowy
+          <code>portfolio.json</code>, podmień w <code>/data</code> i zacommituj.
+          <br />
+          Uwaga: to narzędzie bazuje wyłącznie na <code>data/portfolio.json</code> — jeśli plik istnieje w folderze,
+          ale nie ma go w JSON, nie pojawi się tutaj.
+        </p>
 
-            .group__name {
-                width: 100%;
-                padding: 10px 10px;
-                border-radius: 12px;
-                border: 1px solid var(--border);
-                background: color-mix(in srgb, var(--bg) 85%, transparent);
-                color: var(--text);
-                font: inherit;
-                font-size: 13px;
-                flex: 1;
-                min-width: 200px;
-            }
+        <div class="panel">
+          <button class="btn btn--primary" id="btnDownload" type="button">Pobierz portfolio.json</button>
+          <button class="btn" id="btnCopy" type="button">Kopiuj JSON do schowka</button>
+          <a class="btn btn--ghost" href="https://github.com/" target="_blank" rel="noreferrer">GitHub (commit)</a>
+        </div>
 
-            .group__name[readonly] {
-                border-color: transparent;
-                background: transparent;
-                padding-left: 0;
-                font-weight: 650;
-            }
+        <div class="status" id="status"></div>
 
-            .group__count {
-                color: var(--muted);
-                font-size: 12px;
-                white-space: nowrap;
-            }
-
-            .group__list {
-                /* lista w środku grupy */
-            }
-
-            .row {
-                display: grid;
-                grid-template-columns: 28px 64px 1fr auto;
-                gap: 12px;
-                align-items: center;
-                padding: 10px 12px;
-                border-bottom: 1px solid var(--border);
-                background: color-mix(in srgb, var(--bg-2) 92%, transparent);
-            }
-            .row:last-child {
-                border-bottom: none;
-            }
-            .row.dragging {
-                opacity: 0.65;
-            }
-            .handle {
-                color: var(--muted);
-                font-size: 18px;
-                text-align: center;
-                user-select: none;
-                cursor: grab;
-            }
-            .thumb {
-                width: 64px;
-                height: 64px;
-                border-radius: 14px;
-                object-fit: cover;
-                border: 1px solid var(--border);
-                background: var(--bg);
-            }
-            .meta {
-                display: grid;
-                gap: 6px;
-            }
-            .title {
-                font-weight: 650;
-                font-size: 13px;
-                letter-spacing: 0.4px;
-            }
-            .subtitle {
-                color: var(--muted);
-                font-size: 12px;
-            }
-            .alt {
-                width: 100%;
-                padding: 10px 10px;
-                border-radius: 12px;
-                border: 1px solid var(--border);
-                background: color-mix(in srgb, var(--bg) 85%, transparent);
-                color: var(--text);
-                font: inherit;
-                font-size: 13px;
-            }
-            .right {
-                display: flex;
-                gap: 14px;
-                align-items: center;
-                justify-content: flex-end;
-            }
-            .check {
-                font-size: 13px;
-                color: var(--muted);
-                display: flex;
-                gap: 8px;
-                align-items: center;
-                user-select: none;
-            }
-
-            .reorder--compact .row {
-                grid-template-columns: 28px 64px 1fr;
-            }
-            .reorder--compact .right {
-                display: none;
-            }
-            .reorder--compact .alt {
-                display: none;
-            }
-            .reorder--compact .meta {
-                gap: 4px;
-            }
-
-            .hint {
-                margin-top: 10px;
-                display: flex;
-                gap: 10px;
-                flex-wrap: wrap;
-                color: var(--muted);
-                font-size: 13px;
-            }
-        </style>
-    </head>
-
-    <body>
-        <header class="site-header">
-            <div class="container">
-                <nav class="nav" aria-label="Nawigacja">
-                    <a class="brand" href="../">
-                        <span class="brand__dot" aria-hidden="true"></span>
-                        <span>LEXIE</span>
-                    </a>
-                    <div class="nav__links">
-                        <a href="../portfolio/">Portfolio</a>
-                        <a href="../">Strona główna</a>
-                    </div>
-                    <div class="nav__cta">
-                        <a class="btn btn--primary" href="../portfolio/"
-                            >Podgląd</a
-                        >
-                    </div>
-                </nav>
+        <section class="admin-section" aria-label="Karuzela — strona główna">
+          <div class="admin-section__head">
+            <div>
+              <h2>Karuzela — strona główna</h2>
+              <div class="meta">
+                Przeciągaj karty, aby ustawić kolejność w karuzeli. Pokazują się tu tylko prace oznaczone jako „str. główna”.
+              </div>
             </div>
-        </header>
+          </div>
+          <div class="admin-section__body">
+            <div id="featuredCards" class="cards" aria-label="Karuzela (karty)"></div>
+          </div>
+        </section>
 
-        <main class="admin">
-            <div class="container">
-                <h1>Portfolio — grupy & karuzela</h1>
-                <p>
-                    To jest proste narzędzie (statyczne) do ustawienia:
-                    <strong>grup</strong> i kolejności w portfolio oraz
-                    kolejności elementów w
-                    <strong>karuzeli na stronie głównej</strong>. Zmiany nie
-                    zapisują się automatycznie — pobierz nowy
-                    <code>portfolio.json</code>, podmień w <code>/data</code> i
-                    zacommituj.
-                </p>
-
-                <div class="panel">
-                    <button
-                        class="btn btn--primary"
-                        id="btnDownload"
-                        type="button"
-                    >
-                        Pobierz portfolio.json
-                    </button>
-                    <button class="btn" id="btnCopy" type="button">
-                        Kopiuj JSON do schowka
-                    </button>
-                    <a
-                        class="btn btn--ghost"
-                        href="https://github.com/"
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        GitHub (commit)
-                    </a>
-                </div>
-
-                <div class="status" id="status"></div>
-
-                <!-- ========== Featured order (carousel) ========== -->
-                <section
-                    class="adminSection"
-                    aria-label="Karuzela — strona główna"
-                >
-                    <div class="sectionHead">
-                        <h2 class="sectionTitle">Karuzela — strona główna</h2>
-                    </div>
-                    <p class="sectionDesc">
-                        Tutaj wyświetlane są prace zaznaczone jako „str.
-                        główna”. Przeciągnij, aby ustawić kolejność w karuzeli.
-                    </p>
-
-                    <div
-                        class="reorder reorder--compact"
-                        id="featuredList"
-                        aria-label="Prace w karuzeli (przeciągnij, aby zmienić kolejność)"
-                    ></div>
-
-                    <div class="hint">
-                        <span class="badge">Tip</span>
-                        Kolejność tutaj steruje kolejnością w karuzeli (nie
-                        wpływa na kolejność w portfolio).
-                    </div>
-                </section>
-
-                <!-- ========== Groups (portfolio) ========== -->
-                <section class="adminSection" aria-label="Grupy — portfolio">
-                    <div class="sectionHead">
-                        <h2 class="sectionTitle">Grupy — portfolio</h2>
-                        <button class="btn" id="btnAddGroup" type="button">
-                            Dodaj grupę
-                        </button>
-                    </div>
-
-                    <p class="sectionDesc">
-                        Przeciągaj prace pomiędzy grupami i ustawiaj kolejność
-                        wewnątrz grup. Grupa <strong>„Wolne wzory”</strong> jest
-                        zawsze na górze.
-                    </p>
-
-                    <div
-                        class="groups"
-                        id="groupsList"
-                        aria-label="Lista grup portfolio"
-                    ></div>
-
-                    <div class="hint">
-                        <span class="badge">Tip</span>
-                        Zmiany w checkboxie „str. główna” wpływają na listę
-                        karuzeli powyżej.
-                    </div>
-                </section>
+        <section class="admin-section" aria-label="Grupy — portfolio">
+          <div class="admin-section__head">
+            <div>
+              <h2>Grupy — portfolio</h2>
+              <div class="meta">
+                Dodaj grupę i przeciągaj prace pomiędzy grupami. Grupa „Wolne wzory” jest domyślna i zawsze na górze.
+              </div>
             </div>
-        </main>
+            <div class="groupsHead">
+              <button class="btn btn--primary" id="btnAddGroup" type="button">+ grupa</button>
+            </div>
+          </div>
+          <div class="admin-section__body">
+            <div id="groupsWrap" class="groupsWrap" aria-label="Lista grup"></div>
+            <div class="dropHint">
+              <span class="badge">Tip</span>
+              Przeciągaj karty (lewo→prawo). Zmiany zapisz przez pobranie JSON.
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
 
-        <script type="module" src="../assets/js/reorder.js"></script>
-    </body>
+    <script type="module" src="../assets/js/reorder.js"></script>
+  </body>
 </html>
