@@ -440,7 +440,6 @@ function setupContactForm() {
   });
 }
 
-
 // ================== Free pattern modal (CTA on "Wolny wzór!") ==================
 function ensureFreePatternModal() {
   let modal = document.getElementById("freePatternModal");
@@ -472,15 +471,6 @@ function ensureFreePatternModal() {
             <div class="field">
               <label for="fp_msg">Wiadomość</label>
               <textarea id="fp_msg" name="entry.839337160"></textarea>
-            </div>
-
-            <div class="field">
-              <label>Inspiracje</label>
-              <div id="fp_uploader_slot"></div>
-              <small class="form__hint" style="font-style: italic; color: #66666650;">
-                Załącz zdjęcia<br>
-                jpg / jpeg / png / webp / heic • max 2.5 MB / plik • do 7 plików
-              </small>
             </div>
 
             <button class="btn btn--primary" type="submit">Wyślij</button>
@@ -606,7 +596,8 @@ function setupFreePatternForm(modal) {
     if (!status) return;
 
     if (!action || action.includes("FORM_ID")) {
-      status.textContent = "Formularz nie jest jeszcze podłączony (brak data-gform-action).";
+      status.textContent =
+        "Formularz nie jest jeszcze podłączony (brak data-gform-action).";
       return;
     }
 
@@ -623,7 +614,8 @@ function setupFreePatternForm(modal) {
       closeFreePatternModal();
     } catch (err) {
       console.error(err);
-      status.textContent = "Nie udało się wysłać. Najprościej: napisz DM na Instagramie.";
+      status.textContent =
+        "Nie udało się wysłać. Najprościej: napisz DM na Instagramie.";
     }
   });
 }

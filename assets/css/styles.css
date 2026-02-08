@@ -535,7 +535,6 @@ a:hover {
     pointer-events: none;
 }
 
-
 /* CTA button on free patterns (desktop hover) */
 .slide__ctaWrap {
     position: absolute;
@@ -552,7 +551,9 @@ a:hover {
     pointer-events: auto;
     opacity: 0;
     transform: translateY(6px);
-    transition: opacity 0.12s ease, transform 0.12s ease;
+    transition:
+        opacity 0.12s ease,
+        transform 0.12s ease;
     box-shadow: var(--shadow);
 }
 
@@ -584,6 +585,8 @@ a:hover {
 
 .modal__dialog {
     position: relative;
+    align-items: center;
+    justify-content: center;
     width: min(980px, calc(100% - 32px));
     max-height: calc(100% - 32px);
     margin: 16px auto;
