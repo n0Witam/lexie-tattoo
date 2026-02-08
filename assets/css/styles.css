@@ -583,10 +583,19 @@ a:hover {
     background: rgba(0, 0, 0, 0.62);
 }
 
-.modal__dialog {
-    position: relative;
+.free-modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
     align-items: center;
     justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.72);
+    z-index: 9999;
+}
+
+.modal__dialog {
+    position: relative;
     width: min(980px, calc(100% - 32px));
     max-height: calc(100% - 32px);
     margin: 16px auto;
