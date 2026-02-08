@@ -417,8 +417,8 @@ a:hover {
 
 @media (max-width: 600px) {
     .carousel {
-        --slide-w: 82vw; /* trochę większe slajdy */
-        --gap: 2px; /* mniejsza przerwa */
+        --slide-w: 80vw; /* trochę większe slajdy */
+        --gap: 0px; /* mniejsza przerwa */
     }
 
     /* żeby “peek” boków był widoczny (jeśli masz fade overlay) */
