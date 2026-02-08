@@ -484,8 +484,7 @@ a:hover {
     object-fit: cover;
 }
 
-
-.slide__badge{
+.slide__badge {
     position: absolute;
     top: 10px;
     left: 10px;
@@ -565,6 +564,19 @@ a:hover {
     color: var(--muted);
 }
 
+@media (prefers-color-scheme: light) {
+    uc-file-uploader-minimal {
+        --uc-background: rgba(255, 255, 255, 0.7);
+        --uc-foreground: #171717;
+        --uc-border-radius: 14px;
+
+        --uc-accent: #171717;
+        --uc-accent-foreground: #fef8f0;
+
+        --uc-muted: rgba(0, 0, 0, 0.55);
+    }
+}
+
 /* ====== Portfolio grid ====== */
 
 .toolbar {
@@ -582,14 +594,13 @@ a:hover {
     padding-bottom: 34px;
 }
 
-
-.portfolio-group{
+.portfolio-group {
     margin-top: 22px;
 }
-.portfolio-group:first-child{
+.portfolio-group:first-child {
     margin-top: 0;
 }
-.portfolio-group__title{
+.portfolio-group__title {
     margin: 0 0 12px;
     font-size: 18px;
     letter-spacing: 0.5px;
