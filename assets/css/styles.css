@@ -58,6 +58,10 @@ body {
 img {
     max-width: 100%;
     display: block;
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
 }
 a {
     color: inherit;
@@ -414,7 +418,7 @@ a:hover {
 @media (max-width: 600px) {
     .carousel {
         --slide-w: 82vw; /* trochę większe slajdy */
-        --gap: 8px; /* mniejsza przerwa */
+        --gap: 2px; /* mniejsza przerwa */
     }
 
     /* żeby “peek” boków był widoczny (jeśli masz fade overlay) */

@@ -244,7 +244,9 @@
                         <a href="../">Strona główna</a>
                     </div>
                     <div class="nav__cta">
-                        <a class="btn btn--primary" href="../portfolio/">Podgląd</a>
+                        <a class="btn btn--primary" href="../portfolio/"
+                            >Podgląd</a
+                        >
                     </div>
                 </nav>
             </div>
@@ -255,21 +257,31 @@
                 <h1>Portfolio — grupy & karuzela</h1>
                 <p>
                     To jest proste narzędzie (statyczne) do ustawienia:
-                    <strong>grup</strong> i kolejności w portfolio oraz kolejności
-                    elementów w <strong>karuzeli na stronie głównej</strong>.
-                    Zmiany nie zapisują się automatycznie — pobierz nowy
+                    <strong>grup</strong> i kolejności w portfolio oraz
+                    kolejności elementów w
+                    <strong>karuzeli na stronie głównej</strong>. Zmiany nie
+                    zapisują się automatycznie — pobierz nowy
                     <code>portfolio.json</code>, podmień w <code>/data</code> i
                     zacommituj.
                 </p>
 
                 <div class="panel">
-                    <button class="btn btn--primary" id="btnDownload" type="button">
+                    <button
+                        class="btn btn--primary"
+                        id="btnDownload"
+                        type="button"
+                    >
                         Pobierz portfolio.json
                     </button>
                     <button class="btn" id="btnCopy" type="button">
                         Kopiuj JSON do schowka
                     </button>
-                    <a class="btn btn--ghost" href="https://github.com/" target="_blank" rel="noreferrer">
+                    <a
+                        class="btn btn--ghost"
+                        href="https://github.com/n0Witam/lexie-tattoo/edit/main/data/portfolio.json"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
                         GitHub (commit)
                     </a>
                 </div>
@@ -277,13 +289,16 @@
                 <div class="status" id="status"></div>
 
                 <!-- ========== Featured order (carousel) ========== -->
-                <section class="adminSection" aria-label="Karuzela — strona główna">
+                <section
+                    class="adminSection"
+                    aria-label="Karuzela — strona główna"
+                >
                     <div class="sectionHead">
                         <h2 class="sectionTitle">Karuzela — strona główna</h2>
                     </div>
                     <p class="sectionDesc">
-                        Tutaj wyświetlane są prace zaznaczone jako „str. główna”.
-                        Przeciągnij, aby ustawić kolejność w karuzeli.
+                        Tutaj wyświetlane są prace zaznaczone jako „str.
+                        główna”. Przeciągnij, aby ustawić kolejność w karuzeli.
                     </p>
 
                     <div
@@ -294,7 +309,8 @@
 
                     <div class="hint">
                         <span class="badge">Tip</span>
-                        Kolejność tutaj steruje kolejnością w karuzeli (nie wpływa na kolejność w portfolio).
+                        Kolejność tutaj steruje kolejnością w karuzeli (nie
+                        wpływa na kolejność w portfolio).
                     </div>
                 </section>
 
@@ -302,19 +318,27 @@
                 <section class="adminSection" aria-label="Grupy — portfolio">
                     <div class="sectionHead">
                         <h2 class="sectionTitle">Grupy — portfolio</h2>
-                        <button class="btn" id="btnAddGroup" type="button">+ grupa</button>
+                        <button class="btn" id="btnAddGroup" type="button">
+                            + grupa
+                        </button>
                     </div>
 
                     <p class="sectionDesc">
-                        Przeciągaj prace pomiędzy grupami i ustawiaj kolejność wewnątrz grup.
-                        Grupa <strong>„Wolne wzory”</strong> jest zawsze na górze.
+                        Przeciągaj prace pomiędzy grupami i ustawiaj kolejność
+                        wewnątrz grup. Grupa <strong>„Wolne wzory”</strong> jest
+                        zawsze na górze.
                     </p>
 
-                    <div class="groups" id="groupsList" aria-label="Lista grup portfolio"></div>
+                    <div
+                        class="groups"
+                        id="groupsList"
+                        aria-label="Lista grup portfolio"
+                    ></div>
 
                     <div class="hint">
                         <span class="badge">Tip</span>
-                        Zmiany w checkboxie „str. główna” wpływają na listę karuzeli powyżej.
+                        Zmiany w checkboxie „str. główna” wpływają na listę
+                        karuzeli powyżej.
                     </div>
                 </section>
             </div>
