@@ -241,8 +241,8 @@ async function init() {
   const btnCopy = qs("#btnCopy");
 
   const btnAddGroup = qs("#btnAddGroup");
-  const groupsRoot = qs("#groupsWrap");
-  const featuredRoot = qs("#featuredCards");
+  const groupsRoot = qs("#groupsList");
+  const featuredRoot = qs("#featuredList");
 
   if (!status || !groupsRoot || !featuredRoot) return;
 

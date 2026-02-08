@@ -57,5 +57,11 @@
       "alt": "Alfons Mucha – Księżyc",
       "featured": true
     }
+    {
+      "id": "faun",
+      "src": "./assets/portfolio/faun.png",
+      "alt": "",
+      "featured": false
+    }
   ]
 }
