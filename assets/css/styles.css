@@ -535,6 +535,130 @@ a:hover {
     pointer-events: none;
 }
 
+
+/* CTA button on free patterns (desktop hover) */
+.slide__ctaWrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 14px;
+    z-index: 4;
+    pointer-events: none; /* allow scroll/drag; button will re-enable */
+}
+
+.slide__ctaBtn {
+    pointer-events: auto;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.12s ease, transform 0.12s ease;
+    box-shadow: var(--shadow);
+}
+
+/* show only on desktop hover, and only for free-pattern slides */
+@media (hover: hover) and (pointer: fine) {
+    .slide[data-free-pattern="1"]:hover .slide__ctaBtn {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ====== Modal (free pattern) ====== */
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: none;
+}
+
+.modal[aria-hidden="false"] {
+    display: block;
+}
+
+.modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.62);
+}
+
+.modal__dialog {
+    position: relative;
+    width: min(980px, calc(100% - 32px));
+    max-height: calc(100% - 32px);
+    margin: 16px auto;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.modal__close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border-radius: 999px;
+    padding: 8px 10px;
+    z-index: 5;
+}
+
+.modal__grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 0;
+}
+
+.modal__left {
+    padding: 18px;
+    overflow: auto;
+    max-height: calc(100vh - 64px);
+}
+
+.modal__title {
+    margin: 0 0 12px;
+    font-size: 18px;
+    letter-spacing: 0.4px;
+}
+
+.modal__right {
+    border-left: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg-2) 70%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+}
+
+.modal__imgWrap {
+    width: 100%;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-2);
+}
+
+.modal__img {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    object-fit: contain;
+    display: block;
+}
+
+@media (max-width: 900px) {
+    .modal__grid {
+        grid-template-columns: 1fr;
+    }
+    .modal__right {
+        border-left: 0;
+        border-top: 1px solid var(--border);
+    }
+    .modal__left {
+        max-height: none;
+    }
+}
+
 .carousel__track .slide img {
     -webkit-user-drag: none;
     user-select: none;

@@ -324,12 +324,30 @@ async function renderFeatured() {
       const fig = document.createElement("figure");
       fig.className = "slide";
 
-      // Plakietka tylko dla: featured + w grupie „Wolne wzory”
+      // Plakietka + CTA tylko dla: featured + w grupie „Wolne wzory”
       if (freeSet.has(item.id)) {
+        fig.dataset.freePattern = "1";
+
         const badge = document.createElement("div");
         badge.className = "slide__badge";
         badge.textContent = "Wolny wzór!";
         fig.append(badge);
+
+        const ctaWrap = document.createElement("div");
+        ctaWrap.className = "slide__ctaWrap";
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "slide__ctaBtn btn btn--primary";
+        btn.textContent = "Chcę ten wzór!";
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          window.__openFreePatternModal?.(src, img.alt);
+        });
+
+        ctaWrap.append(btn);
+        fig.append(ctaWrap);
       }
 
       fig.append(img);
@@ -421,6 +439,235 @@ function setupContactForm() {
     }
   });
 }
+
+
+// ================== Free pattern modal (CTA on "Wolny wzór!") ==================
+function ensureFreePatternModal() {
+  let modal = document.getElementById("freePatternModal");
+  if (modal) return modal;
+
+  modal = document.createElement("div");
+  modal.id = "freePatternModal";
+  modal.className = "modal";
+  modal.setAttribute("aria-hidden", "true");
+
+  modal.innerHTML = `
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Chcę ten wzór">
+      <button class="modal__close btn" type="button" aria-label="Zamknij" data-close>✕</button>
+      <div class="modal__grid">
+        <div class="modal__left">
+          <h3 class="modal__title">Chcę ten wzór!</h3>
+          <form id="freePatternForm" class="form" novalidate>
+            <div class="field">
+              <label for="fp_name">Imię i nazwisko</label>
+              <input id="fp_name" name="entry.2005620554" autocomplete="name" required />
+            </div>
+
+            <div class="field">
+              <label for="fp_mobile">Telefon</label>
+              <input id="fp_mobile" name="entry.1166974658" type="tel" inputmode="tel" autocomplete="tel" required />
+            </div>
+
+            <div class="field">
+              <label for="fp_msg">Wiadomość</label>
+              <textarea id="fp_msg" name="entry.839337160"></textarea>
+            </div>
+
+            <div class="field">
+              <label>Inspiracje</label>
+              <div id="fp_uploader_slot"></div>
+              <small class="form__hint" style="font-style: italic; color: #66666650;">
+                Załącz zdjęcia<br>
+                jpg / jpeg / png / webp / heic • max 2.5 MB / plik • do 7 plików
+              </small>
+            </div>
+
+            <button class="btn btn--primary" type="submit">Wyślij</button>
+            <p class="form__status" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+
+        <div class="modal__right">
+          <div class="modal__imgWrap">
+            <img id="fp_img" class="modal__img" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.append(modal);
+
+  // Close handlers
+  const close = () => closeFreePatternModal();
+  modal.addEventListener("click", (e) => {
+    const t = e.target;
+    if (t && t.closest && t.closest("[data-close]")) close();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      const m = document.getElementById("freePatternModal");
+      if (m && m.getAttribute("aria-hidden") === "false") close();
+    }
+  });
+
+  // Wire submit (Google Forms) + Uploadcare URLs injection
+  setupFreePatternForm(modal);
+
+  return modal;
+}
+
+function buildFreePatternPrefill(imgUrl) {
+  return `• Wybrany wzór: ${imgUrl}\n• Miejsce na ciele: \n• Rozmiar (cm): \n`;
+}
+
+function mountModalUploader(slotEl) {
+  if (!slotEl) return null;
+
+  // Reset slot (fresh uploader each open)
+  slotEl.innerHTML = "";
+
+  // Separate context so it doesn't interfere with main form
+  const ctxName = "lexie-upload-modal";
+
+  const cfg = document.createElement("uc-config");
+  cfg.setAttribute("ctx-name", ctxName);
+  cfg.setAttribute("pubkey", "976a65662ac407428aa5");
+  cfg.setAttribute("multiple", "true");
+  cfg.setAttribute("multiple-max", "7");
+  cfg.setAttribute(
+    "accept",
+    "image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif",
+  );
+  cfg.setAttribute("max-local-file-size-bytes", "2621440");
+  cfg.setAttribute("source-list", "local");
+
+  const ctx = document.createElement("uc-upload-ctx-provider");
+  ctx.id = "fpUploadCtx";
+  ctx.setAttribute("ctx-name", ctxName);
+
+  const uploader = document.createElement("uc-file-uploader-minimal");
+  uploader.id = "fpUploader";
+  uploader.setAttribute("ctx-name", ctxName);
+
+  slotEl.append(cfg, ctx, uploader);
+
+  return ctx;
+}
+
+function setupFreePatternForm(modal) {
+  const form = modal.querySelector("#freePatternForm");
+  if (!form) return;
+
+  const status = form.querySelector(".form__status");
+  const msgEl = form.querySelector("#fp_msg");
+  const slot = form.querySelector("#fp_uploader_slot");
+
+  // google forms action: reuse from the main form on the page
+  const mainForm = document.getElementById("contactForm");
+  const action = mainForm?.dataset?.gformAction || "";
+
+  const SENTINEL_START = "\n\n---\nZdjęcia:\n";
+  const SENTINEL_RE = /\n\n---\nZdjęcia:\n[\s\S]*$/;
+  const stripImagesBlock = (s) => (s || "").replace(SENTINEL_RE, "");
+
+  // We'll (re)mount uploader on each open; keep current ctx ref here
+  let ctxEl = null;
+
+  const getUploadcareUrls = () => {
+    try {
+      if (!ctxEl || typeof ctxEl.getAPI !== "function") return [];
+      const api = ctxEl.getAPI();
+      const state = api.getOutputCollectionState();
+      const files = state?.files || [];
+      return files
+        .map((f) => f?.cdnUrl)
+        .filter((u) => typeof u === "string" && u.length);
+    } catch (_) {
+      return [];
+    }
+  };
+
+  const injectUrlsIntoMessage = () => {
+    if (!msgEl) return;
+    const urls = getUploadcareUrls();
+    const base = stripImagesBlock(msgEl.value);
+    msgEl.value = urls.length ? base + SENTINEL_START + urls.join("\n") : base;
+  };
+
+  // Expose hooks for open()
+  form.__fpSetCtx = (newCtx) => (ctxEl = newCtx);
+  form.__fpInjectUrls = injectUrlsIntoMessage;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!status) return;
+
+    if (!action || action.includes("FORM_ID")) {
+      status.textContent = "Formularz nie jest jeszcze podłączony (brak data-gform-action).";
+      return;
+    }
+
+    // Append Uploadcare URLs right before FormData
+    injectUrlsIntoMessage();
+
+    status.textContent = "Wysyłanie…";
+    const fd = new FormData(form);
+
+    try {
+      await fetch(action, { method: "POST", body: fd, mode: "no-cors" });
+      status.textContent = "Dzięki! Wiadomość została wysłana.";
+      form.reset();
+      closeFreePatternModal();
+    } catch (err) {
+      console.error(err);
+      status.textContent = "Nie udało się wysłać. Najprościej: napisz DM na Instagramie.";
+    }
+  });
+}
+
+function openFreePatternModal(imgUrl, altText) {
+  const modal = ensureFreePatternModal();
+  const img = modal.querySelector("#fp_img");
+  const msg = modal.querySelector("#fp_msg");
+  const slot = modal.querySelector("#fp_uploader_slot");
+  const form = modal.querySelector("#freePatternForm");
+  const status = modal.querySelector(".form__status");
+
+  if (img) {
+    img.src = imgUrl;
+    img.alt = altText || "Wolny wzór";
+  }
+
+  // Reset & prefill message
+  if (status) status.textContent = "";
+  if (form) {
+    // don't wipe message prefill by reset-after-set, so do it in order:
+    form.reset();
+  }
+  if (msg) {
+    msg.value = buildFreePatternPrefill(imgUrl);
+  }
+
+  // (Re)mount uploader each time (fresh selection)
+  const ctxEl = mountModalUploader(slot);
+  if (form && typeof form.__fpSetCtx === "function") form.__fpSetCtx(ctxEl);
+
+  modal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+function closeFreePatternModal() {
+  const modal = document.getElementById("freePatternModal");
+  if (!modal) return;
+  modal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+
+// Global hook used by carousel slides
+window.__openFreePatternModal = openFreePatternModal;
 
 function setYear() {
   const year = new Date().getFullYear();
