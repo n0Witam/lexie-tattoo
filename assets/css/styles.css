@@ -443,9 +443,10 @@ a:hover {
     .carousel {
         --slide-w: 50vw; /* trochę większe slajdy */
         --gap: 0px; /* mniejsza przerwa */
-        .carousel__nav {
-            display: none;
-        }
+    }
+
+    .carousel__nav {
+        display: none;
     }
 
     /* żeby “peek” boków był widoczny (jeśli masz fade overlay) */
