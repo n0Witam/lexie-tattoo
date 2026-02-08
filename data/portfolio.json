@@ -1,7 +1,32 @@
 {
   "version": 2,
-  "updated": "2026-02-03",
+  "updated": "2026-02-08",
+  "featuredOrder": ["p01", "p02", "p03", "p05", "p06", "p07", "p08"],
+  "groups": [
+    {
+      "id": "wolne-wzory",
+      "name": "Wolne wzory",
+      "items": ["p06", "p08"]
+    },
+    {
+      "id": "g_mldoad9l_77yf3y",
+      "name": "Wykonane prace",
+      "items": ["p01", "p02", "p03", "p05", "p07"]
+    }
+  ],
   "items": [
+    {
+      "id": "p06",
+      "src": "../assets/img/portfolio/mucha1.png",
+      "alt": "Alfons Mucha – Odpoczynek nocy",
+      "featured": true
+    },
+    {
+      "id": "p08",
+      "src": "../assets/img/portfolio/wiedzma.png",
+      "alt": "Wiedźma",
+      "featured": true
+    },
     {
       "id": "p01",
       "src": "../assets/img/portfolio/dziolcha1.png",
@@ -12,12 +37,6 @@
       "id": "p02",
       "src": "../assets/img/portfolio/dziolcha2.png",
       "alt": "Omen",
-      "featured": true
-    },
-    {
-      "id": "p03",
-      "src": "../assets/img/portfolio/faun.png",
-      "alt": "Faun",
       "featured": true
     },
     {
@@ -33,22 +52,10 @@
       "featured": true
     },
     {
-      "id": "p06",
-      "src": "../assets/img/portfolio/mucha1.png",
-      "alt": "Alfons Mucha – Odpoczynek nocy",
-      "featured": true
-    },
-    {
       "id": "p07",
       "src": "../assets/img/portfolio/mucha2.png",
       "alt": "Alfons Mucha – Księżyc",
       "featured": true
-    },
-    {
-      "id": "p08",
-      "src": "../assets/img/portfolio/wiedzma.png",
-      "alt": "Wiedźma",
-      "featured": false
     }
   ]
 }
