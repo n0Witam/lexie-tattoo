@@ -460,17 +460,17 @@ function ensureFreePatternModal() {
           <form id="freePatternForm" class="form" novalidate>
             <div class="field">
               <label for="fp_name">Imię i nazwisko</label>
-              <input id="fp_name" name="entry.2005620554" autocomplete="name" required />
+              <input id="fp_name" name="entry.2005620554" autocomplete="name" required pattern="^[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*(?:\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*)*$" />
             </div>
 
             <div class="field">
               <label for="fp_mobile">Telefon</label>
-              <input id="fp_mobile" name="entry.1166974658" type="tel" inputmode="tel" autocomplete="tel" required />
+              <input id="fp_mobile" name="entry.1166974658" type="tel" inputmode="tel" autocomplete="tel" required pattern="^(?:(?:\+48|0048)[ -]?)?(?:[5-7]\d{2})[ -]?\d{3}[ -]?\d{3}$" />
             </div>
 
             <div class="field">
               <label for="fp_msg">Wiadomość</label>
-              <textarea id="fp_msg" name="entry.839337160"></textarea>
+              <textarea id="fp_msg" name="entry.839337160" required></textarea>
             </div>
 
             <button class="btn btn--primary" type="submit">Wyślij</button>
@@ -552,8 +552,81 @@ function setupFreePatternForm(modal) {
   if (!form) return;
 
   const status = form.querySelector(".form__status");
+  const nameEl = form.querySelector("#fp_name");
+  const mobileEl = form.querySelector("#fp_mobile");
   const msgEl = form.querySelector("#fp_msg");
-  const slot = form.querySelector("#fp_uploader_slot");
+
+  // ===== Walidacja jak na stronie głównej =====
+  const NAME_RE = new RegExp(
+    "^[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*\\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*(?:\\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*)*$"
+  );
+
+  const PHONE_RE = new RegExp(
+    "^(?:(?:\\+48|0048)[ -]?)?(?:[5-7]\\d{2})[ -]?\\d{3}[ -]?\\d{3}$"
+  );
+
+  const setStatus = (msg) => {
+    if (status) status.textContent = msg || "";
+  };
+
+  const setFieldError = (el, message) => {
+    if (!el) return;
+    el.setCustomValidity(message || "");
+    if (message) el.reportValidity();
+  };
+
+  const normalizeSpaces = (s) => (s || "").replace(/\s+/g, " ").trim();
+
+  const validateName = () => {
+    const v = normalizeSpaces(nameEl?.value);
+    if (nameEl) nameEl.value = v;
+
+    if (!v) return setFieldError(nameEl, "Podaj imię i nazwisko."), false;
+    if (!NAME_RE.test(v)) {
+      return (
+        setFieldError(
+          nameEl,
+          "Wpisz imię i nazwisko (min. 2 człony), każdy zaczynający się wielką literą."
+        ),
+        false
+      );
+    }
+    setFieldError(nameEl, "");
+    return true;
+  };
+
+  const validatePhone = () => {
+    const v = (mobileEl?.value || "").trim();
+    if (mobileEl) mobileEl.value = v;
+
+    if (!v) return setFieldError(mobileEl, "Podaj numer telefonu."), false;
+    if (!PHONE_RE.test(v)) {
+      return (
+        setFieldError(
+          mobileEl,
+          "Podaj poprawny numer (np. 512 345 678, +48 512 345 678, 0048 512 345 678)."
+        ),
+        false
+      );
+    }
+    setFieldError(mobileEl, "");
+    return true;
+  };
+
+  const validateMsg = () => {
+    const v = (msgEl?.value || "").trim();
+    if (!v) return setFieldError(msgEl, "Wpisz wiadomość."), false;
+    setFieldError(msgEl, "");
+    return true;
+  };
+
+  nameEl?.addEventListener("blur", validateName);
+  mobileEl?.addEventListener("blur", validatePhone);
+  msgEl?.addEventListener("blur", validateMsg);
+
+  nameEl?.addEventListener("input", () => nameEl.setCustomValidity(""));
+  mobileEl?.addEventListener("input", () => mobileEl.setCustomValidity(""));
+  msgEl?.addEventListener("input", () => msgEl.setCustomValidity(""));
 
   // google forms action: reuse from the main form on the page
   const mainForm = document.getElementById("contactForm");
@@ -593,11 +666,16 @@ function setupFreePatternForm(modal) {
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    if (!status) return;
+    setStatus("");
 
     if (!action || action.includes("FORM_ID")) {
-      status.textContent =
-        "Formularz nie jest jeszcze podłączony (brak data-gform-action).";
+      setStatus("Formularz nie jest jeszcze podłączony (brak data-gform-action).");
+      return;
+    }
+
+    const ok = [validateName(), validatePhone(), validateMsg()].every(Boolean);
+    if (!ok) {
+      setStatus("Popraw błędy w formularzu.");
       return;
     }
 
