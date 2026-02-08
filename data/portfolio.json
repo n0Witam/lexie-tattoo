@@ -1,17 +1,34 @@
 {
   "version": 2,
   "updated": "2026-02-08",
-  "featuredOrder": ["p01", "p02", "p03", "p05", "p06", "p07", "p08"],
+  "featuredOrder": [
+    "p01",
+    "p06",
+    "p02",
+    "faun",
+    "p03",
+    "p08"
+  ],
   "groups": [
     {
       "id": "wolne-wzory",
       "name": "Wolne wzory",
-      "items": ["p06", "p08"]
+      "items": [
+        "p06",
+        "p08",
+        "faun"
+      ]
     },
     {
       "id": "g_mldoad9l_77yf3y",
       "name": "Wykonane prace",
-      "items": ["p01", "p02", "p03", "p05", "p07"]
+      "items": [
+        "p01",
+        "p02",
+        "p03",
+        "p05",
+        "p07"
+      ]
     }
   ],
   "items": [
@@ -25,6 +42,12 @@
       "id": "p08",
       "src": "../assets/img/portfolio/wiedzma.png",
       "alt": "Wiedźma",
+      "featured": true
+    },
+    {
+      "id": "faun",
+      "src": "../assets/img/portfolio/faun.png",
+      "alt": "Faun",
       "featured": true
     },
     {
@@ -49,18 +72,12 @@
       "id": "p05",
       "src": "../assets/img/portfolio/kwiaty_kolor.png",
       "alt": "Kwiaty",
-      "featured": true
+      "featured": false
     },
     {
       "id": "p07",
       "src": "../assets/img/portfolio/mucha2.png",
       "alt": "Alfons Mucha – Księżyc",
-      "featured": true
-    },
-    {
-      "id": "faun",
-      "src": "../assets/img/portfolio/faun.png",
-      "alt": "Faun",
       "featured": false
     }
   ]
