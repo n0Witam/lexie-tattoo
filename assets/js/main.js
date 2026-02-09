@@ -2,18 +2,21 @@ import { fetchJSON, resolveUrl, qs, qsa } from "./util.js";
 
 const DATA_URL = "./data/portfolio.json";
 
+/* ============================================================
+   Carousel
+   - loop clones
+   - click slide (desktop) to center
+   - prev/next hit-areas (desktop via CSS)
+   - CTA "Chcę ten wzór!" arms after 1s when a FREE slide is centered
+   ============================================================ */
 function setupCarousel(root) {
   const track = qs("[data-track]", root);
   if (!track) return;
 
-  // Zapobiegamy ponownej inicjalizacji (np. gdyby ktoś wywołał setup 2x)
   if (track.dataset.carouselInit === "1") return;
   track.dataset.carouselInit = "1";
 
-  const gap = 12;
-
-  // ========== Anti-save (tylko karuzela) ==========
-  // (Nie da się zablokować „na 100%”, ale blokujemy: prawy klik, drag, long-press iOS)
+  // Anti-save (carousel only)
   track.addEventListener("contextmenu", (e) => {
     const t = e.target;
     if (t && t.tagName === "IMG") e.preventDefault();
@@ -23,18 +26,77 @@ function setupCarousel(root) {
     if (t && t.tagName === "IMG") e.preventDefault();
   });
 
-  // ========== Helpers ==========
+  const slidesAll = () => Array.from(track.querySelectorAll(".slide"));
+
   const getStep = () => {
-    const slides = Array.from(track.querySelectorAll(".slide"));
-    if (slides.length >= 2) {
-      // realny krok (uwzględnia gap z CSS i responsywne szerokości)
-      return slides[1].offsetLeft - slides[0].offsetLeft;
-    }
+    const slides = slidesAll();
+    if (slides.length >= 2) return slides[1].offsetLeft - slides[0].offsetLeft;
     const first = slides[0];
     return first ? first.getBoundingClientRect().width : 320;
   };
 
-  // ========== Kontrolki (Prev/Next) ==============
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)")
+    .matches;
+
+  // ========== Center-snap helpers ==========
+  const getTrackCenterX = () => {
+    const rT = track.getBoundingClientRect();
+    return rT.left + rT.width / 2;
+  };
+
+  const getSlideCenterX = (el) => {
+    const r = el.getBoundingClientRect();
+    return r.left + r.width / 2;
+  };
+
+  const getCenteredIndex = () => {
+    const slides = slidesAll();
+    if (!slides.length) return 0;
+
+    const cx = getTrackCenterX();
+    let best = 0;
+    let bestDist = Infinity;
+
+    slides.forEach((el, i) => {
+      const d = Math.abs(getSlideCenterX(el) - cx);
+      if (d < bestDist) {
+        bestDist = d;
+        best = i;
+      }
+    });
+
+    return best;
+  };
+
+  let programmaticUntil = 0;
+  const markProgrammatic = (ms = 250) => {
+    programmaticUntil = performance.now() + ms;
+  };
+  const isProgrammatic = () => performance.now() < programmaticUntil;
+
+  const centerToIndex = (idx, behavior = "smooth") => {
+    const slides = slidesAll();
+    if (!slides.length) return;
+
+    idx = Math.max(0, Math.min(slides.length - 1, idx));
+    const el = slides[idx];
+
+    const delta = getSlideCenterX(el) - getTrackCenterX();
+    markProgrammatic(300);
+    track.scrollBy({ left: delta, behavior });
+  };
+
+  const next = () => {
+    const behavior = prefersReduced ? "auto" : "smooth";
+    centerToIndex(getCenteredIndex() + 1, behavior);
+  };
+
+  const prev = () => {
+    const behavior = prefersReduced ? "auto" : "smooth";
+    centerToIndex(getCenteredIndex() - 1, behavior);
+  };
+
+  // Desktop: click slide to center
   const isDesktopPointer = window.matchMedia(
     "(hover: hover) and (pointer: fine)",
   ).matches;
@@ -43,7 +105,6 @@ function setupCarousel(root) {
     track.addEventListener("click", (e) => {
       const slide = e.target.closest(".slide");
       if (!slide) return;
-
       const slides = slidesAll();
       const idx = slides.indexOf(slide);
       if (idx < 0) return;
@@ -53,40 +114,36 @@ function setupCarousel(root) {
     });
   }
 
-  if (isDesktopPointer) {
-    // nie twórz ponownie
-    if (!root.querySelector(".carousel__nav--prev")) {
-      const btnPrev = document.createElement("button");
-      btnPrev.type = "button";
-      btnPrev.className = "carousel__nav carousel__nav--prev";
-      btnPrev.setAttribute("aria-label", "Poprzednie zdjęcie");
-      btnPrev.addEventListener("click", () => prev());
+  // Desktop: invisible prev/next hit-areas (56px) – inserted once
+  if (isDesktopPointer && !root.querySelector(".carousel__nav--prev")) {
+    const btnPrev = document.createElement("button");
+    btnPrev.type = "button";
+    btnPrev.className = "carousel__nav carousel__nav--prev";
+    btnPrev.setAttribute("aria-label", "Poprzednie zdjęcie");
+    btnPrev.addEventListener("click", () => prev());
 
-      const btnNext = document.createElement("button");
-      btnNext.type = "button";
-      btnNext.className = "carousel__nav carousel__nav--next";
-      btnNext.setAttribute("aria-label", "Następne zdjęcie");
-      btnNext.addEventListener("click", () => next());
+    const btnNext = document.createElement("button");
+    btnNext.type = "button";
+    btnNext.className = "carousel__nav carousel__nav--next";
+    btnNext.setAttribute("aria-label", "Następne zdjęcie");
+    btnNext.addEventListener("click", () => next());
 
-      root.append(btnPrev, btnNext);
-    }
+    root.append(btnPrev, btnNext);
   }
 
-  // ========== Loop (klony na początku i końcu) ==========
+  // ========== Loop clones ==========
   const initLoop = () => {
     if (track.dataset.loopInit === "1") return;
 
-    const slides = Array.from(track.querySelectorAll(".slide"));
+    const slides = slidesAll();
     if (slides.length < 2) return;
 
     const originalsCount = slides.length;
     const cloneCount = Math.min(3, originalsCount);
 
-    // klony
     const headClones = slides
       .slice(0, cloneCount)
       .map((el) => el.cloneNode(true));
-
     const tailClones = slides
       .slice(-cloneCount)
       .map((el) => el.cloneNode(true));
@@ -94,22 +151,14 @@ function setupCarousel(root) {
     headClones.forEach((c) => c.setAttribute("data-clone", "1"));
     tailClones.forEach((c) => c.setAttribute("data-clone", "1"));
 
-    // prepend tail clones
     tailClones.reverse().forEach((c) => track.prepend(c));
-    // append head clones
     headClones.forEach((c) => track.append(c));
 
     track.dataset.loopInit = "1";
 
-    const firstReal = cloneCount;
-    const lastReal = cloneCount + originalsCount - 1;
-
-    // przeskok na początek prawdziwych slajdów
     requestAnimationFrame(() => {
       const step = getStep();
       track.scrollLeft = cloneCount * step;
-
-      // wycentruj bez animacji
       requestAnimationFrame(() => centerToIndex(getCenteredIndex(), "auto"));
     });
 
@@ -152,114 +201,11 @@ function setupCarousel(root) {
   };
 
   // ========== Autoplay ==========
-  // Ustawiasz w HTML: <div class="carousel" data-carousel data-autoplay="5000">
   const autoplayMs = Number(root.getAttribute("data-autoplay") || "5000");
   const enabledAutoplay = Number.isFinite(autoplayMs) && autoplayMs > 0;
 
   let timer = null;
   let paused = false;
-  let programmaticUntil = 0;
-  const markProgrammatic = (ms = 250) => {
-    programmaticUntil = performance.now() + ms;
-  };
-  const isProgrammatic = () => performance.now() < programmaticUntil;
-
-  // ====== Center-snap helpers (działa niezależnie od gap/padding/klonów) ======
-  const slidesAll = () => Array.from(track.querySelectorAll(".slide"));
-
-  const getTrackCenterX = () => {
-    const rT = track.getBoundingClientRect();
-    return rT.left + rT.width / 2;
-  };
-
-  const getSlideCenterX = (el) => {
-    const r = el.getBoundingClientRect();
-    return r.left + r.width / 2;
-  };
-
-  const getCenteredIndex = () => {
-    const slides = slidesAll();
-    if (!slides.length) return 0;
-
-    const cx = getTrackCenterX();
-    let best = 0;
-    let bestDist = Infinity;
-
-    slides.forEach((el, i) => {
-      const d = Math.abs(getSlideCenterX(el) - cx);
-      if (d < bestDist) {
-        bestDist = d;
-        best = i;
-      }
-    });
-
-    return best;
-  };
-
-  const centerToIndex = (idx, behavior = "smooth") => {
-    const slides = slidesAll();
-    if (!slides.length) return;
-
-    idx = Math.max(0, Math.min(slides.length - 1, idx));
-    const el = slides[idx];
-
-    const delta = getSlideCenterX(el) - getTrackCenterX();
-    markProgrammatic(300);
-    track.scrollBy({ left: delta, behavior });
-  };
-
-  const prefersReduced = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
-
-  const next = () => {
-    const behavior = prefersReduced ? "auto" : "smooth";
-    centerToIndex(getCenteredIndex() + 1, behavior);
-  };
-
-  const prev = () => {
-    const behavior = prefersReduced ? "auto" : "smooth";
-    centerToIndex(getCenteredIndex() - 1, behavior);
-  };
-
-  // ===== CTA "Chcę ten wzór!" pokazuje się po ~1s od wycentrowania slajdu (wszystkie urządzenia) =====
-  let armT = null;
-  let armDebounceT = null;
-
-  const clearArmed = () => {
-    slidesAll().forEach((el) => el.classList.remove("is-armed"));
-  };
-
-  const armCenteredCta = () => {
-    clearTimeout(armT);
-    clearArmed();
-
-    const slides = slidesAll();
-    if (!slides.length) return;
-
-    const centered = slides[getCenteredIndex()];
-    if (!centered || centered.dataset.freePattern !== "1") return;
-
-    armT = window.setTimeout(() => {
-      // upewnij się, że nadal to ten sam slajd po 1s
-      const nowSlides = slidesAll();
-      const now = nowSlides[getCenteredIndex()];
-      if (now === centered && centered.dataset.freePattern === "1") {
-        centered.classList.add("is-armed");
-      }
-    }, 1000);
-  };
-
-  const scheduleArmCenteredCta = () => {
-    clearTimeout(armDebounceT);
-    clearTimeout(armT);
-    clearArmed();
-    armDebounceT = window.setTimeout(armCenteredCta, 160);
-  };
-
-  track.addEventListener("scroll", scheduleArmCenteredCta, { passive: true });
-  // po starcie / pierwszym wycentrowaniu (po initLoop scrollLeft jump)
-  window.setTimeout(armCenteredCta, 900);
 
   const start = () => {
     if (!enabledAutoplay) return;
@@ -274,7 +220,6 @@ function setupCarousel(root) {
     timer = null;
   };
 
-  // pause na hover/focus + gdy user dotknie/scrolluje
   root.addEventListener("mouseenter", () => (paused = true));
   root.addEventListener("mouseleave", () => (paused = false));
   root.addEventListener("focusin", () => (paused = true));
@@ -286,15 +231,56 @@ function setupCarousel(root) {
     if (userHold) window.clearTimeout(userHold);
     userHold = window.setTimeout(() => (paused = false), 2000);
   };
-
   track.addEventListener("pointerdown", pauseOnUser, { passive: true });
   track.addEventListener("touchstart", pauseOnUser, { passive: true });
   track.addEventListener("wheel", pauseOnUser, { passive: true });
 
+  // ========== CTA arming ==========
+  let armT = null;
+  let armDebounceT = null;
+
+  const clearArmed = () => {
+    slidesAll().forEach((el) => el.classList.remove("is-armed"));
+  };
+
+  const armCenteredCta = () => {
+    window.clearTimeout(armT);
+    clearArmed();
+
+    const slides = slidesAll();
+    if (!slides.length) return;
+
+    const centered = slides[getCenteredIndex()];
+    if (!centered || centered.dataset.freePattern !== "1") return;
+
+    armT = window.setTimeout(() => {
+      const nowSlides = slidesAll();
+      const now = nowSlides[getCenteredIndex()];
+      if (now === centered && centered.dataset.freePattern === "1") {
+        centered.classList.add("is-armed");
+      }
+    }, 1000);
+  };
+
+  const scheduleArmCenteredCta = () => {
+    window.clearTimeout(armDebounceT);
+    window.clearTimeout(armT);
+    clearArmed();
+    armDebounceT = window.setTimeout(armCenteredCta, 160);
+  };
+
+  track.addEventListener("scroll", scheduleArmCenteredCta, { passive: true });
+
   initLoop();
   start();
+
+  // initial arm after initial loop jump
+  window.setTimeout(armCenteredCta, 900);
 }
 
+/* ============================================================
+   Featured carousel render + "Wolny wzór!" badge + CTA button
+   ============================================================ */
 async function renderFeatured() {
   const carouselTrack = qs("#featuredTrack");
   if (!carouselTrack) return;
@@ -305,19 +291,16 @@ async function renderFeatured() {
     const items = Array.isArray(data.items) ? data.items : [];
     const byId = new Map(items.map((x) => [x.id, x]));
 
-    // Zbiór ID należących do grupy „Wolne wzory”
+    // IDs in "Wolne wzory" group
     const groups = Array.isArray(data.groups) ? data.groups : [];
     const freeGroup = groups.find(
-      (g) =>
-        String(g?.name || "")
-          .trim()
-          .toLowerCase() === "wolne wzory",
+      (g) => String(g?.name || "").trim().toLowerCase() === "wolne wzory",
     );
     const freeIdsRaw = freeGroup && (freeGroup.items || freeGroup.ids);
     const freeIds = Array.isArray(freeIdsRaw) ? freeIdsRaw : [];
     const freeSet = new Set(freeIds);
 
-    // Kolejność karuzeli: featuredOrder (jeśli jest) + dopięcie brakujących featured
+    // Order: featuredOrder + append missing featured
     const seen = new Set();
     const featuredIds = [];
 
@@ -363,7 +346,6 @@ async function renderFeatured() {
       const fig = document.createElement("figure");
       fig.className = "slide";
 
-      // Plakietka + CTA tylko dla: featured + w grupie „Wolne wzory”
       if (freeSet.has(item.id)) {
         fig.dataset.freePattern = "1";
 
@@ -382,7 +364,7 @@ async function renderFeatured() {
         btn.addEventListener("click", (e) => {
           e.preventDefault();
           e.stopPropagation();
-          window.__openFreePatternModal?.(src, img.alt);
+          openFreePatternModal(src, img.alt);
         });
 
         ctaWrap.append(btn);
@@ -401,13 +383,15 @@ async function renderFeatured() {
   }
 }
 
+/* ============================================================
+   Shared helpers for "hidden message" technique (URLs invisible)
+   ============================================================ */
 function setHiddenMessageField(form, msgEl, value) {
   if (!form || !msgEl) return null;
 
   const origName = msgEl.getAttribute("name") || "";
   if (!origName) return null;
 
-  // ukryte pole z prawdziwą treścią wiadomości (wysyłaną do Google Forms)
   let hidden = form.querySelector('input[type="hidden"][data-hidden-msg="1"]');
   if (!hidden) {
     hidden = document.createElement("input");
@@ -419,7 +403,6 @@ function setHiddenMessageField(form, msgEl, value) {
   hidden.name = origName;
   hidden.value = value || "";
 
-  // textarea ma być widoczna dla usera, ale NIE wysyłana (żeby nie wyświetlać URL-i)
   msgEl.dataset.origName = origName;
   msgEl.removeAttribute("name");
 
@@ -438,6 +421,89 @@ function restoreVisibleMessageField(form, msgEl) {
   if (hidden) hidden.remove();
 }
 
+/* ============================================================
+   Uploadcare URL collection (no textarea mutation)
+   Uses ctx-provider events like in your index.html script.
+   ============================================================ */
+function createUploadcareCollector(ctxEl) {
+  const urlById = new Map();
+
+  const toUrl = (detail) => {
+    if (!detail) return "";
+    return (
+      detail.cdnUrl ||
+      detail.cdnUrlModifiers ||
+      detail.url ||
+      detail.originalUrl ||
+      detail.fileUrl ||
+      ""
+    );
+  };
+
+  const toId = (detail) => {
+    if (!detail) return "";
+    return (
+      detail.internalId ||
+      detail.uuid ||
+      detail.fileId ||
+      detail.file ||
+      detail.id ||
+      ""
+    );
+  };
+
+  const snapshot = () => {
+    const urls = Array.from(urlById.values())
+      .filter((u) => typeof u === "string" && u.length);
+    window.__lexieUploadUrls = urls;
+    return urls;
+  };
+
+  if (!ctxEl) {
+    window.__lexieUploadUrls = [];
+    return { getUrls: () => [], snapshot };
+  }
+
+  const onSuccess = (e) => {
+    const entry = e.detail || {};
+    const id = toId(entry);
+    const url = toUrl(entry);
+    if (id && url) urlById.set(id, url);
+    snapshot();
+  };
+
+  const onUrlChanged = (e) => {
+    const entry = e.detail || {};
+    const id = toId(entry);
+    const url = toUrl(entry);
+    if (id && url) urlById.set(id, url);
+    snapshot();
+  };
+
+  const onRemoved = (e) => {
+    const entry = e.detail || {};
+    const id = toId(entry);
+    if (id) urlById.delete(id);
+    snapshot();
+  };
+
+  ctxEl.addEventListener("file-upload-success", onSuccess);
+  ctxEl.addEventListener("file-url-changed", onUrlChanged);
+  ctxEl.addEventListener("file-removed", onRemoved);
+
+  // expose for debugging
+  window.__lexieSyncUploadUrls = snapshot;
+
+  return {
+    getUrls: () => snapshot(),
+  };
+}
+
+/* ============================================================
+   Main contact form (homepage)
+   - URLs invisible in textarea
+   - submit via normal form->iframe (no fetch race)
+   ============================================================ */
 function setupContactForm() {
   const form = qs("#contactForm");
   if (!form) return;
@@ -445,81 +511,58 @@ function setupContactForm() {
   const status = qs(".form__status", form);
   const action = form.dataset.gformAction || "";
 
-  // Uploadcare elements
-  const ctxEl = document.getElementById("lexieUploadCtx");
   const msgEl = form.querySelector('textarea[name="entry.839337160"]');
+  if (!msgEl) return;
+
+  const ctxEl = document.getElementById("lexieUploadCtx");
+  const collector = createUploadcareCollector(ctxEl);
 
   const SENTINEL_START = "\n\n---\nZdjęcia:\n";
-  const SENTINEL_RE = /\n\n---\nZdjęcia:\n[\s\S]*$/;
-
-  const stripImagesBlock = (s) => (s || "").replace(SENTINEL_RE, "");
-
-  const getUploadcareUrls = () => {
-    try {
-      if (!ctxEl || typeof ctxEl.getAPI !== "function") return [];
-      const api = ctxEl.getAPI();
-      const state = api.getOutputCollectionState();
-      const files = state?.files || [];
-      return files
-        .map((f) => f?.cdnUrl)
-        .filter((u) => typeof u === "string" && u.length);
-    } catch (_) {
-      return [];
-    }
-  };
 
   const buildMessageForSubmit = () => {
-    if (!msgEl) return "";
-    const urls = getUploadcareUrls();
-    const base = stripImagesBlock(msgEl.value);
+    const base = (msgEl.value || "").trimEnd();
+    const urls = collector.getUrls();
     return urls.length ? base + SENTINEL_START + urls.join("\n") : base;
   };
-
-  // Jeżeli na stronie jest dodatkowy skrypt uploadcare dopinający URL-e do textarea,
-  // to go neutralizujemy — URL-e mają być niewidoczne.
-  window.__lexieSyncUploadUrls = () => {};
 
   if (!action || action.includes("FORM_ID")) {
     status.textContent =
       "Ustaw adres Google Forms w atrybucie data-gform-action (instrukcja w README).";
   }
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
+  // IMPORTANT: let form submit normally (iframe target), just inject hidden msg
+  form.addEventListener("submit", (e) => {
     if (!action || action.includes("FORM_ID")) {
+      e.preventDefault();
       status.textContent =
         "Formularz nie jest jeszcze podłączony (brak data-gform-action).";
       return;
     }
 
-    // ✅ Zdjęcia i URL-e dopinamy do UKRYTEGO pola tuż przed FormData
+    // ensure action is set for real submit
+    form.action = action;
+
+    // refresh URLs snapshot
+    try {
+      window.__lexieSyncUploadUrls?.();
+    } catch (_) {}
+
     const hiddenMsg = buildMessageForSubmit();
     setHiddenMessageField(form, msgEl, hiddenMsg);
 
-    status.textContent = "Wysyłam…";
+    status.textContent = "Wysyłanie…";
 
-    // Nie dopinamy nic do widocznej textarea (URL-e mają być niewidoczne).
-
-    // ✅ teraz dopiero bierz FormData
-    const fd = new FormData(form);
-
-    try {
-      // no-cors: Google Forms nie zwraca CORS — traktujemy brak błędu sieci jako sukces.
-      await fetch(action, { method: "POST", body: fd, mode: "no-cors" });
-      status.textContent = "Dzięki! Wiadomość została wysłana.";
-      form.reset();
-    } catch (err) {
-      console.error(err);
-      status.textContent =
-        "Nie udało się wysłać. Najprościej: napisz DM na Instagramie.";
-    } finally {
-      restoreVisibleMessageField(form, msgEl);
-    }
+    // restore name right after submit starts
+    window.setTimeout(() => restoreVisibleMessageField(form, msgEl), 0);
   });
 }
 
-// ================== Free pattern modal (CTA on "Wolny wzór!") ==================
+/* ============================================================
+   Free pattern modal
+   - visible textarea does NOT show "Wybrany wzór"
+   - submit injects URL invisibly (hidden message field)
+   - validation like main form, but safe reportValidity()
+   ============================================================ */
 function ensureFreePatternModal() {
   let modal = document.getElementById("freePatternModal");
   if (modal) return modal;
@@ -534,16 +577,22 @@ function ensureFreePatternModal() {
     <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Chcę ten wzór">
       <button class="modal__close btn" type="button" aria-label="Zamknij" data-close>✕</button>
       <div class="modal__grid">
+        <div class="modal__right">
+          <div class="modal__imgWrap">
+            <img id="fp_img" class="modal__img" alt="" />
+          </div>
+        </div>
+
         <div class="modal__left">
-                    <form id="freePatternForm" class="form" novalidate>
+          <form id="freePatternForm" class="form" novalidate>
             <div class="field">
               <label for="fp_name">Imię i nazwisko</label>
-              <input id="fp_name" name="entry.2005620554" autocomplete="name" required pattern="^[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*(?:\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*)*$" />
+              <input id="fp_name" name="entry.2005620554" autocomplete="name" required />
             </div>
 
             <div class="field">
               <label for="fp_mobile">Telefon</label>
-              <input id="fp_mobile" name="entry.1166974658" type="tel" inputmode="tel" autocomplete="tel" required pattern="^(?:(?:\+48|0048)[ -]?)?(?:[5-7]\d{2})[ -]?\d{3}[ -]?\d{3}$" />
+              <input id="fp_mobile" name="entry.1166974658" type="tel" inputmode="tel" autocomplete="tel" required />
             </div>
 
             <div class="field">
@@ -555,20 +604,14 @@ function ensureFreePatternModal() {
             <p class="form__status" role="status" aria-live="polite"></p>
           </form>
         </div>
-
-        <div class="modal__right">
-          <div class="modal__imgWrap">
-            <img id="fp_img" class="modal__img" alt="" />
-          </div>
-        </div>
       </div>
     </div>
   `;
 
   document.body.append(modal);
 
-  // Close handlers
   const close = () => closeFreePatternModal();
+
   modal.addEventListener("click", (e) => {
     const t = e.target;
     if (t && t.closest && t.closest("[data-close]")) close();
@@ -581,9 +624,7 @@ function ensureFreePatternModal() {
     }
   });
 
-  // Wire submit (Google Forms) + Uploadcare URLs injection
   setupFreePatternForm(modal);
-
   return modal;
 }
 
@@ -593,8 +634,6 @@ function buildFreePatternPrefillVisible() {
 
 function buildFreePatternMessageForSubmit(visibleText, imgUrl) {
   const raw = (visibleText || "").trimEnd();
-
-  // Usuń ewentualną linię „Wybrany wzór” (z dawnych wersji)
   const cleaned = raw
     .split(/\r?\n/)
     .filter((line) => !/^•\s*Wybrany\s+wzór\s*:/.test(line))
@@ -605,38 +644,19 @@ function buildFreePatternMessageForSubmit(visibleText, imgUrl) {
   return (header + cleaned).trimEnd() + "\n";
 }
 
-function mountModalUploader(slotEl) {
-  if (!slotEl) return null;
+function isFocusable(el) {
+  if (!el) return false;
+  if (el.disabled) return false;
+  const style = window.getComputedStyle(el);
+  if (style.display === "none" || style.visibility === "hidden") return false;
+  if (el.offsetParent === null && style.position !== "fixed") return false;
+  return true;
+}
 
-  // Reset slot (fresh uploader each open)
-  slotEl.innerHTML = "";
-
-  // Separate context so it doesn't interfere with main form
-  const ctxName = "lexie-upload-modal";
-
-  const cfg = document.createElement("uc-config");
-  cfg.setAttribute("ctx-name", ctxName);
-  cfg.setAttribute("pubkey", "976a65662ac407428aa5");
-  cfg.setAttribute("multiple", "true");
-  cfg.setAttribute("multiple-max", "7");
-  cfg.setAttribute(
-    "accept",
-    "image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif",
-  );
-  cfg.setAttribute("max-local-file-size-bytes", "2621440");
-  cfg.setAttribute("source-list", "local");
-
-  const ctx = document.createElement("uc-upload-ctx-provider");
-  ctx.id = "fpUploadCtx";
-  ctx.setAttribute("ctx-name", ctxName);
-
-  const uploader = document.createElement("uc-file-uploader-minimal");
-  uploader.id = "fpUploader";
-  uploader.setAttribute("ctx-name", ctxName);
-
-  slotEl.append(cfg, ctx, uploader);
-
-  return ctx;
+function safeReportValidity(el) {
+  try {
+    if (isFocusable(el) && typeof el.reportValidity === "function") el.reportValidity();
+  } catch (_) {}
 }
 
 function setupFreePatternForm(modal) {
@@ -648,26 +668,25 @@ function setupFreePatternForm(modal) {
   const mobileEl = form.querySelector("#fp_mobile");
   const msgEl = form.querySelector("#fp_msg");
 
-  // ===== Walidacja jak na stronie głównej =====
-  const NAME_RE = new RegExp(
-    "^[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*\\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*(?:\\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*)*$",
-  );
-
-  const PHONE_RE = new RegExp(
-    "^(?:(?:\\+48|0048)[ -]?)?(?:[5-7]\\d{2})[ -]?\\d{3}[ -]?\\d{3}$",
-  );
-
   const setStatus = (msg) => {
     if (status) status.textContent = msg || "";
   };
 
+  // patterns exactly as previously used
+  const NAME_RE = new RegExp(
+    "^[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*\\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*(?:\\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*)*$",
+  );
+  const PHONE_RE = new RegExp(
+    "^(?:(?:\\+48|0048)[ -]?)?(?:[5-7]\\d{2})[ -]?\\d{3}[ -]?\\d{3}$",
+  );
+
+  const normalizeSpaces = (s) => (s || "").replace(/\s+/g, " ").trim();
+
   const setFieldError = (el, message) => {
     if (!el) return;
     el.setCustomValidity(message || "");
-    if (message) el.reportValidity();
+    if (message) safeReportValidity(el);
   };
-
-  const normalizeSpaces = (s) => (s || "").replace(/\s+/g, " ").trim();
 
   const validateName = () => {
     const v = normalizeSpaces(nameEl?.value);
@@ -720,63 +739,15 @@ function setupFreePatternForm(modal) {
   mobileEl?.addEventListener("input", () => mobileEl.setCustomValidity(""));
   msgEl?.addEventListener("input", () => msgEl.setCustomValidity(""));
 
-  // google forms action: reuse from the main form on the page
   const mainForm = document.getElementById("contactForm");
   const action = mainForm?.dataset?.gformAction || "";
-
-  const SENTINEL_START = "\n\n---\nZdjęcia:\n";
-  const SENTINEL_RE = /\n\n---\nZdjęcia:\n[\s\S]*$/;
-  const stripImagesBlock = (s) => (s || "").replace(SENTINEL_RE, "");
-
-  // We'll (re)mount uploader on each open; keep current ctx ref here
-  let ctxEl = null;
-
-  const getUploadcareUrls = () => {
-    // 1) Preferuj listę URL-i zbieraną przez listener Uploadcare z index.html
-    if (
-      Array.isArray(window.__lexieUploadUrls) &&
-      window.__lexieUploadUrls.length
-    ) {
-      return window.__lexieUploadUrls.filter(
-        (u) => typeof u === "string" && u.length,
-      );
-    }
-
-    // 2) Fallback: spróbuj pobrać z ctx-provider API (jeśli dostępne)
-    try {
-      if (!ctxEl || typeof ctxEl.getAPI !== "function") return [];
-      const api = ctxEl.getAPI();
-      const state = api.getOutputCollectionState();
-      const files = state?.files || [];
-      return files
-        .map((f) => f?.cdnUrl)
-        .filter((u) => typeof u === "string" && u.length);
-    } catch (_) {
-      return [];
-    }
-  };
-
-  const buildMessageForSubmit = (imgUrl) => {
-    if (!msgEl) return "";
-    const urls = getUploadcareUrls();
-    const visible = stripImagesBlock(msgEl.value);
-    const withPattern = buildFreePatternMessageForSubmit(visible, imgUrl);
-    return urls.length
-      ? withPattern + SENTINEL_START + urls.join("\n")
-      : withPattern;
-  };
-
-  // Expose hooks for open()
-  form.__fpSetCtx = (newCtx) => (ctxEl = newCtx);
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     setStatus("");
 
     if (!action || action.includes("FORM_ID")) {
-      setStatus(
-        "Formularz nie jest jeszcze podłączony (brak data-gform-action).",
-      );
+      setStatus("Formularz nie jest jeszcze podłączony (brak data-gform-action).");
       return;
     }
 
@@ -786,24 +757,23 @@ function setupFreePatternForm(modal) {
       return;
     }
 
-    // Dopnij niewidoczne URL-e (wybrany wzór + zdjęcia) do ukrytego pola przed FormData
-    const imgUrl =
-      modal.dataset.fpImgUrl || modal.querySelector("#fp_img")?.src || "";
-    const hiddenMsg = buildMessageForSubmit(imgUrl);
+    const imgUrl = modal.dataset.fpImgUrl || modal.querySelector("#fp_img")?.src || "";
+    const visible = msgEl.value || "";
+    const hiddenMsg = buildFreePatternMessageForSubmit(visible, imgUrl);
+
     setHiddenMessageField(form, msgEl, hiddenMsg);
 
-    status.textContent = "Wysyłanie…";
+    setStatus("Wysyłanie…");
     const fd = new FormData(form);
 
     try {
       await fetch(action, { method: "POST", body: fd, mode: "no-cors" });
-      status.textContent = "Dzięki! Wiadomość została wysłana.";
+      setStatus("Dzięki! Wiadomość została wysłana.");
       form.reset();
       closeFreePatternModal();
     } catch (err) {
       console.error(err);
-      status.textContent =
-        "Nie udało się wysłać. Najprościej: napisz DM na Instagramie.";
+      setStatus("Nie udało się wysłać. Najprościej: napisz DM na Instagramie.");
     } finally {
       restoreVisibleMessageField(form, msgEl);
     }
@@ -813,9 +783,8 @@ function setupFreePatternForm(modal) {
 function openFreePatternModal(imgUrl, altText) {
   const modal = ensureFreePatternModal();
   const img = modal.querySelector("#fp_img");
-  const msg = modal.querySelector("#fp_msg");
-  const slot = modal.querySelector("#fp_uploader_slot");
   const form = modal.querySelector("#freePatternForm");
+  const msg = modal.querySelector("#fp_msg");
   const status = modal.querySelector(".form__status");
 
   if (img) {
@@ -823,20 +792,12 @@ function openFreePatternModal(imgUrl, altText) {
     img.alt = altText || "Wolny wzór";
   }
 
-  // Reset & prefill message
-  if (status) status.textContent = "";
-  if (form) {
-    // don't wipe message prefill by reset-after-set, so do it in order:
-    form.reset();
-  }
-  if (msg) {
-    msg.value = buildFreePatternPrefillVisible();
-    modal.dataset.fpImgUrl = imgUrl;
-  }
+  modal.dataset.fpImgUrl = imgUrl;
 
-  // (Re)mount uploader each time (fresh selection)
-  const ctxEl = mountModalUploader(slot);
-  if (form && typeof form.__fpSetCtx === "function") form.__fpSetCtx(ctxEl);
+  if (status) status.textContent = "";
+  if (form) form.reset();
+
+  if (msg) msg.value = buildFreePatternPrefillVisible();
 
   modal.setAttribute("aria-hidden", "false");
   document.body.style.overflow = "hidden";
@@ -849,9 +810,9 @@ function closeFreePatternModal() {
   document.body.style.overflow = "";
 }
 
-// Global hook used by carousel slides
-window.__openFreePatternModal = openFreePatternModal;
-
+/* ============================================================
+   Misc
+   ============================================================ */
 function setYear() {
   const year = new Date().getFullYear();
   const el = qs("[data-year]");
