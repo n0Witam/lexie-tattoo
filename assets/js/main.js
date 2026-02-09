@@ -588,29 +588,21 @@ function ensureFreePatternModal() {
 }
 
 function buildFreePatternPrefillVisible() {
-  return `• Wybrany wzór: \n\n• Miejsce na ciele: \n• Rozmiar (cm): \n`;
+  return `• Miejsce na ciele: \n• Rozmiar (cm): \n`;
 }
 
 function buildFreePatternMessageForSubmit(visibleText, imgUrl) {
-  const base = (visibleText || "").trimEnd();
+  const raw = (visibleText || "").trimEnd();
 
-  // Zastąp (lub dodaj) linię z wybranym wzorem URL-em.
-  const lines = base.split(/\r?\n/);
-  const out = [];
-  let injected = false;
+  // Usuń ewentualną linię „Wybrany wzór” (z dawnych wersji)
+  const cleaned = raw
+    .split(/\r?\n/)
+    .filter((line) => !/^•\s*Wybrany\s+wzór\s*:/.test(line))
+    .join("\n")
+    .trimEnd();
 
-  for (const line of lines) {
-    if (!injected && /^•\s*Wybrany\s+wzór\s*:/.test(line)) {
-      out.push(`• Wybrany wzór: ${imgUrl}`);
-      injected = true;
-    } else {
-      out.push(line);
-    }
-  }
-
-  if (!injected) out.unshift(`• Wybrany wzór: ${imgUrl}`);
-
-  return out.join("\n").trimEnd() + "\n";
+  const header = imgUrl ? `• Wybrany wzór: ${imgUrl}\n` : "";
+  return (header + cleaned).trimEnd() + "\n";
 }
 
 function mountModalUploader(slotEl) {
@@ -740,6 +732,17 @@ function setupFreePatternForm(modal) {
   let ctxEl = null;
 
   const getUploadcareUrls = () => {
+    // 1) Preferuj listę URL-i zbieraną przez listener Uploadcare z index.html
+    if (
+      Array.isArray(window.__lexieUploadUrls) &&
+      window.__lexieUploadUrls.length
+    ) {
+      return window.__lexieUploadUrls.filter(
+        (u) => typeof u === "string" && u.length,
+      );
+    }
+
+    // 2) Fallback: spróbuj pobrać z ctx-provider API (jeśli dostępne)
     try {
       if (!ctxEl || typeof ctxEl.getAPI !== "function") return [];
       const api = ctxEl.getAPI();
