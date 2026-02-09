@@ -35,8 +35,9 @@ function setupCarousel(root) {
     return first ? first.getBoundingClientRect().width : 320;
   };
 
-  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)")
-    .matches;
+  const prefersReduced = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
 
   // ========== Center-snap helpers ==========
   const getTrackCenterX = () => {
@@ -294,7 +295,10 @@ async function renderFeatured() {
     // IDs in "Wolne wzory" group
     const groups = Array.isArray(data.groups) ? data.groups : [];
     const freeGroup = groups.find(
-      (g) => String(g?.name || "").trim().toLowerCase() === "wolne wzory",
+      (g) =>
+        String(g?.name || "")
+          .trim()
+          .toLowerCase() === "wolne wzory",
     );
     const freeIdsRaw = freeGroup && (freeGroup.items || freeGroup.ids);
     const freeIds = Array.isArray(freeIdsRaw) ? freeIdsRaw : [];
@@ -453,8 +457,9 @@ function createUploadcareCollector(ctxEl) {
   };
 
   const snapshot = () => {
-    const urls = Array.from(urlById.values())
-      .filter((u) => typeof u === "string" && u.length);
+    const urls = Array.from(urlById.values()).filter(
+      (u) => typeof u === "string" && u.length,
+    );
     window.__lexieUploadUrls = urls;
     return urls;
   };
@@ -525,6 +530,36 @@ function setupContactForm() {
     return urls.length ? base + SENTINEL_START + urls.join("\n") : base;
   };
 
+  // ====== iframe success handler (Google Forms) ======
+  const iframe = document.getElementById("gformIframe");
+  let submitArmed = false;
+  let submitAt = 0;
+
+  if (iframe) {
+    iframe.addEventListener("load", () => {
+      // pierwsze load iframe jest "puste" (inicjalne) — ignorujemy
+      if (!submitArmed) return;
+
+      // zabezpieczenie na bardzo szybkie load (cache/initial)
+      if (Date.now() - submitAt < 300) return;
+
+      submitArmed = false;
+
+      status.textContent = "Dzięki! Wiadomość została wysłana.";
+      form.reset();
+
+      // wyczyść uploady z pamięci (opcjonalnie, ale pomaga UX)
+      window.__lexieUploadUrls = [];
+
+      // po chwili zgaś komunikat
+      window.setTimeout(() => {
+        if (status.textContent === "Dzięki! Wiadomość została wysłana.") {
+          status.textContent = "";
+        }
+      }, 3500);
+    });
+  }
+
   if (!action || action.includes("FORM_ID")) {
     status.textContent =
       "Ustaw adres Google Forms w atrybucie data-gform-action (instrukcja w README).";
@@ -550,9 +585,10 @@ function setupContactForm() {
     const hiddenMsg = buildMessageForSubmit();
     setHiddenMessageField(form, msgEl, hiddenMsg);
 
-    status.textContent = "Wysyłanie…";
+    submitArmed = true;
+    submitAt = Date.now();
 
-    // restore name right after submit starts
+    status.textContent = "Wysyłanie…";
     window.setTimeout(() => restoreVisibleMessageField(form, msgEl), 0);
   });
 }
@@ -655,7 +691,8 @@ function isFocusable(el) {
 
 function safeReportValidity(el) {
   try {
-    if (isFocusable(el) && typeof el.reportValidity === "function") el.reportValidity();
+    if (isFocusable(el) && typeof el.reportValidity === "function")
+      el.reportValidity();
   } catch (_) {}
 }
 
@@ -747,7 +784,9 @@ function setupFreePatternForm(modal) {
     setStatus("");
 
     if (!action || action.includes("FORM_ID")) {
-      setStatus("Formularz nie jest jeszcze podłączony (brak data-gform-action).");
+      setStatus(
+        "Formularz nie jest jeszcze podłączony (brak data-gform-action).",
+      );
       return;
     }
 
@@ -757,7 +796,8 @@ function setupFreePatternForm(modal) {
       return;
     }
 
-    const imgUrl = modal.dataset.fpImgUrl || modal.querySelector("#fp_img")?.src || "";
+    const imgUrl =
+      modal.dataset.fpImgUrl || modal.querySelector("#fp_img")?.src || "";
     const visible = msgEl.value || "";
     const hiddenMsg = buildFreePatternMessageForSubmit(visible, imgUrl);
 
