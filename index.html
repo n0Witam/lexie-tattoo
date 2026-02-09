@@ -383,8 +383,10 @@
 
             const render = () => {
               const urls = Array.from(urlById.values()).filter(Boolean);
+              // store URLs globally (do NOT show inside textarea)
+              window.__lexieUploadUrls = urls;
               const base = stripBlock();
-              msgEl.value = urls.length ? (base + SENTINEL_START + urls.join("\n")) : base;
+              if (msgEl.value !== base) msgEl.value = base; // ensure block stays hidden
             };
 
             // ✅ Eventy słuchamy na ctx-provider (u Ciebie tam naprawdę lecą)

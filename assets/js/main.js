@@ -222,46 +222,6 @@ function setupCarousel(root) {
     centerToIndex(getCenteredIndex() - 1, behavior);
   };
 
-
-  // ===== CTA "Chcę ten wzór!" pokazuje się po ~1s od wycentrowania slajdu (wszystkie urządzenia) =====
-  let armT = null;
-  let armDebounceT = null;
-
-  const clearArmed = () => {
-    slidesAll().forEach((el) => el.classList.remove("is-armed"));
-  };
-
-  const armCenteredCta = () => {
-    clearTimeout(armT);
-    clearArmed();
-
-    const slides = slidesAll();
-    if (!slides.length) return;
-
-    const centered = slides[getCenteredIndex()];
-    if (!centered || centered.dataset.freePattern !== "1") return;
-
-    armT = window.setTimeout(() => {
-      // upewnij się, że nadal to ten sam slajd po 1s
-      const nowSlides = slidesAll();
-      const now = nowSlides[getCenteredIndex()];
-      if (now === centered && centered.dataset.freePattern === "1") {
-        centered.classList.add("is-armed");
-      }
-    }, 1000);
-  };
-
-  const scheduleArmCenteredCta = () => {
-    clearTimeout(armDebounceT);
-    clearTimeout(armT);
-    clearArmed();
-    armDebounceT = window.setTimeout(armCenteredCta, 160);
-  };
-
-  track.addEventListener("scroll", scheduleArmCenteredCta, { passive: true });
-  // po starcie / pierwszym wycentrowaniu (po initLoop scrollLeft jump)
-  window.setTimeout(armCenteredCta, 900);
-
   const start = () => {
     if (!enabledAutoplay) return;
     stop();
@@ -292,8 +252,50 @@ function setupCarousel(root) {
   track.addEventListener("touchstart", pauseOnUser, { passive: true });
   track.addEventListener("wheel", pauseOnUser, { passive: true });
 
+
+  // ===== CTA: show "Chcę ten wzór!" 1s after slide becomes centered (all devices) =====
+  let ctaTimer = null;
+  const clearCta = () => {
+    if (ctaTimer) window.clearTimeout(ctaTimer);
+    ctaTimer = null;
+    slidesAll().forEach((s) => s.classList.remove("is-cta-visible"));
+  };
+
+  const scheduleCtaForCentered = () => {
+    clearCta();
+    const slides = slidesAll();
+    if (!slides.length) return;
+
+    const centeredIdx = getCenteredIndex();
+    const centered = slides[centeredIdx];
+    if (!centered || centered.dataset.freePattern !== "1") return;
+
+    ctaTimer = window.setTimeout(() => {
+      const nowSlides = slidesAll();
+      const now = nowSlides[getCenteredIndex()];
+      nowSlides.forEach((s) => s.classList.remove("is-cta-visible"));
+      if (now === centered && centered.dataset.freePattern === "1") {
+        centered.classList.add("is-cta-visible");
+      }
+    }, 1000);
+  };
+
+  // debounce on scroll end
+  let ctaScrollT = null;
+  track.addEventListener(
+    "scroll",
+    () => {
+      if (ctaScrollT) window.clearTimeout(ctaScrollT);
+      ctaScrollT = window.setTimeout(scheduleCtaForCentered, 160);
+    },
+    { passive: true },
+  );
+
   initLoop();
   start();
+
+  // initial schedule
+  requestAnimationFrame(scheduleCtaForCentered);
 }
 
 async function renderFeatured() {
@@ -402,42 +404,6 @@ async function renderFeatured() {
   }
 }
 
-
-function setHiddenMessageField(form, msgEl, value) {
-  if (!form || !msgEl) return null;
-
-  const origName = msgEl.getAttribute("name") || "";
-  if (!origName) return null;
-
-  // ukryte pole z prawdziwą treścią wiadomości (wysyłaną do Google Forms)
-  let hidden = form.querySelector('input[type="hidden"][data-hidden-msg="1"]');
-  if (!hidden) {
-    hidden = document.createElement("input");
-    hidden.type = "hidden";
-    hidden.dataset.hiddenMsg = "1";
-    form.append(hidden);
-  }
-
-  hidden.name = origName;
-  hidden.value = value || "";
-
-  // textarea ma być widoczna dla usera, ale NIE wysyłana (żeby nie wyświetlać URL-i)
-  msgEl.dataset.origName = origName;
-  msgEl.removeAttribute("name");
-
-  return hidden;
-}
-
-function restoreVisibleMessageField(form, msgEl) {
-  if (!form || !msgEl) return;
-
-  const origName = msgEl.dataset.origName;
-  if (origName) msgEl.setAttribute("name", origName);
-
-  const hidden = form.querySelector('input[type="hidden"][data-hidden-msg="1"]');
-  if (hidden) hidden.remove();
-}
-
 function setupContactForm() {
   const form = qs("#contactForm");
   if (!form) return;
@@ -468,17 +434,12 @@ function setupContactForm() {
     }
   };
 
-  const buildMessageForSubmit = () => {
-    if (!msgEl) return "";
+  const buildHiddenImagesBlock = () => {
     const urls = getUploadcareUrls();
-    const base = stripImagesBlock(msgEl.value);
-    return urls.length ? base + SENTINEL_START + urls.join("
-") : base;
+    if (!urls.length) return "";
+    return SENTINEL_START + urls.join("
+");
   };
-
-  // Jeżeli na stronie jest dodatkowy skrypt uploadcare dopinający URL-e do textarea,
-  // to go neutralizujemy — URL-e mają być niewidoczne.
-  window.__lexieSyncUploadUrls = () => {};
 
   if (!action || action.includes("FORM_ID")) {
     status.textContent =
@@ -494,16 +455,19 @@ function setupContactForm() {
       return;
     }
 
-    // ✅ Zdjęcia i URL-e dopinamy do UKRYTEGO pola tuż przed FormData
-    const hiddenMsg = buildMessageForSubmit();
-    setHiddenMessageField(form, msgEl, hiddenMsg);
+    // ✅ Najważniejsze: dopnij linki TUŻ PRZED FormData
+    // Build hidden images block right before FormData (not visible to user)
+    const visibleMsg = msgEl.value;
+    const hiddenImages = buildHiddenImagesBlock();
+    msgEl.value = hiddenImages ? (visibleMsg + hiddenImages) : visibleMsg;
 
     status.textContent = "Wysyłam…";
 
-    // Nie dopinamy nic do widocznej textarea (URL-e mają być niewidoczne).
-
     // ✅ teraz dopiero bierz FormData
     const fd = new FormData(form);
+
+    // restore immediately so user doesn't see URLs
+    msgEl.value = visibleMsg;
 
     try {
       // no-cors: Google Forms nie zwraca CORS — traktujemy brak błędu sieci jako sukces.
@@ -514,8 +478,6 @@ function setupContactForm() {
       console.error(err);
       status.textContent =
         "Nie udało się wysłać. Najprościej: napisz DM na Instagramie.";
-    } finally {
-      restoreVisibleMessageField(form, msgEl);
     }
   });
 }
@@ -536,7 +498,8 @@ function ensureFreePatternModal() {
       <button class="modal__close btn" type="button" aria-label="Zamknij" data-close>✕</button>
       <div class="modal__grid">
         <div class="modal__left">
-                    <form id="freePatternForm" class="form" novalidate>
+          <h3 class="modal__title">Chcę ten wzór!</h3>
+          <form id="freePatternForm" class="form" novalidate>
             <div class="field">
               <label for="fp_name">Imię i nazwisko</label>
               <input id="fp_name" name="entry.2005620554" autocomplete="name" required pattern="^[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*(?:\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*)*$" />
@@ -588,30 +551,12 @@ function ensureFreePatternModal() {
   return modal;
 }
 
-function buildFreePatternPrefillVisible() {
-  return `• Wybrany wzór: \n\n• Miejsce na ciele: \n• Rozmiar (cm): \n`;
-}
+function buildFreePatternPrefill() {
+  return `• Wybrany wzór: 
 
-function buildFreePatternMessageForSubmit(visibleText, imgUrl) {
-  const base = (visibleText || "").trimEnd();
-
-  // Zastąp (lub dodaj) linię z wybranym wzorem URL-em.
-  const lines = base.split(/\r?\n/);
-  const out = [];
-  let injected = false;
-
-  for (const line of lines) {
-    if (!injected && /^•\s*Wybrany\s+wzór\s*:/.test(line)) {
-      out.push(`• Wybrany wzór: ${imgUrl}`);
-      injected = true;
-    } else {
-      out.push(line);
-    }
-  }
-
-  if (!injected) out.unshift(`• Wybrany wzór: ${imgUrl}`);
-
-  return out.join("\n").trimEnd() + "\n";
+• Miejsce na ciele: 
+• Rozmiar (cm): 
+`;
 }
 
 function mountModalUploader(slotEl) {
@@ -754,17 +699,16 @@ function setupFreePatternForm(modal) {
     }
   };
 
-  const buildMessageForSubmit = (imgUrl) => {
-    if (!msgEl) return "";
+  const buildHiddenImagesBlock = () => {
     const urls = getUploadcareUrls();
-    const visible = stripImagesBlock(msgEl.value);
-    const withPattern = buildFreePatternMessageForSubmit(visible, imgUrl);
-    return urls.length ? withPattern + SENTINEL_START + urls.join("
-") : withPattern;
+    if (!urls.length) return "";
+    return SENTINEL_START + urls.join("
+");
   };
 
   // Expose hooks for open()
   form.__fpSetCtx = (newCtx) => (ctxEl = newCtx);
+  form.__fpInjectUrls = injectUrlsIntoMessage;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -783,13 +727,22 @@ function setupFreePatternForm(modal) {
       return;
     }
 
-    // Dopnij niewidoczne URL-e (wybrany wzór + zdjęcia) do ukrytego pola przed FormData
-    const imgUrl = modal.dataset.fpImgUrl || modal.querySelector("#fp_img")?.src || "";
-    const hiddenMsg = buildMessageForSubmit(imgUrl);
-    setHiddenMessageField(form, msgEl, hiddenMsg);
+    // Build hidden payload right before FormData (user doesn't see it)
+    const visibleMsg = msgEl.value;
+    const fpUrl = modal.dataset.fpUrl || "";
+    const hiddenBlock = fpUrl ? `
+
+---
+Wybrany wzór:
+${fpUrl}
+` : "";
+    msgEl.value = visibleMsg + hiddenBlock;
 
     status.textContent = "Wysyłanie…";
     const fd = new FormData(form);
+
+    // restore what user sees immediately
+    msgEl.value = visibleMsg;
 
     try {
       await fetch(action, { method: "POST", body: fd, mode: "no-cors" });
@@ -800,8 +753,6 @@ function setupFreePatternForm(modal) {
       console.error(err);
       status.textContent =
         "Nie udało się wysłać. Najprościej: napisz DM na Instagramie.";
-    } finally {
-      restoreVisibleMessageField(form, msgEl);
     }
   });
 }
@@ -825,9 +776,11 @@ function openFreePatternModal(imgUrl, altText) {
     // don't wipe message prefill by reset-after-set, so do it in order:
     form.reset();
   }
+  // store chosen pattern URL for hidden submit
+  modal.dataset.fpUrl = imgUrl;
+
   if (msg) {
-    msg.value = buildFreePatternPrefillVisible();
-    modal.dataset.fpImgUrl = imgUrl;
+    msg.value = buildFreePatternPrefill();
   }
 
   // (Re)mount uploader each time (fresh selection)
