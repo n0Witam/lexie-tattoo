@@ -535,7 +535,7 @@ a:hover {
     pointer-events: none;
 }
 
-/* CTA button on free patterns (desktop hover) */
+/* CTA button on free patterns */
 .slide__ctaWrap {
     position: absolute;
     inset: 0;
@@ -551,33 +551,26 @@ a:hover {
     pointer-events: auto;
     opacity: 0;
     transform: translateY(6px);
-    transition:
-        opacity 0.12s ease,
-        transform 0.12s ease;
+    transition: opacity 0.12s ease, transform 0.12s ease;
     box-shadow: var(--shadow);
 }
 
-/* show only on desktop hover, and only for free-pattern slides */
+/* pokazuj CTA po „uzbrojeniu” slajdu (JS dodaje .is-armed po 1s od wycentrowania) */
+.slide.is-armed .slide__ctaBtn {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Desktop: dodatkowo pokazuj natychmiast po hover (nie trzeba czekać 1s) */
 @media (hover: hover) and (pointer: fine) {
     .slide[data-free-pattern="1"]:hover .slide__ctaBtn {
         opacity: 1;
         transform: translateY(0);
     }
-
-    /* Mobile: pokaż CTA po automatycznym "uzbrojeniu" slajdu (JS dodaje .is-mobile-cta po ~1s) */
-    @media (hover: none) and (pointer: coarse) {
-        .slide[data-free-pattern="1"] .slide__ctaBtn {
-            opacity: 0;
-            transform: translateY(6px);
-        }
-        .slide.is-mobile-cta .slide__ctaBtn {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
 }
 
 /* ====== Modal (free pattern) ====== */
+
 .modal {
     position: fixed;
     inset: 0;
@@ -635,6 +628,8 @@ a:hover {
     align-items: center;
     justify-content: center;
     line-height: 1;
+    font-size: 22px;
+    font-weight: 800;
     z-index: 6;
 }
 
@@ -694,6 +689,16 @@ a:hover {
         border-radius: 0;
         padding: 62px 25px 25px;
     }
+    /* Mobile: delikatnie mniejsza typografia w formularzu modala */
+    .modal__left .field label {
+        font-size: 12px;
+    }
+    .modal__left .field input,
+    .modal__left .field textarea {
+        font-size: 14px;
+        padding: 11px 12px;
+    }
+
 
     .modal__grid {
         display: flex;
