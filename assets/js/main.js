@@ -252,7 +252,6 @@ function setupCarousel(root) {
   track.addEventListener("touchstart", pauseOnUser, { passive: true });
   track.addEventListener("wheel", pauseOnUser, { passive: true });
 
-
   // ===== CTA: show "Chcę ten wzór!" 1s after slide becomes centered (all devices) =====
   let ctaTimer = null;
   const clearCta = () => {
@@ -437,8 +436,7 @@ function setupContactForm() {
   const buildHiddenImagesBlock = () => {
     const urls = getUploadcareUrls();
     if (!urls.length) return "";
-    return SENTINEL_START + urls.join("
-");
+    return SENTINEL_START + urls.join("\n");
   };
 
   if (!action || action.includes("FORM_ID")) {
@@ -459,7 +457,7 @@ function setupContactForm() {
     // Build hidden images block right before FormData (not visible to user)
     const visibleMsg = msgEl.value;
     const hiddenImages = buildHiddenImagesBlock();
-    msgEl.value = hiddenImages ? (visibleMsg + hiddenImages) : visibleMsg;
+    msgEl.value = hiddenImages ? visibleMsg + hiddenImages : visibleMsg;
 
     status.textContent = "Wysyłam…";
 
@@ -702,7 +700,7 @@ function setupFreePatternForm(modal) {
   const buildHiddenImagesBlock = () => {
     const urls = getUploadcareUrls();
     if (!urls.length) return "";
-    return SENTINEL_START + urls.join("\n")
+    return SENTINEL_START + urls.join("\n");
   };
 
   // Expose hooks for open()
@@ -729,12 +727,14 @@ function setupFreePatternForm(modal) {
     // Build hidden payload right before FormData (user doesn't see it)
     const visibleMsg = msgEl.value;
     const fpUrl = modal.dataset.fpUrl || "";
-    const hiddenBlock = fpUrl ? `
+    const hiddenBlock = fpUrl
+      ? `
 
 ---
 Wybrany wzór:
 ${fpUrl}
-` : "";
+`
+      : "";
     msgEl.value = visibleMsg + hiddenBlock;
 
     status.textContent = "Wysyłanie…";
