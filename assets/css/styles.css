@@ -615,7 +615,7 @@ a:hover {
     overflow: hidden;
 
     /* więcej „oddychu” + miejsce na X */
-    padding: 52px 22px 22px;
+    padding: 62px 22px 22px;
 }
 
 .modal__close {
@@ -689,6 +689,7 @@ a:hover {
         height: 100dvh;
         max-height: 100dvh;
         border-radius: 0;
+        padding: 52px 22px 22px;
 
         /* safe-area + miejsce na X */
         padding: calc(env(safe-area-inset-top, 0px) + 56px) 18px 18px;
@@ -717,7 +718,7 @@ a:hover {
 
     .modal__img {
         width: 100%;
-        max-height: 30dvh; /* iOS-friendly */
+        max-height: 20dvh; /* iOS-friendly */
         object-fit: contain;
     }
 
