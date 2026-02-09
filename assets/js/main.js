@@ -552,10 +552,10 @@ function ensureFreePatternModal() {
 }
 
 function buildFreePatternPrefill() {
-  return `• Wybrany wzór: 
+  return `• Wybrany wzór:
 
-• Miejsce na ciele: 
-• Rozmiar (cm): 
+• Miejsce na ciele:
+• Rozmiar (cm):
 `;
 }
 
@@ -702,8 +702,7 @@ function setupFreePatternForm(modal) {
   const buildHiddenImagesBlock = () => {
     const urls = getUploadcareUrls();
     if (!urls.length) return "";
-    return SENTINEL_START + urls.join("
-");
+    return SENTINEL_START + urls.join("\n")
   };
 
   // Expose hooks for open()
