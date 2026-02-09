@@ -550,8 +550,7 @@ function ensureFreePatternModal() {
 }
 
 function buildFreePatternPrefill() {
-  return `• Wybrany wzór:
-
+  return `
 • Miejsce na ciele:
 • Rozmiar (cm):
 `;
