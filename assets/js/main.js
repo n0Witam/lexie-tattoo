@@ -678,7 +678,7 @@ function ensureFreePatternModal() {
 }
 
 function buildFreePatternPrefillVisible() {
-  return `• Miejsce na ciele: \n• Rozmiar (cm): \n`;
+  return `• Miejsce na ciele: \n• Rozmiar (cm): `;
 }
 
 function buildFreePatternMessageForSubmit(visibleText, imgUrl) {
