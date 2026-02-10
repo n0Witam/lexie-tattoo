@@ -949,8 +949,17 @@ a:hover {
     }
 
     .contact__imageWrap {
+        max-height: 50vh; /* ⬅️ połowa wysokości ekranu */
+        overflow: hidden;
+        display: flex;
         align-items: center;
-        margin-top: 18px;
+        justify-content: center;
+    }
+
+    .contact__image {
+        max-height: 50vh;
+        width: auto;
+        object-fit: contain; /* albo cover, jeśli wolisz przycięcie */
     }
 }
 

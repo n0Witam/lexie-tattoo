@@ -574,10 +574,8 @@ function setupContactForm() {
       return;
     }
 
-    // ensure action is set for real submit
     form.action = action;
 
-    // refresh URLs snapshot
     try {
       window.__lexieSyncUploadUrls?.();
     } catch (_) {}
@@ -585,11 +583,26 @@ function setupContactForm() {
     const hiddenMsg = buildMessageForSubmit();
     setHiddenMessageField(form, msgEl, hiddenMsg);
 
-    submitArmed = true;
-    submitAt = Date.now();
-
     status.textContent = "Wysyłanie…";
+
+    // przywróć name textarea po rozpoczęciu submitu
     window.setTimeout(() => restoreVisibleMessageField(form, msgEl), 0);
+
+    // ✅ niezależnie od iframe — zmień status po chwili na “wysłano”
+    window.setTimeout(() => {
+      // jeśli w międzyczasie status nie został zmieniony ręcznie
+      if (status.textContent === "Wysyłanie…") {
+        status.textContent = "Dzięki! Wiadomość została wysłana.";
+        form.reset();
+        window.__lexieUploadUrls = [];
+
+        window.setTimeout(() => {
+          if (status.textContent === "Dzięki! Wiadomość została wysłana.") {
+            status.textContent = "";
+          }
+        }, 3500);
+      }
+    }, 900);
   });
 }
 
