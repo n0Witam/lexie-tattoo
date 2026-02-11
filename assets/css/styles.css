@@ -718,7 +718,7 @@ a:hover {
 
     .modal__img {
         width: 100%;
-        max-height: 40dvh; /* iOS-friendly */
+        max-height: 35dvh; /* iOS-friendly */
         object-fit: contain;
         background-color: var(--bg);
     }
