@@ -228,6 +228,7 @@ a:hover {
 @media (max-width: 900px) {
     .hero__grid {
         grid-template-columns: 1fr;
+        gap: 0px;
     }
 }
 
