@@ -16,6 +16,7 @@
     --gap: 18px;
     --gap-lg: 42px;
     --focus: 0 0 0 3px rgba(244, 244, 245, 0.25);
+    --modal-speed: 0.35s;
 }
 
 @media (prefers-color-scheme: light) {
@@ -588,9 +589,7 @@ a:hover {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition:
-        opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
-        visibility 0s linear 0.28s; /* ✅ ukryj po fade-out */
+    transition: opacity var(--modal-speed) ease;
 }
 
 .modal[aria-hidden="false"] {
@@ -607,7 +606,7 @@ a:hover {
     inset: 0;
     background: rgba(0, 0, 0, 0.62);
     opacity: 0;
-    transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity var(--modal-speed) ease;
 }
 
 .modal[aria-hidden="false"] .modal__backdrop {
@@ -639,8 +638,8 @@ a:hover {
     opacity: 0;
     will-change: transform, opacity;
     transition:
-        transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
-        opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        transform var(--modal-speed) cubic-bezier(0.2, 0.9, 0.2, 1),
+        opacity var(--modal-speed) ease;
 }
 
 .modal[aria-hidden="false"] .modal__dialog {
@@ -1111,8 +1110,13 @@ a:hover {
     font-size: 12px;
 }
 
-
 @media (prefers-reduced-motion: reduce) {
-  .modal, .modal__backdrop, .modal__dialog { transition: none !important; }
-  .modal__dialog { transform: none !important; }
+    .modal,
+    .modal__backdrop,
+    .modal__dialog {
+        transition: none !important;
+    }
+    .modal__dialog {
+        transform: none !important;
+    }
 }
