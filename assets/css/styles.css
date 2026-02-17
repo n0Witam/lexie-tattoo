@@ -32,6 +32,16 @@
     }
 }
 
+@font-face {
+    font-family: "Chomsky";
+    src:
+        url("../fonts/Chomsky.woff2") format("woff2"),
+        url("../fonts/Chomsky.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -239,20 +249,24 @@ a:hover {
     font-size: 14px;
     letter-spacing: 0.8px;
     text-transform: uppercase;
+    text-align: center;
+    padding-top: 2vh;
 }
 
 .hero__title {
-    margin: 10px 0 10px;
-    font-size: clamp(40px, 5vw, 58px);
+    text-align: center;
+    font-family: "Chomsky", ui-serif, Georgia, serif;
+    margin: 10px 0 0px;
+    font-size: clamp(7vh, 8.5vw, 10vh);
     line-height: 1.05;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.01em;
+    padding-bottom: 7vh;
 }
 
-.hero__subtitle {
+.hero__about {
     color: var(--muted);
     font-size: 16px;
     max-width: 100%;
-    margin: 0 0 18px;
 }
 
 .hero__actions {
@@ -260,6 +274,7 @@ a:hover {
     flex-wrap: wrap;
     gap: 12px;
     align-items: center;
+    padding-top: 15px;
 }
 
 .hero__side {
