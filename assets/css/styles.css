@@ -5,10 +5,10 @@
 :root {
     --bg: #171717;
     --bg-2: #101114;
-    --text: #fef8f0;
+    --text: #fbf8f4;
     --muted: rgba(244, 244, 245, 0.72);
     --border: rgba(244, 244, 245, 0.12);
-    --accent: #fef8f0;
+    --accent: #fbf8f4;
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
     --radius: 18px;
     --radius-sm: 12px;
@@ -21,7 +21,7 @@
 
 @media (prefers-color-scheme: light) {
     :root {
-        --bg: #fef8f0;
+        --bg: #fbf8f4;
         --bg-2: #f5f6f8;
         --text: #171717;
         --muted: rgba(11, 11, 12, 0.68);
