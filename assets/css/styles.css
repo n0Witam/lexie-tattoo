@@ -1,18 +1,3 @@
-html.is-loading body {
-    opacity: 0;
-}
-
-html.is-ready body {
-    opacity: 1;
-    transition: opacity 260ms ease;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    html.is-ready body {
-        transition: none;
-    }
-}
-
 /* ==========================================================
    Lexie Tattoo — minimal static starter (GitHub Pages friendly)
    ========================================================== */
