@@ -888,6 +888,7 @@ a:hover {
 }
 
 .form__hint {
+    font-style: italic;
     color: var(--muted);
     font-size: 10px;
     opacity: 0.4;
@@ -896,8 +897,10 @@ a:hover {
     margin-top: 15px;
 }
 
-uc-copyright {
-    display: none;
+uc-file-uploader-minimal {
+    uc-copyright {
+        display: none;
+    }
 }
 
 @media (prefers-color-scheme: light) {
