@@ -1,12 +1,12 @@
 {
   "version": 2,
   "updated": "2026-02-08",
-  "featuredOrder": ["p01", "p06", "p02", "faun", "p03", "p08"],
+  "featuredOrder": ["p01", "p06", "p02", "p04", "p03", "p08"],
   "groups": [
     {
       "id": "wolne-wzory",
       "name": "Wolne wzory",
-      "items": ["p06", "p08", "faun"]
+      "items": ["p06", "p08", "p04"]
     },
     {
       "id": "g_mldoad9l_77yf3y",
@@ -28,7 +28,7 @@
       "featured": true
     },
     {
-      "id": "faun",
+      "id": "p04",
       "src": "../assets/img/portfolio/faun.png",
       "alt": "Faun",
       "featured": true

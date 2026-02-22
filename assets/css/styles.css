@@ -1095,6 +1095,53 @@ uc-copyright * {
     }
 }
 
+.contact__imageWrap {
+    position: relative;
+    isolation: isolate; /* oddziela stacking context */
+    overflow: visible; /* nie ucina poświaty */
+}
+
+/* Poświata */
+.contact__imageWrap::before {
+    content: "";
+    position: absolute;
+
+    /* NIE używamy inset:-10% — to powodowało overflow */
+    width: 110%;
+    height: 110%;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle at 50% 70%,
+        color-mix(in srgb, var(--accent) 22%, transparent) 0%,
+        color-mix(in srgb, var(--accent) 14%, transparent) 20%,
+        color-mix(in srgb, var(--accent) 8%, transparent) 40%,
+        transparent 75%
+    );
+
+    opacity: 0.8;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* zdjęcie nad glow */
+.contact__image {
+    position: relative;
+    z-index: 1;
+}
+
+@media (max-width: 900px) {
+    .contact__imageWrap::before {
+        width: 120%;
+        height: 90%;
+        opacity: 0.7;
+    }
+}
+
 .btn--ig {
     display: inline-flex;
     align-items: center;
