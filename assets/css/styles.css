@@ -1113,16 +1113,12 @@ uc-copyright * {
     bottom: 0;
     transform: translateX(-50%);
 
-    border-radius: 50%;
-
     background: radial-gradient(
-        circle at 50% 70%,
+        circle at 55% 40%,
         color-mix(in srgb, var(--accent) 22%, transparent) 0%,
-        color-mix(in srgb, var(--accent) 14%, transparent) 20%,
-        color-mix(in srgb, var(--accent) 8%, transparent) 40%,
-        transparent 75%
+        color-mix(in srgb, var(--accent) 10%, transparent) 35%,
+        transparent 70%
     );
-
     opacity: 0.8;
     pointer-events: none;
     z-index: 0;
