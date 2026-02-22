@@ -70,6 +70,7 @@ body {
 body:not(.no-justify) p,
 body:not(.no-justify) li {
     text-align: justify;
+    text-wrap: pretty;
 }
 
 img {
