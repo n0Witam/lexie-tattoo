@@ -873,6 +873,71 @@ function closeFreePatternModal() {
   }, 320);
 }
 
+function setupTwinkles() {
+  const layer = document.querySelector(".twinkles");
+  if (!layer) return;
+
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduced) return;
+
+  const isDesktop = window.matchMedia(
+    "(hover: hover) and (pointer: fine)",
+  ).matches;
+  if (!isDesktop) return; // premium: tylko desktop (opcjonalne, ale polecam)
+
+  const symbols = ["✧", "˚", "₊"];
+  const rand = (min, max) => Math.random() * (max - min) + min;
+
+  // premium: lekka preferencja obrzeży + góry (mniej “w twarz” na środku)
+  const weightedPos = () => {
+    const r = Math.random();
+    if (r < 0.35) return rand(2, 22); // lewa strefa
+    if (r < 0.7) return rand(78, 98); // prawa strefa
+    return rand(28, 72); // środek rzadziej
+  };
+
+  const spawn = () => {
+    const el = document.createElement("span");
+    el.className = "twinkles__star";
+
+    // premium: ✧ najczęściej, ˚ i ₊ rzadziej
+    const p = Math.random();
+    el.textContent = p < 0.68 ? "✧" : p < 0.86 ? "˚" : "₊";
+
+    el.style.setProperty("--x", `${weightedPos()}vw`);
+    el.style.setProperty("--y", `${rand(6, 92)}vh`);
+
+    // premium: małe rozmiary
+    el.style.setProperty("--size", `${rand(10, 16)}px`);
+
+    // premium: dłużej + większy rozrzut delay
+    el.style.setProperty("--dur", `${rand(3.8, 6.8)}s`);
+    el.style.setProperty("--delay", `${rand(0, 1.2)}s`);
+
+    // premium: niska opacity
+    el.style.setProperty("--op", `${rand(0.08, 0.18)}`);
+
+    layer.appendChild(el);
+
+    // sprzątanie po animacji (max dur + delay + zapas)
+    window.setTimeout(() => el.remove(), 9000);
+  };
+
+  // premium: mało na start, potem spokojny “oddech”
+  for (let i = 0; i < 6; i++) spawn();
+
+  const loop = () => {
+    // 1–2 naraz czasem, ale rzadko
+    spawn();
+    if (Math.random() < 0.18) spawn();
+
+    // premium: wolno i nieregularnie
+    window.setTimeout(loop, rand(750, 1400));
+  };
+
+  loop();
+}
+
 /* ============================================================
    Misc
    ============================================================ */
@@ -886,7 +951,8 @@ window.addEventListener("DOMContentLoaded", async () => {
   await renderFeatured();
   qsa("[data-carousel]").forEach(setupCarousel);
   setupContactForm();
-  setupScrollReveal(); // ✅ tu
+  setupScrollReveal();
+  setupTwinkles();
   setYear();
 });
 
