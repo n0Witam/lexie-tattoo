@@ -908,7 +908,7 @@ function setupTwinkles() {
     el.style.setProperty("--y", `${rand(6, 92)}vh`);
 
     // premium: małe rozmiary
-    el.style.setProperty("--size", `${rand(10, 16)}px`);
+    el.style.setProperty("--size", `${rand(18, 32)}px`);
 
     // premium: dłużej + większy rozrzut delay
     el.style.setProperty("--dur", `${rand(3.8, 6.8)}s`);
