@@ -70,7 +70,6 @@ body {
 body:not(.no-justify) p,
 body:not(.no-justify) li {
     text-align: justify;
-    hyphens: auto;
 }
 
 img {
