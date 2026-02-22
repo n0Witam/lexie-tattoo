@@ -460,12 +460,25 @@ a:hover {
     gap: 10px;
 }
 
-.ig-profile__link img {
-    width: 175px;
-    height: 175px;
+.ig-profile__link {
+    display: inline-block;
+    width: 150px;
+    height: 150px;
+    padding: 5px;
     border-radius: 50%;
-    border: 1px solid var(--border);
+    background: linear-gradient(to right, red, orange, purple);
+    transform: rotate(-45deg);
     box-shadow: var(--shadow);
+}
+
+.ig-profile__link img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border-style: solid 2px black;
+    display: block;
+    object-fit: cover;
+    transform: rotate(45deg); /* odkręca zdjęcie, żeby nie było przekrzywione */
 }
 
 .ig-profile__handle {
