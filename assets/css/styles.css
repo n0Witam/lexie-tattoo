@@ -293,7 +293,7 @@ a:hover {
     letter-spacing: 0.8px;
     text-transform: uppercase;
     text-align: center;
-    padding: 2vh;
+    padding-bottom: 2vh;
 }
 
 .hero__about {
@@ -1008,10 +1008,6 @@ a:hover {
 
 .lightbox__bar .btn {
     padding: 10px 12px;
-}
-
-.section--contact {
-    padding-bottom: 44px;
 }
 
 /* Kontakt: grid ma się rozciągać na wysokość najwyższej kolumny */
