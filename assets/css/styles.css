@@ -393,7 +393,7 @@ a:hover {
 
 .split {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 0.7fr;
     gap: var(--gap-lg);
     align-items: start;
 }
@@ -1105,6 +1105,11 @@ uc-copyright * {
 }
 
 /* ====== Map ====== */
+
+.split--where_to_find_me {
+    grid-template-columns: 1fr 0.7fr;
+    align-items: stretch;
+}
 
 .card--map {
     padding: 0;
