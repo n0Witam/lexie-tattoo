@@ -889,6 +889,15 @@ a:hover {
 
 .form__hint {
     color: var(--muted);
+    font-size: 10px;
+    opacity: 0.4;
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+}
+
+uc-copyright {
+    display: none;
 }
 
 @media (prefers-color-scheme: light) {
