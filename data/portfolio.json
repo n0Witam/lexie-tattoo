@@ -1,34 +1,17 @@
 {
   "version": 2,
   "updated": "2026-02-08",
-  "featuredOrder": [
-    "p01",
-    "p06",
-    "p02",
-    "faun",
-    "p03",
-    "p08"
-  ],
+  "featuredOrder": ["p01", "p06", "p02", "faun", "p03", "p08"],
   "groups": [
     {
       "id": "wolne-wzory",
-      "name": "Wolne wzory",
-      "items": [
-        "p06",
-        "p08",
-        "faun"
-      ]
+      "name": "Wolne wzory ✧˚₊",
+      "items": ["p06", "p08", "faun"]
     },
     {
       "id": "g_mldoad9l_77yf3y",
-      "name": "Wykonane prace",
-      "items": [
-        "p01",
-        "p02",
-        "p03",
-        "p05",
-        "p07"
-      ]
+      "name": "Wykonane prace ✧˚₊",
+      "items": ["p01", "p02", "p03", "p05", "p07"]
     }
   ],
   "items": [

@@ -1182,7 +1182,7 @@ a:hover {
 /* ======== snap scroll ======== */
 
 html.home {
-    scroll-snap-type: y mandatory;
+    scroll-snap-type: y proximity;
     /* żeby snap nie lądował pod sticky header */
     scroll-padding-top: 72px;
 }
