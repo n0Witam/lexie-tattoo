@@ -319,6 +319,11 @@ a:hover {
     padding-top: 25px;
 }
 
+@media (max-width: 600px) {
+    gap: 1.25vw;
+    justify-content: center;
+}
+
 .hero__side {
     display: flex;
     justify-content: flex-end;
