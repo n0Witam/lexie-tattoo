@@ -1183,6 +1183,29 @@ a:hover {
     }
 }
 
+/* ================================
+   Desktop full-page snap scroll
+   ================================ */
+
+@media (min-width: 1024px) {
+    body.home {
+        scroll-snap-type: y mandatory;
+        overflow-y: auto;
+    }
+
+    body.home main > section {
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+    }
+
+    body.home .hero {
+        min-height: 100vh;
+    }
+}
+
 /* ====== FAQ (accordion) ====== */
 
 .faq {
