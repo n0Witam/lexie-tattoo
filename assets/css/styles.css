@@ -395,7 +395,7 @@ a:hover {
 .section__title {
     font-size: 18px;
     letter-spacing: 0.5px;
-    margin: 0 0 16px;
+    margin-bottom: 3vh;
 }
 
 .split {
