@@ -1234,7 +1234,7 @@ html.home main > section {
 /* tylko desktop + mysz/trackpad */
 @media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
     html.home {
-        scroll-snap-type: y proximity;
+        scroll-snap-type: y mandatory;
         scroll-padding-top: 72px; /* sticky header */
     }
 
