@@ -1111,6 +1111,12 @@ uc-copyright * {
     align-items: stretch;
 }
 
+@media (max-width: 900px) {
+    .split--where_to_find_me {
+        grid-template-columns: 1fr;
+    }
+}
+
 .card--map {
     padding: 0;
     overflow: hidden;
