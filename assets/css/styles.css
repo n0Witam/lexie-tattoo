@@ -1042,7 +1042,6 @@ uc-copyright * {
 /* Kontakt: grid ma się rozciągać na wysokość najwyższej kolumny */
 .split--contact {
     grid-template-columns: 1fr 0.7fr;
-    align-items: stretch;
 }
 
 /* Prawa kolumna: obraz przyklejony do dołu */
@@ -1115,7 +1114,6 @@ uc-copyright * {
 
 .split--where_to_find_me {
     grid-template-columns: 1fr 0.7fr;
-    align-items: stretch;
 }
 
 @media (max-width: 900px) {
