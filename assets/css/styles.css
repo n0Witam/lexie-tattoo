@@ -1129,6 +1129,12 @@ uc-copyright * {
 .contact__image {
     position: relative;
     z-index: 1;
+    -webkit-mask-image:
+        radial-gradient(circle at 55% 38%, #000 62%, transparent 82%),
+        linear-gradient(#000 78%, transparent 100%);
+    mask-image:
+        radial-gradient(circle at 55% 38%, #000 62%, transparent 82%),
+        linear-gradient(#000 78%, transparent 100%);
 }
 
 @media (max-width: 900px) {
