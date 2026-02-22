@@ -320,8 +320,10 @@ a:hover {
 }
 
 @media (max-width: 600px) {
-    gap: 1.25vw;
-    justify-content: center;
+    .hero__actions {
+        gap: 1.25vw;
+        justify-content: center;
+    }
 }
 
 .hero__side {
