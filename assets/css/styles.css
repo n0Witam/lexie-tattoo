@@ -299,31 +299,30 @@ a:hover {
     display: inline-block;
 }
 
-/* ---- Korekty par ---- */
+/* ---- Logotyp kearning ---- */
 
-/* Le – za daleko → przybliż i do x */
 .k-e {
     margin-left: -0.02em;
 }
 
-/* ex – za daleko → przybliż i do x */
 .k-x {
     margin-left: -0.019em;
 }
 
-/* xi – za daleko → przybliż i do x */
 .k-i {
     margin-left: -0.05em;
 }
 
-/* Sa – za blisko → oddal a od S */
 .k-a {
     margin-left: 0.025em;
 }
 
-/* lo – za daleko → przybliż o do l */
 .k-o {
     margin-left: -0.009em;
+}
+
+.w2-k-e {
+    margin-left: -0.01em;
 }
 
 /* kontrola odstępu między słowami */
