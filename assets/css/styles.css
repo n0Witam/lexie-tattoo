@@ -1095,17 +1095,11 @@ uc-copyright * {
     }
 }
 
-.contact__imageWrap {
-    position: relative;
-    isolation: isolate; /* oddziela stacking context */
-    overflow: visible; /* nie ucina poświaty */
-}
-
 /* Wrapper */
 .contact__imageWrap {
     position: relative;
     isolation: isolate;
-    overflow: visible; /* ważne */
+    overflow: visible; /* nie ucina poświaty */
 }
 
 /* Poświata */
@@ -1113,16 +1107,14 @@ uc-copyright * {
     content: "";
     position: absolute;
 
-    animation: glowFloat 6.5s ease-in-out infinite;
-    will-change: transform, opacity;
-
     width: 115%;
     height: 105%;
     left: 50%;
     bottom: 0;
-    transform: translateX(-50%);
 
-    /* miękkość robimy gradientem, nie blurem */
+    /* bazowa pozycja (musi być też w keyframes) */
+    transform: translateX(-50%) translateY(0) scale(1);
+
     background: radial-gradient(
         circle at 55% 60%,
         color-mix(in srgb, var(--accent) 24%, transparent) 0%,
@@ -1131,13 +1123,16 @@ uc-copyright * {
         color-mix(in srgb, var(--accent) 6%, transparent) 55%,
         transparent 75%
     );
+
     filter: blur(28px);
     opacity: 0.85;
     pointer-events: none;
     z-index: 0;
+
+    animation: glowFloat 6.5s ease-in-out infinite;
+    will-change: transform, opacity;
 }
 
-/* Uwaga: w keyframes MUSIMY powtórzyć translateX(-50%), bo transform jest animowany */
 @keyframes glowFloat {
     0%,
     100% {
@@ -1150,7 +1145,6 @@ uc-copyright * {
     }
 }
 
-/* dostępność */
 @media (prefers-reduced-motion: reduce) {
     .contact__imageWrap::before {
         animation: none !important;
