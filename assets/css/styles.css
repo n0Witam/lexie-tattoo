@@ -306,6 +306,11 @@ a:hover {
     margin-left: -0.02em;
 }
 
+/* ex – za daleko → przybliż i do x */
+.k-x {
+    margin-left: -0.019em;
+}
+
 /* xi – za daleko → przybliż i do x */
 .k-i {
     margin-left: -0.05em;
