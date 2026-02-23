@@ -1129,7 +1129,7 @@ uc-copyright * {
     pointer-events: none;
     z-index: 0;
 
-    animation: glowFloat 4.5s ease-in-out infinite;
+    animation: glowFloat 5.5s ease-in-out infinite;
     will-change: transform, opacity;
 }
 
