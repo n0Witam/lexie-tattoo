@@ -1107,8 +1107,8 @@ uc-copyright * {
     content: "";
     position: absolute;
 
-    width: 115%;
-    height: 105%;
+    width: 25vw;
+    height: 110%;
     left: 50%;
     bottom: 0;
 
@@ -1129,19 +1129,23 @@ uc-copyright * {
     pointer-events: none;
     z-index: 0;
 
-    animation: glowFloat 5.5s ease-in-out infinite;
+    animation: glowFloat 6.5s ease-in-out infinite;
     will-change: transform, opacity;
 }
 
 @keyframes glowFloat {
     0%,
     100% {
-        transform: translateX(-50%) translateY(0) scale(1);
-        opacity: 0.78;
+        transform: translateX(-52%) translateY(0) scale(1);
+        opacity: 0.75;
     }
-    50% {
-        transform: translateX(-50%) translateY(-16px) scale(1.2);
-        opacity: 0.92;
+    33% {
+        transform: translateX(-48%) translateY(-8px) scale(1.15);
+        opacity: 0.9;
+    }
+    66% {
+        transform: translateX(-51%) translateY(-4px) scale(1.09);
+        opacity: 0.82;
     }
 }
 
