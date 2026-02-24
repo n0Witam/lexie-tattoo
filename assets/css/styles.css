@@ -112,8 +112,8 @@ a:hover {
     opacity: 0;
     transform: translateY(14px);
     transition:
-        opacity 1.5s cubic-bezier(0.2, 0.9, 0.2, 1),
-        transform 1.5s cubic-bezier(0.2, 0.9, 0.2, 1);
+        opacity 1.75s cubic-bezier(0.2, 0.9, 0.2, 1),
+        transform 1.75s cubic-bezier(0.2, 0.9, 0.2, 1);
     will-change: opacity, transform;
 }
 
@@ -1336,6 +1336,19 @@ uc-copyright * {
     font-size: 12px;
 }
 
+/* ===== iOS safe-area for sticky header (mobile) ===== */
+@media (max-width: 900px) {
+  .site-header{
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  /* żeby wizualnie wysokość nav nie zrobiła się “za duża” */
+  .nav{
+    padding-top: 12px;  /* było 14px – możesz zostawić 14px jeśli wolisz */
+    padding-bottom: 12px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .modal,
     .modal__backdrop,
@@ -1346,6 +1359,7 @@ uc-copyright * {
         transform: none !important;
     }
 }
+
 
 /* ======== snap scroll (DESKTOP ONLY) ======== */
 
