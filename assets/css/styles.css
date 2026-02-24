@@ -1347,26 +1347,6 @@ uc-copyright * {
     }
 }
 
-/* ===== Mobile bottom fade (viewport) ===== */
-@media (max-width: 900px) {
-    body::after {
-        content: "";
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        height: calc(12vh + env(safe-area-inset-bottom, 0px));
-        pointer-events: none;
-        z-index: 9; /* nad treścią, pod modalami */
-        background: linear-gradient(
-            to bottom,
-            transparent 0%,
-            color-mix(in srgb, var(--bg) 0%, transparent) 20%,
-            var(--bg) 100%
-        );
-    }
-}
-
 /* ======== snap scroll (DESKTOP ONLY) ======== */
 
 /* domyślnie: bez snapa (mobile/tablet) */
