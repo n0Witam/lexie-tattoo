@@ -124,7 +124,7 @@ a:hover {
 
 /* mały „stagger” (opóźnienie) dla elementów w danej sekcji */
 .reveal[data-delay] {
-    transition-delay: var(--reveal-delay, 400ms);
+    transition-delay: var(--reveal-delay, 600ms);
 }
 
 /* preferencje dostępności */
@@ -285,7 +285,7 @@ a:hover {
     text-align: center;
     font-family: "Chomsky", ui-serif, Georgia, serif;
     margin: 10px 0 0px;
-    font-size: clamp(9.5vh, 12vw, 13vh);
+    font-size: clamp(9.5vh, 12vw, 15vh);
     line-height: 1.05;
     letter-spacing: -0.131em;
     padding-top: 6vh;
