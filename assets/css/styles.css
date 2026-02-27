@@ -277,15 +277,7 @@ a:hover {
 .hero::before {
     content: "";
     position: absolute;
-    left: 50%;
-    bottom: 0;
-
-    transform: translateX(-50%);
-    width: min(900px, 65vw);
-
-    height: 130%; /* ⬅️ kluczowe */
-    max-height: 900px; /* zabezpieczenie */
-
+    inset: 0;
     z-index: 0;
     pointer-events: none;
 
@@ -346,13 +338,6 @@ a:hover {
     -webkit-mask-position: 60% 57%;
     mask-position: 60% 57%;
     animation: heroMaskDrift 11s ease-in-out infinite;
-}
-
-@media (max-width: 900px) {
-    .hero::before {
-        width: 85vw;
-        height: 135%;
-    }
 }
 
 /* Ensure hero content stays above the masked background */
