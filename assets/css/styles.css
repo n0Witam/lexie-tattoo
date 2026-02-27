@@ -267,6 +267,9 @@ a:hover {
     padding: 10px 0 36px;
     padding-bottom: 0;
     overflow: hidden;
+    --mask-x: 62%;
+    --mask-y: 55%;
+    --mask-r: clamp(220px, 22vw, 340px);
 }
 
 /* ===== HERO: full-screen background revealed by an animated mask =====
@@ -279,35 +282,62 @@ a:hover {
     pointer-events: none;
 
     /* Background image under the mask */
-    background: url("./assets/img/prism_bg.jpeg") center right / cover no-repeat;
-    opacity: 0.95;
+    background: url("../img/prism_bg.jpeg") center right / cover no-repeat;
+    opacity: 0.85;
 
     /* Mask = animated “glow window” (fully hides image outside the mask) */
-    -webkit-mask-image: radial-gradient(
-        circle 280px at 62% 55%,
-        #000 0%,
-        #000 60%,
-        rgba(0, 0, 0, 0) 72%
-    );
-    mask-image: radial-gradient(
-        circle 280px at 62% 55%,
-        #000 0%,
-        #000 60%,
-        rgba(0, 0, 0, 0) 72%
-    );
+    -webkit-mask-image:
+        radial-gradient(
+            circle calc(var(--mask-r) * 0.95) at calc(var(--mask-x) - 3%)
+                calc(var(--mask-y) + 1%),
+            #000 0 60%,
+            transparent 72%
+        ),
+        radial-gradient(
+            circle calc(var(--mask-r) * 0.75) at calc(var(--mask-x) + 6%)
+                calc(var(--mask-y) - 6%),
+            #000 0 60%,
+            transparent 72%
+        ),
+        radial-gradient(
+            circle calc(var(--mask-r) * 0.65) at calc(var(--mask-x) + 2%)
+                calc(var(--mask-y) + 8%),
+            #000 0 60%,
+            transparent 72%
+        );
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-composite: source-over, source-over; /* “doklej” warstwy */
+
+    /* standard (Firefox) – zwykle zadziała “wystarczająco” */
+    mask-image:
+        radial-gradient(
+            circle calc(var(--mask-r) * 0.95) at calc(var(--mask-x) - 3%)
+                calc(var(--mask-y) + 1%),
+            #000 0 60%,
+            transparent 72%
+        ),
+        radial-gradient(
+            circle calc(var(--mask-r) * 0.75) at calc(var(--mask-x) + 6%)
+                calc(var(--mask-y) - 6%),
+            #000 0 60%,
+            transparent 72%
+        ),
+        radial-gradient(
+            circle calc(var(--mask-r) * 0.65) at calc(var(--mask-x) + 2%)
+                calc(var(--mask-y) + 8%),
+            #000 0 60%,
+            transparent 72%
+        );
+    mask-repeat: no-repeat;
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
 
     -webkit-mask-size: 120% 120%;
     mask-size: 120% 120%;
 
-    -webkit-mask-position: 62% 55%;
-    mask-position: 62% 55%;
-
+    -webkit-mask-position: 60% 57%;
+    mask-position: 60% 57%;
     animation: heroMaskDrift 11s ease-in-out infinite;
-    will-change:
-        mask-position,
-        -webkit-mask-position;
 }
 
 /* Ensure hero content stays above the masked background */
@@ -341,12 +371,6 @@ a:hover {
     }
 }
 
-/* Disable previous glow layer behind the portrait (mask-based background is used instead) */
-.contact__imageWrap::before {
-    content: none !important;
-    animation: none !important;
-}
-
 .hero__grid {
     display: grid;
     grid-template-columns: 1.35fr 0.65fr;
@@ -354,6 +378,13 @@ a:hover {
     align-items: stretch; /* <- było center, zmieniamy */
 }
 
+@media (max-width: 900px) {
+    .hero {
+        --mask-x: 56%;
+        --mask-y: 62%;
+        --mask-r: clamp(180px, 55vw, 320px);
+    }
+}
 @media (max-width: 900px) {
     .hero__grid {
         grid-template-columns: 1fr;
@@ -1208,58 +1239,6 @@ uc-copyright * {
         max-height: 40vh;
         width: auto;
         object-fit: contain; /* albo cover, jeśli wolisz przycięcie */
-    }
-}
-
-/* Wrapper */
-.contact__imageWrap {
-    position: relative;
-    isolation: isolate;
-    overflow: visible; /* nie ucina poświaty */
-}
-
-/* Poświata */
-.contact__imageWrap::before {
-    content: "";
-    position: absolute;
-    width: 40vw;
-    height: 105%;
-    left: 50%;
-    bottom: 0;
-
-    /* bazowa pozycja (musi być też w keyframes) */
-    transform: translateX(-50%) translateY(0) scale(1);
-
-    background: radial-gradient(
-        circle at 55% 60%,
-        color-mix(in srgb, var(--accent) 24%, transparent) 0%,
-        color-mix(in srgb, var(--accent) 16%, transparent) 18%,
-        color-mix(in srgb, var(--accent) 10%, transparent) 35%,
-        color-mix(in srgb, var(--accent) 6%, transparent) 55%,
-        transparent 75%
-    );
-
-    filter: blur(28px);
-    pointer-events: none;
-    z-index: 0;
-
-    animation: glowFloat 8.5s ease-in-out infinite;
-    will-change: transform, opacity;
-}
-
-@keyframes glowFloat {
-    0%,
-    100% {
-        transform: translateX(-52%) translateY(0) scale(1);
-        opacity: 0.75;
-    }
-    33% {
-        transform: translateX(-48%) translateY(-8px) scale(1.05);
-        opacity: 0.9;
-    }
-    66% {
-        transform: translateX(-51%) translateY(-4px) scale(1.03);
-        opacity: 0.82;
     }
 }
 
