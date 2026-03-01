@@ -267,8 +267,8 @@ a:hover {
     padding: 10px 0 36px;
     padding-bottom: 0;
     overflow: hidden;
-    --lexie-w: clamp(320px, 30vw, 560px);
-    --bg-w: 1.35; /* szerokość tła względem sylwetki */
+    --lexie-w: 100%;
+    --bg-w: 1.45; /* szerokość tła względem sylwetki */
     --bg-h: 1.2; /* wysokość tła względem sylwetki */
     --bg-x: 52%; /* pozycja kadru w tle */
     --bg-y: 70%;
