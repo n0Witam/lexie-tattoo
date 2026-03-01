@@ -477,18 +477,18 @@ a:hover {
         circle farthest-side at 50% 50%,
         #000 0%,
         #000 36%,
-        rgba(0, 0, 0, 0) 82%
+        rgba(0, 0, 0, 0) 92%
     );
     mask-image: radial-gradient(
         circle farthest-side at 50% 50%,
         #000 0%,
         #000 36%,
-        rgba(0, 0, 0, 0) 82%
+        rgba(0, 0, 0, 0) 92%
     );
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
-    -webkit-mask-size: 100% 100%;
-    mask-size: 100% 100%;
+    -webkit-mask-size: 110% 100%;
+    mask-size: 110% 100%;
 
     filter: saturate(0.95) contrast(0.95);
 }
