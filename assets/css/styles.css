@@ -269,7 +269,7 @@ a:hover {
     overflow: hidden;
     --lexie-w: clamp(320px, 34vw, 560px);
     --bg-w: 1.35; /* szerokość tła względem sylwetki */
-    --bg-h: 0.72; /* wysokość tła względem sylwetki */
+    --bg-h: 1.2; /* wysokość tła względem sylwetki */
     --bg-x: 52%; /* pozycja kadru w tle */
     --bg-y: 70%;
     --bg-alpha: 0.95;
