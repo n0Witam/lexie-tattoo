@@ -409,11 +409,11 @@ a:hover {
     /* Prism background (behind lexie_fg)
        Use a dedicated "soft circle" mask that is fully transparent at the edges,
        so it never shows hard cuts/lines on any breakpoint. */
-    --prism-size: clamp(420px, 78vw, 850px);
+    --prism-size: clamp(650px, 78vw, 850px);
     --prism-left: 50%;
     --prism-top: 58%;
     --prism-alpha: 1;
-    --prism-img-x: 70%;
+    --prism-img-x: 85%;
     --prism-img-y: 70%;
 }
 
