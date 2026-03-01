@@ -183,9 +183,12 @@ a:hover {
     padding: 6px 8px;
     border-radius: 999px;
     border: 1px solid var(--border);
-    background: color-mix(in srgb, var(--bg) 70%, transparent);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
+
+    /* Fallback first, then modern color-mix */
+    background: rgba(23, 23, 23, 0.45);
+    background: color-mix(in srgb, var(--bg) 55%, transparent);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
 }
 
 .nav__links a {
@@ -310,9 +313,11 @@ a:hover {
 
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        background: color-mix(in srgb, var(--bg) 84%, transparent);
-        -webkit-backdrop-filter: blur(12px);
-        backdrop-filter: blur(12px);
+        /* More transparency so blur is actually visible */
+        background: rgba(23, 23, 23, 0.35);
+        background: color-mix(in srgb, var(--bg) 45%, transparent);
+        -webkit-backdrop-filter: blur(18px);
+        backdrop-filter: blur(18px);
         box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
 
         opacity: 0;
@@ -396,15 +401,16 @@ a:hover {
 
     /* Image + background tuning */
     --lexie-w: 100%;
-    --bg-w: 2;
-    --bg-h: 1.3;
-    --bg-x: 70%;
-    --bg-y: 70%;
-    --bg-alpha: 0.95;
-    --bg-mask-x: 55%;
-    --bg-mask-y: 62%;
-    --bg-mask-inner: 15%;
-    --bg-mask-outer: 75%;
+
+    /* Prism background (behind lexie_fg)
+       Use a dedicated "soft circle" mask that is fully transparent at the edges,
+       so it never shows hard cuts/lines on any breakpoint. */
+    --prism-size: clamp(420px, 78vw, 760px);
+    --prism-left: 50%;
+    --prism-top: 58%;
+    --prism-alpha: 0.9;
+    --prism-img-x: 70%;
+    --prism-img-y: 70%;
 }
 
 .hero .container {
@@ -451,26 +457,29 @@ a:hover {
     z-index: 0;
     pointer-events: none;
 
-    /* Limit width to viewport to avoid hard clipping on mobile */
-    width: min(calc(100% * var(--bg-w)), 100vw);
-    height: calc(100% * var(--bg-h));
-    left: 50%;
-    bottom: 0;
-    transform: translateX(-50%);
+    /* Independent from wrapper size: never exposes straight edges */
+    width: var(--prism-size);
+    aspect-ratio: 1 / 1;
+    left: var(--prism-left);
+    top: var(--prism-top);
+    transform: translate(-50%, -50%);
 
-    background: url("../img/prism_bg.jpeg") var(--bg-x) var(--bg-y) / cover
-        no-repeat;
-    opacity: var(--bg-alpha);
+    background: url("../img/prism_bg.jpeg") var(--prism-img-x) var(--prism-img-y) /
+        cover no-repeat;
+    opacity: var(--prism-alpha);
 
+    /* A soft "glass" circle – transparent at edges => no visible clipping */
     -webkit-mask-image: radial-gradient(
-        circle at var(--bg-mask-x) var(--bg-mask-y),
-        #000 var(--bg-mask-inner),
-        rgba(0, 0, 0, 0) var(--bg-mask-outer)
+        circle farthest-side at 50% 50%,
+        #000 0%,
+        #000 36%,
+        rgba(0, 0, 0, 0) 82%
     );
     mask-image: radial-gradient(
-        circle at var(--bg-mask-x) var(--bg-mask-y),
-        #000 var(--bg-mask-inner),
-        rgba(0, 0, 0, 0) var(--bg-mask-outer)
+        circle farthest-side at 50% 50%,
+        #000 0%,
+        #000 36%,
+        rgba(0, 0, 0, 0) 82%
     );
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
@@ -531,17 +540,12 @@ a:hover {
 
 @media (max-width: 900px) {
     .hero {
-        /* Mobile tuning: keep background within viewport (no hard edges) */
-        --bg-w: 1.25;
-        --bg-h: 1.1;
-        --bg-x: 52%;
-        --bg-y: 60%;
-        --bg-alpha: 0.85;
-
-        --bg-mask-x: 65%;
-        --bg-mask-y: 55%;
-        --bg-mask-inner: 15%;
-        --bg-mask-outer: 85%;
+        /* Mobile tuning */
+        --prism-size: clamp(360px, 112vw, 520px);
+        --prism-top: 54%;
+        --prism-img-x: 52%;
+        --prism-img-y: 60%;
+        --prism-alpha: 0.85;
     }
 
     .hero__grid {
@@ -569,8 +573,7 @@ a:hover {
     }
 
     .hero__imageWrap::after {
-        background: url("../img/prism_bg.jpeg") var(--bg-x) var(--bg-y) / 120%
-            no-repeat;
+        background-size: 120% 120%;
     }
 }
 
