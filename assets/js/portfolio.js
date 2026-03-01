@@ -144,8 +144,12 @@ async function renderPortfolio() {
     root.classList.remove("grid");
     root.innerHTML = "";
 
+    const lightboxEnabled = window.matchMedia(
+      "(hover: hover) and (pointer: fine)"
+    ).matches;
+
     const orderedForLightbox = [];
-    const lb = setupLightbox(orderedForLightbox);
+    const lb = lightboxEnabled ? setupLightbox(orderedForLightbox) : null;
 
     const groups = normalizeGroups(data, items);
 
@@ -194,7 +198,7 @@ async function renderPortfolio() {
 
         const tile = document.createElement("div");
         tile.className = "tile";
-        tile.tabIndex = 0;
+        tile.tabIndex = lightboxEnabled ? 0 : -1;
         tile.append(img);
 
         const isFreePattern = freeSet.has(item.id);
@@ -222,12 +226,13 @@ async function renderPortfolio() {
           tile.append(badge, ctaWrap);
         }
 
-        tile.addEventListener("click", () => lb?.open(idx));
-        tile.addEventListener("keydown", (e) => {
-          if (e.target !== tile) return;
-          if (e.key === "Enter" || e.key === " ") lb?.open(idx);
-        });
-
+        if (lightboxEnabled && lb) {
+          tile.addEventListener("click", () => lb.open(idx));
+          tile.addEventListener("keydown", (e) => {
+            if (e.target !== tile) return;
+            if (e.key === "Enter" || e.key === " ") lb.open(idx);
+          });
+        }
         grid.append(tile);
       }
 

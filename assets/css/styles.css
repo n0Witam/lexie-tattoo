@@ -144,6 +144,7 @@ a:hover {
     position: sticky;
     top: 0;
     z-index: 10;
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     background: color-mix(in srgb, var(--bg) 76%, transparent);
     border-bottom: 1px solid var(--border);
@@ -177,6 +178,14 @@ a:hover {
     display: flex;
     gap: 14px;
     align-items: center;
+
+    /* Blur background behind the links (desktop) */
+    padding: 6px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg) 70%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
 }
 
 .nav__links a {
@@ -302,6 +311,7 @@ a:hover {
         border: 1px solid var(--border);
         border-radius: var(--radius);
         background: color-mix(in srgb, var(--bg) 84%, transparent);
+        -webkit-backdrop-filter: blur(12px);
         backdrop-filter: blur(12px);
         box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
 
@@ -380,13 +390,9 @@ a:hover {
 .hero {
     position: relative;
     isolation: isolate;
-    overflow: hidden;
     padding: 10px 0 36px;
-
-    /* Fill the viewport nicely on desktop without cutting into the next section.
-       Uses --header-h synced from JS (fallback: 72px). */
-    min-height: calc(100vh - var(--header-h, 72px));
-    min-height: calc(100svh - var(--header-h, 72px));
+    padding-bottom: 0;
+    overflow: hidden;
 
     /* Image + background tuning */
     --lexie-w: 100%;
@@ -410,7 +416,7 @@ a:hover {
     display: grid;
     grid-template-columns: 1.35fr 0.65fr;
     gap: var(--gap-lg);
-    align-items: end;
+    align-items: stretch;
 }
 
 /* Ensure the text column stays above any background overflow from the image column */
@@ -425,6 +431,7 @@ a:hover {
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
+    height: 100%;
 }
 
 /* Image wrapper: background is anchored to the silhouette, so it scales together */
@@ -433,20 +440,23 @@ a:hover {
     isolation: isolate;
     width: var(--lexie-w);
     margin-left: auto;
+    align-self: end;
     overflow: visible;
 }
 
+/* Tło PRZED glow (::before) i ZA sylwetką */
 .hero__imageWrap::after {
     content: "";
     position: absolute;
     z-index: 0;
     pointer-events: none;
 
-    width: calc(100% * var(--bg-w));
+    /* Limit width to viewport to avoid hard clipping on mobile */
+    width: min(calc(100% * var(--bg-w)), 100vw);
     height: calc(100% * var(--bg-h));
     left: 50%;
-    top: 58%;
-    transform: translate(-50%, -50%);
+    bottom: 0;
+    transform: translateX(-50%);
 
     background: url("../img/prism_bg.jpeg") var(--bg-x) var(--bg-y) / cover
         no-repeat;
@@ -470,6 +480,7 @@ a:hover {
     filter: saturate(0.95) contrast(0.95);
 }
 
+/* Sylwetka nad tłem i glow */
 .hero__image {
     position: relative;
     z-index: 2;
@@ -520,18 +531,17 @@ a:hover {
 
 @media (max-width: 900px) {
     .hero {
-        padding-bottom: 56px;
-
-        --bg-w: 1.45;
-        --bg-h: 1.12;
+        /* Mobile tuning: keep background within viewport (no hard edges) */
+        --bg-w: 1.25;
+        --bg-h: 1.1;
         --bg-x: 52%;
         --bg-y: 60%;
         --bg-alpha: 0.85;
 
         --bg-mask-x: 65%;
         --bg-mask-y: 55%;
-        --bg-mask-inner: 16%;
-        --bg-mask-outer: 82%;
+        --bg-mask-inner: 15%;
+        --bg-mask-outer: 85%;
     }
 
     .hero__grid {
@@ -542,21 +552,25 @@ a:hover {
 
     .hero__side {
         justify-content: center;
+        height: auto;
     }
 
     .hero__imageWrap {
         width: min(360px, 92vw);
-        margin: 10px auto 0;
+        margin-inline: auto;
+        margin-top: 10px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
     }
 
     .hero__image {
         width: min(320px, 78vw);
-        margin: 0 auto;
     }
 
     .hero__imageWrap::after {
-        top: 56%;
-        background-size: 120% 120%;
+        background: url("../img/prism_bg.jpeg") var(--bg-x) var(--bg-y) / 120%
+            no-repeat;
     }
 }
 
@@ -568,60 +582,41 @@ a:hover {
 }
 
 /* ====== Logo kerning ====== */
+
 .logo-kern span {
-    letter-spacing: -0.08em;
-    position: relative;
-    top: -0.005em;
     display: inline-block;
 }
 
-/* Logotyp kearning */
+/* ---- Logotyp kearning ---- */
+
 .k-e {
-    letter-spacing: -0.092em;
+    margin-left: -0.02em;
 }
 
 .k-x {
-    letter-spacing: -0.117em;
+    margin-left: -0.019em;
 }
 
 .k-i {
-    letter-spacing: -0.092em;
-}
-
-.k-e2 {
-    letter-spacing: -0.082em;
-}
-
-.k-s {
-    letter-spacing: -0.105em;
+    margin-left: -0.05em;
 }
 
 .k-a {
-    letter-spacing: -0.135em;
+    margin-left: 0.02em;
 }
 
-.w2-k-s {
-    letter-spacing: -0.095em;
-}
-
-.w2-k-a {
-    letter-spacing: -0.11em;
-}
-
-.w2-k-o {
-    letter-spacing: -0.11em;
-}
-
-.w2-k-l {
-    letter-spacing: -0.12em;
-}
-
-.w2-k-m {
-    letter-spacing: -0.08em;
+.k-o {
+    margin-left: -0.009em;
 }
 
 .w2-k-e {
-    letter-spacing: -0.12em;
+    margin-left: -0.01em;
+}
+
+/* kontrola odstępu między słowami */
+.logo-kern .space {
+    display: inline-block;
+    width: 0.075em;
 }
 
 /* ====== Sections ====== */
@@ -1440,6 +1435,7 @@ uc-copyright * {
     overflow-wrap: anywhere;
     word-break: break-word;
 
+    -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
     background: color-mix(in srgb, var(--bg) 50%, transparent);
 }

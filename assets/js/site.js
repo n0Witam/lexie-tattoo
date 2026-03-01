@@ -390,6 +390,7 @@ export async function setupContactForm() {
 // -----------------------------
 
 let freePatternModalEl = null;
+let freePatternCloseT = null;
 
 function ensureFreePatternModal() {
   if (freePatternModalEl) return freePatternModalEl;
@@ -401,41 +402,36 @@ function ensureFreePatternModal() {
 
   modal.innerHTML = `
     <div class="modal__backdrop" data-close></div>
-    <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Wolny wzór">
-      <button class="modal__close" type="button" aria-label="Zamknij" data-close>×</button>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-label="Chcę ten wzór">
+      <button class="modal__close btn" type="button" aria-label="Zamknij" data-close>✕</button>
 
       <div class="modal__grid">
-        <div>
-          <h3>Chcę ten wolny wzór</h3>
-          <p class="muted" style="margin-top:-6px;">Wypełnij dane — odezwę się z terminem ✉️</p>
-
-          <form class="form" id="freePatternForm" novalidate>
-            <div class="form__row">
-              <label class="form__label" for="fp_name">Imię i nazwisko</label>
-              <input class="form__input" id="fp_name" name="entry.1453391056" required autocomplete="name" />
+        <div class="modal__left">
+          <form id="freePatternForm" class="form" novalidate>
+            <div class="field">
+              <label for="fp_name">Imię i nazwisko</label>
+              <input id="fp_name" name="entry.2005620554" autocomplete="name" required />
             </div>
 
-            <div class="form__row">
-              <label class="form__label" for="fp_phone">Telefon</label>
-              <input class="form__input" id="fp_phone" name="entry.107571005" required autocomplete="tel" />
+            <div class="field">
+              <label for="fp_mobile">Telefon</label>
+              <input id="fp_mobile" name="entry.1166974658" type="tel" inputmode="tel" autocomplete="tel" required />
             </div>
 
-            <div class="form__row">
-              <label class="form__label" for="fp_msg">Wiadomość</label>
-              <textarea class="form__textarea" id="fp_msg" name="entry.839337160" rows="5" required></textarea>
+            <div class="field">
+              <label for="fp_msg">Wiadomość</label>
+              <textarea id="fp_msg" name="entry.839337160" rows="5" required></textarea>
             </div>
-
-            <p class="form__status" id="fp_status" aria-live="polite"></p>
 
             <button class="btn btn--primary" type="submit">Wyślij</button>
+            <p class="form__status" id="fp_status" role="status" aria-live="polite"></p>
           </form>
         </div>
 
-        <div>
-          <div class="freePreview">
-            <img id="fp_img" alt="" />
+        <div class="modal__right">
+          <div class="modal__imgWrap">
+            <img id="fp_img" class="modal__img" alt="" />
           </div>
-          <p class="muted" style="font-size:13px; margin-top:10px;">Wiadomość zawiera link do wybranego wzoru.</p>
         </div>
       </div>
     </div>
@@ -444,20 +440,35 @@ function ensureFreePatternModal() {
   document.body.appendChild(modal);
   freePatternModalEl = modal;
 
-  // Close handlers.
-  qsa("[data-close]", modal).forEach((el) =>
-    el.addEventListener("click", () => closeFreePatternModal())
-  );
+  const close = () => closeFreePatternModal();
+
+  qsa("[data-close]", modal).forEach((el) => el.addEventListener("click", close));
 
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
     if (modal.getAttribute("aria-hidden") === "true") return;
-    closeFreePatternModal();
+    close();
   });
 
   setupFreePatternForm(modal);
 
   return modal;
+}
+
+function buildFreePatternPrefillVisible() {
+  return `✧ Miejsce na ciele: \n✧ Rozmiar (cm): `;
+}
+
+function buildFreePatternMessageForSubmit(visibleText, imgUrl) {
+  const raw = String(visibleText || "").trimEnd();
+  const cleaned = raw
+    .split(/\r?\n/)
+    .filter((line) => !/^•\s*Wybrany\s+wzór\s*:/i.test(line))
+    .join("\n")
+    .trimEnd();
+
+  const header = imgUrl ? `• Wybrany wzór: ${imgUrl}\n` : "";
+  return (header + cleaned).trimEnd() + "\n";
 }
 
 function setupFreePatternForm(modal) {
@@ -467,7 +478,7 @@ function setupFreePatternForm(modal) {
   form.setAttribute("action", GFORM_ACTION);
 
   const nameEl = qs("#fp_name", form);
-  const phoneEl = qs("#fp_phone", form);
+  const phoneEl = qs("#fp_mobile", form);
   const msgEl = qs("#fp_msg", form);
   const statusEl = qs("#fp_status", form);
 
@@ -475,22 +486,18 @@ function setupFreePatternForm(modal) {
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    statusEl.textContent = "";
+    if (statusEl) statusEl.textContent = "";
 
     const ok = validateAll({ nameEl, phoneEl, msgEl });
     if (!ok) return;
 
-    statusEl.textContent = "Wysyłanie…";
+    if (statusEl) statusEl.textContent = "Wysyłanie…";
 
-    // Add the chosen pattern URL to the message (hidden field).
-    const img = qs("#fp_img", modal);
-    const src = img?.getAttribute("src") || "";
+    const imgUrl = String(
+      modal.dataset.fpImgUrl || qs("#fp_img", modal)?.getAttribute("src") || ""
+    );
 
-    const base = String(msgEl.value || "").trim();
-    const hiddenMessage = src
-      ? `${base}\n\n---\nWybrany wzór:\n${src}`
-      : base;
-
+    const hiddenMessage = buildFreePatternMessageForSubmit(msgEl?.value || "", imgUrl);
     const restore = setHiddenMessageField(form, msgEl, hiddenMessage);
 
     try {
@@ -500,16 +507,18 @@ function setupFreePatternForm(modal) {
         body: new FormData(form),
       });
 
-      statusEl.textContent = "Dziękuję! Odezwę się wkrótce 💌";
+      if (statusEl) statusEl.textContent = "Dziękuję! Odezwę się wkrótce 💌";
       form.reset();
 
       window.setTimeout(() => {
         closeFreePatternModal();
-        statusEl.textContent = "";
-      }, 900);
-    } catch {
-      statusEl.textContent =
-        "Ups — nie udało się wysłać. Spróbuj ponownie albo napisz na IG.";
+        if (statusEl) statusEl.textContent = "";
+      }, 800);
+    } catch (err) {
+      console.warn("Free pattern submit failed:", err);
+      if (statusEl)
+        statusEl.textContent =
+          "Ups — nie udało się wysłać. Spróbuj ponownie albo napisz na IG.";
     } finally {
       window.setTimeout(restore, 1500);
     }
@@ -520,7 +529,9 @@ export function openFreePatternModal(imgUrl, altText = "") {
   const modal = ensureFreePatternModal();
 
   const img = qs("#fp_img", modal);
+  const form = qs("#freePatternForm", modal);
   const msgEl = qs("#fp_msg", modal);
+  const statusEl = qs("#fp_status", modal);
   const nameEl = qs("#fp_name", modal);
 
   if (img) {
@@ -528,23 +539,33 @@ export function openFreePatternModal(imgUrl, altText = "") {
     img.alt = altText || "Wolny wzór";
   }
 
-  if (msgEl) {
-    msgEl.value =
-      `Chcę wolny wzór${altText ? `: ${altText}` : ":"}\n\n` +
-      `✧ Miejsce na ciele: \n` +
-      `✧ Rozmiar (cm): `;
-  }
+  modal.dataset.fpImgUrl = imgUrl;
 
-  modal.setAttribute("aria-hidden", "false");
+  if (statusEl) statusEl.textContent = "";
+  form?.reset();
+
+  if (msgEl) msgEl.value = buildFreePatternPrefillVisible();
+
+  // Open
+  if (freePatternCloseT) window.clearTimeout(freePatternCloseT);
   document.body.style.overflow = "hidden";
+  modal.setAttribute("aria-hidden", "false");
 
-  // Focus the first field for convenience.
+  // Focus first input
   window.setTimeout(() => nameEl?.focus(), 0);
 }
 
 export function closeFreePatternModal() {
   const modal = freePatternModalEl;
   if (!modal) return;
+
   modal.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
+
+  // Wait for fade-out to finish before restoring scroll
+  if (freePatternCloseT) window.clearTimeout(freePatternCloseT);
+  freePatternCloseT = window.setTimeout(() => {
+    if (modal.getAttribute("aria-hidden") === "true") {
+      document.body.style.overflow = "";
+    }
+  }, 320);
 }
