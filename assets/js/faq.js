@@ -1,10 +1,6 @@
 import { qs, qsa } from "./util.js";
+import { initSite } from "./site.js";
 
-function setYear() {
-  const year = new Date().getFullYear();
-  const el = qs("[data-year]");
-  if (el) el.textContent = String(year);
-}
 
 function setupFAQ(root) {
   const items = qsa("[data-faq-item]", root);
@@ -62,7 +58,7 @@ function setupFAQ(root) {
 }
 
 window.addEventListener("DOMContentLoaded", () => {
-  setYear();
+  initSite();
   const root = qs("[data-faq]");
   if (root) setupFAQ(root);
 });

@@ -11,6 +11,7 @@
     --accent: #fbf8f4;
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
     --radius: 18px;
+    --header-h: 72px;
     --radius-sm: 12px;
     --container: 1250px;
     --gap: 18px;
@@ -47,6 +48,7 @@
 }
 html {
     scroll-behavior: smooth;
+    scroll-padding-top: var(--header-h, 72px);
 }
 
 body {
@@ -210,6 +212,120 @@ a:hover {
     flex: 0 0 auto;
 }
 
+/* ====== Mobile navbar ====== */
+
+.nav__toggle {
+    display: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+}
+
+.nav__toggle:hover {
+    border-color: color-mix(in srgb, var(--border) 40%, var(--accent));
+}
+
+.nav__toggleIcon {
+    position: relative;
+    width: 18px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 999px;
+}
+
+.nav__toggleIcon::before,
+.nav__toggleIcon::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 18px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 999px;
+    transition: transform 0.12s ease, top 0.12s ease, opacity 0.12s ease;
+}
+
+.nav__toggleIcon::before {
+    top: -6px;
+}
+
+.nav__toggleIcon::after {
+    top: 6px;
+}
+
+.nav.is-open .nav__toggleIcon {
+    background: transparent;
+}
+
+.nav.is-open .nav__toggleIcon::before {
+    top: 0;
+    transform: rotate(45deg);
+}
+
+.nav.is-open .nav__toggleIcon::after {
+    top: 0;
+    transform: rotate(-45deg);
+}
+
+.nav__links a[aria-current="page"] {
+    color: var(--text);
+    border-color: color-mix(in srgb, var(--border) 40%, var(--accent));
+}
+
+@media (max-width: 720px) {
+    .nav {
+        position: relative;
+    }
+
+    .nav__toggle {
+        display: inline-flex;
+    }
+
+    .nav__links {
+        position: absolute;
+        top: calc(100% + 10px);
+        left: 0;
+        right: 0;
+        z-index: 20;
+
+        flex-direction: column;
+        gap: 6px;
+        padding: 12px;
+
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        background: color-mix(in srgb, var(--bg) 84%, transparent);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
+
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(-6px);
+        transition: opacity 0.12s ease, transform 0.12s ease, visibility 0.12s;
+    }
+
+    .nav__links a {
+        width: 100%;
+        padding: 12px 12px;
+        border-radius: 12px;
+    }
+
+    .nav.is-open .nav__links {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
+}
+
 /* ====== Buttons ====== */
 
 .btn {
@@ -264,13 +380,19 @@ a:hover {
 .hero {
     position: relative;
     isolation: isolate;
-    padding: 10px 0 36px;
-    padding-bottom: 0;
     overflow: hidden;
+    padding: 10px 0 36px;
+
+    /* Fill the viewport nicely on desktop without cutting into the next section.
+       Uses --header-h synced from JS (fallback: 72px). */
+    min-height: calc(100vh - var(--header-h, 72px));
+    min-height: calc(100svh - var(--header-h, 72px));
+
+    /* Image + background tuning */
     --lexie-w: 100%;
-    --bg-w: 2; /* szerokość tła względem sylwetki */
-    --bg-h: 1.3; /* wysokość tła względem sylwetki */
-    --bg-x: 70%; /* pozycja kadru w tle */
+    --bg-w: 2;
+    --bg-h: 1.3;
+    --bg-x: 70%;
     --bg-y: 70%;
     --bg-alpha: 0.95;
     --bg-mask-x: 55%;
@@ -279,79 +401,6 @@ a:hover {
     --bg-mask-outer: 75%;
 }
 
-/* ===== HERO: tło skorelowane z sylwetką (lexie_fg.png) ===== */
-/* Zamiast full-screen maski na .hero, tło jest zakotwiczone do wrappera zdjęcia,
-   więc skaluje się i pozycjonuje razem z sylwetką. */
-
-.hero .contact__imageWrap {
-    position: relative;
-    isolation: isolate;
-    width: var(--lexie-w);
-    margin-left: auto; /* trzyma sylwetkę po prawej */
-    align-self: end; /* trzyma sylwetkę na dole kolumny */
-    overflow: visible;
-}
-
-/* Tło PRZED glow (::before) i ZA sylwetką */
-.hero .contact__imageWrap::after {
-    content: "";
-    position: absolute;
-    z-index: 0;
-    pointer-events: none;
-
-    width: calc(100% * var(--bg-w));
-    height: calc(100% * var(--bg-h));
-    left: 50%;
-    bottom: 0;
-    transform: translateX(-50%);
-
-    background: url("../img/prism_bg.jpeg") var(--bg-x) var(--bg-y) / cover
-        no-repeat;
-    opacity: var(--bg-alpha);
-
-    /* ✅ radial-mask: tło niewidoczne poza "oknem" */
-    -webkit-mask-image: radial-gradient(
-        circle at var(--bg-mask-x) var(--bg-mask-y),
-        #000 15%,
-        rgba(0, 0, 0, 0) 60%
-    );
-    mask-image: radial-gradient(
-        circle at var(--bg-mask-x) var(--bg-mask-y),
-        #000 15%,
-        rgba(0, 0, 0, 0) 60%
-    );
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-size: 100% 100%;
-    mask-size: 100% 100%;
-
-    /* opcjonalnie: delikatne "wtopienie" */
-    filter: saturate(0.95) contrast(0.95);
-}
-
-/* Glow (jeśli używasz) powinien być nad tłem, ale pod sylwetką */
-.hero .contact__imageWrap::before {
-    z-index: 1;
-}
-
-/* Sylwetka nad tłem i glow */
-.hero .contact__image {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: contain;
-    object-position: bottom;
-}
-
-/* Zapewnij, że content hero jest nad wszystkimi warstwami tła */
-.hero .container {
-    position: relative;
-    z-index: 3;
-}
-
-/* Ensure hero content stays above the masked background */
 .hero .container {
     position: relative;
     z-index: 1;
@@ -361,13 +410,80 @@ a:hover {
     display: grid;
     grid-template-columns: 1.35fr 0.65fr;
     gap: var(--gap-lg);
-    align-items: stretch; /* <- było center, zmieniamy */
+    align-items: end;
+}
+
+/* Ensure the text column stays above any background overflow from the image column */
+.hero__grid > :first-child {
+    position: relative;
+    z-index: 2;
+}
+
+.hero__side {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+
+/* Image wrapper: background is anchored to the silhouette, so it scales together */
+.hero__imageWrap {
+    position: relative;
+    isolation: isolate;
+    width: var(--lexie-w);
+    margin-left: auto;
+    overflow: visible;
+}
+
+.hero__imageWrap::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+
+    width: calc(100% * var(--bg-w));
+    height: calc(100% * var(--bg-h));
+    left: 50%;
+    top: 58%;
+    transform: translate(-50%, -50%);
+
+    background: url("../img/prism_bg.jpeg") var(--bg-x) var(--bg-y) / cover
+        no-repeat;
+    opacity: var(--bg-alpha);
+
+    -webkit-mask-image: radial-gradient(
+        circle at var(--bg-mask-x) var(--bg-mask-y),
+        #000 var(--bg-mask-inner),
+        rgba(0, 0, 0, 0) var(--bg-mask-outer)
+    );
+    mask-image: radial-gradient(
+        circle at var(--bg-mask-x) var(--bg-mask-y),
+        #000 var(--bg-mask-inner),
+        rgba(0, 0, 0, 0) var(--bg-mask-outer)
+    );
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+
+    filter: saturate(0.95) contrast(0.95);
+}
+
+.hero__image {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    object-position: bottom;
 }
 
 .hero__title {
     text-align: center;
     font-family: "Chomsky", ui-serif, Georgia, serif;
-    margin: 10px 0 0px;
+    margin: 10px 0 0;
     font-size: clamp(9.5vh, 12vw, 15vh);
     line-height: 1.05;
     letter-spacing: -0.131em;
@@ -376,84 +492,6 @@ a:hover {
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
-}
-
-@media (max-width: 900px) {
-    .hero__grid {
-        grid-template-columns: 1fr;
-        gap: 18px; /* ✅ nie 0 – oddziela tekst od grafiki */
-        align-items: start;
-    }
-
-    .hero__side {
-        justify-content: center; /* ✅ centrowanie całego bloku grafiki */
-        height: auto;
-    }
-
-    /* wrapper "grafiki": ograniczamy szerokość, centrujemy i robimy stabilny box */
-    .hero .contact__imageWrap {
-        width: min(360px, 92vw); /* ✅ box odpowiada za skalowanie tła */
-        margin-inline: auto;
-        margin-top: 10px;
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
-    }
-    .hero {
-        --bg-w: 1.45;
-        --bg-h: 1.1; /* ✅ mniejsza wysokość tła na mobile */
-        --bg-x: 52%;
-        --bg-y: 60%;
-        --bg-alpha: 0.85;
-
-        /* maska na mobile (często lepiej niżej i trochę większa) */
-        --bg-mask-x: 65%;
-        --bg-mask-y: 55%;
-        --bg-mask-inner: 15%;
-        --bg-mask-outer: 75%;
-    }
-    .hero .contact__imageWrap::after {
-        left: 35%;
-        bottom: 0;
-        background: url("../img/prism_bg.jpeg") var(--bg-x) var(--bg-y) / 120%
-            no-repeat;
-    }
-}
-
-.logo-kern span {
-    display: inline-block;
-}
-
-/* ---- Logotyp kearning ---- */
-
-.k-e {
-    margin-left: -0.02em;
-}
-
-.k-x {
-    margin-left: -0.019em;
-}
-
-.k-i {
-    margin-left: -0.05em;
-}
-
-.k-a {
-    margin-left: 0.02em;
-}
-
-.k-o {
-    margin-left: -0.009em;
-}
-
-.w2-k-e {
-    margin-left: -0.01em;
-}
-
-/* kontrola odstępu między słowami */
-.logo-kern .space {
-    display: inline-block;
-    width: 0.075em;
 }
 
 .hero__kicker {
@@ -480,70 +518,110 @@ a:hover {
     padding-top: 25px;
 }
 
+@media (max-width: 900px) {
+    .hero {
+        padding-bottom: 56px;
+
+        --bg-w: 1.45;
+        --bg-h: 1.12;
+        --bg-x: 52%;
+        --bg-y: 60%;
+        --bg-alpha: 0.85;
+
+        --bg-mask-x: 65%;
+        --bg-mask-y: 55%;
+        --bg-mask-inner: 16%;
+        --bg-mask-outer: 82%;
+    }
+
+    .hero__grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        align-items: start;
+    }
+
+    .hero__side {
+        justify-content: center;
+    }
+
+    .hero__imageWrap {
+        width: min(360px, 92vw);
+        margin: 10px auto 0;
+    }
+
+    .hero__image {
+        width: min(320px, 78vw);
+        margin: 0 auto;
+    }
+
+    .hero__imageWrap::after {
+        top: 56%;
+        background-size: 120% 120%;
+    }
+}
+
 @media (max-width: 600px) {
     .hero__actions {
-        gap: 1.25vw;
+        gap: 10px;
         justify-content: center;
     }
 }
 
-.hero__side {
-    display: flex;
-    justify-content: flex-end;
-    height: 100%; /* ważne */
+/* ====== Logo kerning ====== */
+.logo-kern span {
+    letter-spacing: -0.08em;
+    position: relative;
+    top: -0.005em;
+    display: inline-block;
 }
 
-@media (max-width: 900px) {
-    .hero__side {
-        justify-content: flex-start;
-    }
-    /* prawa kolumna w normalnym flow */
-    .hero__side {
-        position: static; /* ważne jeśli wcześniej było relative+absolute na img */
-        height: auto;
-    }
-
-    .contact__imageWrap {
-        height: auto;
-        align-items: center;
-        justify-content: center;
-        margin-top: 14px;
-    }
-
-    /* zdjęcie mniejsze i bez absolute */
-    .contact__image {
-        position: static !important;
-        width: min(320px, 78vw); /* <- tu regulujesz “mniejsze” */
-        height: auto;
-        max-height: none;
-        object-fit: contain;
-    }
+/* Logotyp kearning */
+.k-e {
+    letter-spacing: -0.092em;
 }
 
-.hero__card {
-    border: 1px solid var(--border);
-    background: linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--bg-2) 85%, transparent),
-        color-mix(in srgb, var(--bg) 92%, transparent)
-    );
-    border-radius: var(--radius);
-    overflow: hidden;
-    box-shadow: var(--shadow);
+.k-x {
+    letter-spacing: -0.117em;
 }
 
-.hero__card img {
-    width: 50%;
-    height: auto;
+.k-i {
+    letter-spacing: -0.092em;
 }
 
-.hero__cardCaption {
-    padding: 12px 14px;
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    color: var(--muted);
-    font-size: 13px;
+.k-e2 {
+    letter-spacing: -0.082em;
+}
+
+.k-s {
+    letter-spacing: -0.105em;
+}
+
+.k-a {
+    letter-spacing: -0.135em;
+}
+
+.w2-k-s {
+    letter-spacing: -0.095em;
+}
+
+.w2-k-a {
+    letter-spacing: -0.11em;
+}
+
+.w2-k-o {
+    letter-spacing: -0.11em;
+}
+
+.w2-k-l {
+    letter-spacing: -0.12em;
+}
+
+.w2-k-m {
+    letter-spacing: -0.08em;
+}
+
+.w2-k-e {
+    letter-spacing: -0.12em;
 }
 
 /* ====== Sections ====== */
@@ -558,6 +636,37 @@ a:hover {
     letter-spacing: 0.5px;
     margin-bottom: 3vh;
 }
+
+.section--page {
+    border-top: none;
+    padding-top: 0;
+    padding-bottom: 10vh;
+}
+
+.page-title {
+    font-size: clamp(28px, 4.5vh, 54px);
+    font-family: "Chomsky", ui-serif, Georgia, serif;
+    text-align: center;
+    display: block;
+    padding: 4vh 0;
+    letter-spacing: -0.05em;
+    margin: 0;
+}
+
+.toolbar__meta {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.lightbox__actions {
+    display: flex;
+    gap: 10px;
+}
+
+.form__status {
+    margin: 10px 0 0;
+}
+
 
 .split {
     display: grid;
@@ -799,6 +908,26 @@ a:hover {
         transform 0.12s ease;
     box-shadow: var(--shadow);
 }
+
+/* Free-pattern CTA inside the portfolio grid (uses the same button styles as the carousel) */
+.tile[data-free-pattern="1"] .slide__ctaBtn {
+    opacity: 0;
+    transform: translateY(6px);
+}
+
+.tile[data-free-pattern="1"]:hover .slide__ctaBtn,
+.tile[data-free-pattern="1"]:focus-within .slide__ctaBtn {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (hover: none) {
+    .tile[data-free-pattern="1"] .slide__ctaBtn {
+        opacity: 1;
+        transform: none;
+    }
+}
+
 
 /* pokazuj CTA po „uzbrojeniu” slajdu (JS dodaje .is-armed po 1s od wycentrowania) */
 .slide.is-armed .slide__ctaBtn {
@@ -1220,50 +1349,15 @@ uc-copyright * {
 }
 
 /* Prawa kolumna: obraz przyklejony do dołu */
-.contact__imageWrap {
-    display: flex;
-    align-items: flex-end; /* przykleja do dołu */
-    height: 100%; /* ważne */
-    width: 100%;
-}
-
-.contact__image {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    object-position: bottom;
-    display: block;
-}
 
 /* Mobile: standardowo układ jeden pod drugim */
 @media (max-width: 900px) {
     .split--contact {
         grid-template-columns: 1fr;
     }
-
-    .contact__imageWrap {
-        max-height: 40vh; /* ⬅️ połowa wysokości ekranu */
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: end;
-    }
-
-    .contact__image {
-        max-height: 40vh;
-        width: auto;
-        object-fit: contain; /* albo cover, jeśli wolisz przycięcie */
-    }
 }
 
 /* zdjęcie nad glow */
-.contact__image {
-    position: relative;
-    z-index: 1;
-
-    -webkit-mask-image: linear-gradient(#000 95%, transparent 100%);
-    mask-image: linear-gradient(#000 95%, transparent 100%);
-}
 
 .btn--ig {
     display: inline-flex;
@@ -1407,7 +1501,7 @@ uc-copyright * {
 /* domyślnie: bez snapa (mobile/tablet) */
 html.home {
     scroll-snap-type: none;
-    scroll-padding-top: 0;
+    scroll-padding-top: var(--header-h, 72px);
 }
 
 html.home main > section {
@@ -1419,7 +1513,7 @@ html.home main > section {
 @media (min-width: 1200px) and (hover: hover) and (pointer: fine) {
     html.home {
         scroll-snap-type: y mandatory;
-        scroll-padding-top: 72px; /* sticky header */
+        scroll-padding-top: var(--header-h, 72px); /* sticky header */
     }
 
     html.home main > section {
@@ -1429,11 +1523,6 @@ html.home main > section {
     }
 }
 
-@media (max-width: 600px) {
-    html.home {
-        scroll-padding-top: 64px;
-    }
-}
 
 /* ====== FAQ (accordion) ====== */
 

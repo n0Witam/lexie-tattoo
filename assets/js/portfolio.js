@@ -1,4 +1,5 @@
 import { fetchJSON, resolveUrl, qs } from "./util.js";
+import { initSite, openFreePatternModal } from "./site.js";
 
 const DATA_URL = "../data/portfolio.json";
 const DEFAULT_GROUP_NAME = "Wolne wzory";
@@ -148,6 +149,16 @@ async function renderPortfolio() {
 
     const groups = normalizeGroups(data, items);
 
+    const freeGroup = groups.find((g) =>
+      String(g?.name || "").trim().toLowerCase() === DEFAULT_GROUP_KEY ||
+      String(g?.id || "").toLowerCase().includes("wolne")
+    );
+
+    const freeIds = Array.isArray(data.freePatternIds) ? data.freePatternIds : null;
+    const freeSet = new Set(
+      freeIds && freeIds.length ? freeIds : freeGroup?.items || []
+    );
+
     let renderedAny = false;
 
     for (const group of groups) {
@@ -186,8 +197,34 @@ async function renderPortfolio() {
         tile.tabIndex = 0;
         tile.append(img);
 
+        const isFreePattern = freeSet.has(item.id);
+        if (isFreePattern) {
+          tile.dataset.freePattern = "1";
+
+          const badge = document.createElement("div");
+          badge.className = "slide__badge";
+          badge.textContent = "Wolny wzór!";
+
+          const ctaWrap = document.createElement("div");
+          ctaWrap.className = "slide__ctaWrap";
+
+          const ctaBtn = document.createElement("button");
+          ctaBtn.type = "button";
+          ctaBtn.className = "slide__ctaBtn btn btn--primary";
+          ctaBtn.textContent = "Chcę ten wzór!";
+          ctaBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            openFreePatternModal(item._resolvedSrc, item.alt || "Wolny wzór");
+          });
+          ctaBtn.addEventListener("keydown", (e) => e.stopPropagation());
+
+          ctaWrap.appendChild(ctaBtn);
+          tile.append(badge, ctaWrap);
+        }
+
         tile.addEventListener("click", () => lb?.open(idx));
         tile.addEventListener("keydown", (e) => {
+          if (e.target !== tile) return;
           if (e.key === "Enter" || e.key === " ") lb?.open(idx);
         });
 
@@ -208,4 +245,7 @@ async function renderPortfolio() {
   }
 }
 
-window.addEventListener("DOMContentLoaded", renderPortfolio);
+window.addEventListener("DOMContentLoaded", () => {
+  initSite();
+  renderPortfolio();
+});
