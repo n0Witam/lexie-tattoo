@@ -302,7 +302,7 @@ a:hover {
     width: calc(100% * var(--bg-w));
     height: calc(100% * var(--bg-h));
     left: 50%;
-    bottom: 6%;
+    bottom: 0;
     transform: translateX(-50%);
 
     background: url("../img/prism_bg.jpeg") var(--bg-x) var(--bg-y) / cover
@@ -405,14 +405,20 @@ a:hover {
         --bg-w: 1.45;
         --bg-h: 1.1; /* ✅ mniejsza wysokość tła na mobile */
         --bg-x: 52%;
-        --bg-y: 65%;
+        --bg-y: 60%;
         --bg-alpha: 0.85;
 
         /* maska na mobile (często lepiej niżej i trochę większa) */
-        --bg-mask-x: 55%;
-        --bg-mask-y: 62%;
-        --bg-mask-inner: 25%;
+        --bg-mask-x: 65%;
+        --bg-mask-y: 55%;
+        --bg-mask-inner: 15%;
         --bg-mask-outer: 75%;
+    }
+    .hero .contact__imageWrap::after {
+        left: 35%;
+        bottom: 0;
+        background: url("../img/prism_bg.jpeg") var(--bg-x) var(--bg-y) / 120%
+            no-repeat;
     }
 }
 
