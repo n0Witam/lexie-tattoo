@@ -311,16 +311,14 @@ a:hover {
 
     /* ✅ radial-mask: tło niewidoczne poza "oknem" */
     -webkit-mask-image: radial-gradient(
-        ellipse at var(--bg-mask-x) var(--bg-mask-y),
-        #000 0%,
-        #000 var(--bg-mask-inner),
-        transparent var(--bg-mask-outer)
+        circle at var(--bg-mask-x) var(--bg-mask-y),
+        #000 15%,
+        rgba(0, 0, 0, 0) 60%
     );
     mask-image: radial-gradient(
-        ellipse at var(--bg-mask-x) var(--bg-mask-y),
-        #000 0%,
-        #000 var(--bg-mask-inner),
-        transparent var(--bg-mask-outer)
+        circle at var(--bg-mask-x) var(--bg-mask-y),
+        #000 15%,
+        rgba(0, 0, 0, 0) 60%
     );
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
