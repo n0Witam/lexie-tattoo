@@ -266,10 +266,84 @@ a:hover {
     isolation: isolate;
     padding: 10px 0 36px;
     padding-bottom: 0;
-    overflow: hidden;
-    --mask-x: 74%;
-    --mask-y: 64%;
-    --mask-r: clamp(260px, 20vw, 420px);
+    overflow: hidden;--lexie-w: clamp(320px, 34vw, 560px);
+--bg-w: 1.35;   /* szerokość tła względem sylwetki */
+--bg-h: 0.72;   /* wysokość tła względem sylwetki */
+--bg-x: 52%;    /* pozycja kadru w tle */
+--bg-y: 70%;
+--bg-alpha: 0.95;
+}
+
+/* ===== HERO: tło skorelowane z sylwetką (lexie_fg.png) ===== */
+/* Zamiast full-screen maski na .hero, tło jest zakotwiczone do wrappera zdjęcia,
+   więc skaluje się i pozycjonuje razem z sylwetką. */
+
+.hero .contact__imageWrap{
+  position: relative;
+  isolation: isolate;
+  width: var(--lexie-w);
+  margin-left: auto;   /* trzyma sylwetkę po prawej */
+  align-self: end;     /* trzyma sylwetkę na dole kolumny */
+  overflow: visible;
+}
+
+/* Tło PRZED glow (::before) i ZA sylwetką */
+.hero .contact__imageWrap::after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  pointer-events:none;
+
+  width: calc(100% * var(--bg-w));
+  height: calc(100% * var(--bg-h));
+
+  left: 50%;
+  bottom: 6%;
+  transform: translateX(-50%);
+
+  /* styles.css jest w assets/css, więc idziemy do assets/img */
+  background: url("../img/prism_bg.jpeg") var(--bg-x) var(--bg-y) / cover no-repeat;
+  opacity: var(--bg-alpha);
+
+  /* miękkie krawędzie – bez dynamicznej maski */
+  filter: blur(10px);
+  border-radius: 999px;
+}
+
+/* Glow (jeśli używasz) powinien być nad tłem, ale pod sylwetką */
+.hero .contact__imageWrap::before{ z-index: 1; }
+
+/* Sylwetka nad tłem i glow */
+.hero .contact__image{
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  object-position: bottom;
+}
+
+/* Zapewnij, że content hero jest nad wszystkimi warstwami tła */
+.hero .container{
+  position: relative;
+  z-index: 3;
+}
+
+@media (max-width: 900px){
+  .hero{
+    --lexie-w: min(320px, 78vw);
+    --bg-w: 1.55;
+    --bg-h: 0.60;
+    --bg-x: 50%;
+    --bg-y: 68%;
+    --bg-alpha: 0.85;
+  }
+
+  .hero .contact__imageWrap::after{
+    bottom: 10%;
+    filter: blur(12px);
+  }
 }
 
 /* ===== HERO: full-screen background revealed by an animated mask =====
@@ -325,24 +399,6 @@ a:hover {
     grid-template-columns: 1.35fr 0.65fr;
     gap: var(--gap-lg);
     align-items: stretch; /* <- było center, zmieniamy */
-}
-
-@media (max-width: 900px) {
-    .hero {
-        --mask-x: 50%;
-        --mask-y: 78%;
-        --mask-r: clamp(200px, 78vw, 360px);
-    }
-    .hero__grid {
-        grid-template-columns: 1fr;
-        gap: 0px;
-    }
-    .hero::before {
-        --mask-x: 55%;
-        --mask-y: 84%;
-        --mask-r: clamp(120px, 47vw, 240px);
-        background: url("../img/prism_bg.jpeg") bottom right / 130% no-repeat;
-    }
 }
 
 .hero__title {
