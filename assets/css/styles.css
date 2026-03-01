@@ -273,6 +273,10 @@ a:hover {
     --bg-x: 52%; /* pozycja kadru w tle */
     --bg-y: 70%;
     --bg-alpha: 0.95;
+    --bg-mask-x: 55%;
+    --bg-mask-y: 62%;
+    --bg-mask-inner: 50%;
+    --bg-mask-outer: 82%;
 }
 
 /* ===== HERO: tło skorelowane z sylwetką (lexie_fg.png) ===== */
@@ -399,7 +403,7 @@ a:hover {
     }
     .hero {
         --bg-w: 1.45;
-        --bg-h: 0.8; /* ✅ mniejsza wysokość tła na mobile */
+        --bg-h: 1.1; /* ✅ mniejsza wysokość tła na mobile */
         --bg-x: 52%;
         --bg-y: 65%;
         --bg-alpha: 0.85;
