@@ -297,15 +297,34 @@ a:hover {
 
     width: calc(100% * var(--bg-w));
     height: calc(100% * var(--bg-h));
-
     left: 50%;
     bottom: 6%;
     transform: translateX(-50%);
 
-    /* styles.css jest w assets/css, więc idziemy do assets/img */
     background: url("../img/prism_bg.jpeg") var(--bg-x) var(--bg-y) / cover
         no-repeat;
     opacity: var(--bg-alpha);
+
+    /* ✅ radial-mask: tło niewidoczne poza "oknem" */
+    -webkit-mask-image: radial-gradient(
+        ellipse at var(--bg-mask-x) var(--bg-mask-y),
+        #000 0%,
+        #000 var(--bg-mask-inner),
+        transparent var(--bg-mask-outer)
+    );
+    mask-image: radial-gradient(
+        ellipse at var(--bg-mask-x) var(--bg-mask-y),
+        #000 0%,
+        #000 var(--bg-mask-inner),
+        transparent var(--bg-mask-outer)
+    );
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+
+    /* opcjonalnie: delikatne "wtopienie" */
+    filter: saturate(0.95) contrast(0.95);
 }
 
 /* Glow (jeśli używasz) powinien być nad tłem, ale pod sylwetką */
@@ -328,17 +347,6 @@ a:hover {
 .hero .container {
     position: relative;
     z-index: 3;
-}
-
-@media (max-width: 900px) {
-    .hero {
-        --lexie-w: min(320px, 78vw);
-        --bg-w: 1.55;
-        --bg-h: 0.6;
-        --bg-x: 50%;
-        --bg-y: 68%;
-        --bg-alpha: 0.85;
-    }
 }
 
 /* Ensure hero content stays above the masked background */
@@ -366,6 +374,42 @@ a:hover {
     user-select: none;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
+}
+
+@media (max-width: 900px) {
+    .hero__grid {
+        grid-template-columns: 1fr;
+        gap: 18px; /* ✅ nie 0 – oddziela tekst od grafiki */
+        align-items: start;
+    }
+
+    .hero__side {
+        justify-content: center; /* ✅ centrowanie całego bloku grafiki */
+        height: auto;
+    }
+
+    /* wrapper "grafiki": ograniczamy szerokość, centrujemy i robimy stabilny box */
+    .hero .contact__imageWrap {
+        width: min(360px, 92vw); /* ✅ box odpowiada za skalowanie tła */
+        margin-inline: auto;
+        margin-top: 10px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+    }
+    .hero {
+        --bg-w: 1.45;
+        --bg-h: 0.8; /* ✅ mniejsza wysokość tła na mobile */
+        --bg-x: 52%;
+        --bg-y: 65%;
+        --bg-alpha: 0.85;
+
+        /* maska na mobile (często lepiej niżej i trochę większa) */
+        --bg-mask-x: 55%;
+        --bg-mask-y: 62%;
+        --bg-mask-inner: 50%;
+        --bg-mask-outer: 82%;
+    }
 }
 
 .logo-kern span {
