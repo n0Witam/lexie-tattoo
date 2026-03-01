@@ -339,11 +339,6 @@ a:hover {
         --bg-y: 68%;
         --bg-alpha: 0.85;
     }
-
-    .hero .contact__imageWrap::after {
-        bottom: 10%;
-        filter: blur(12px);
-    }
 }
 
 /* Ensure hero content stays above the masked background */
