@@ -261,7 +261,10 @@ a:hover {
     height: 2px;
     background: currentColor;
     border-radius: 999px;
-    transition: transform 0.12s ease, top 0.12s ease, opacity 0.12s ease;
+    transition:
+        transform 0.12s ease,
+        top 0.12s ease,
+        opacity 0.12s ease;
 }
 
 .nav__toggleIcon::before {
@@ -315,16 +318,17 @@ a:hover {
         border-radius: var(--radius);
         /* More transparency so blur is actually visible */
         background: rgba(23, 23, 23, 0.35);
-        background: color-mix(in srgb, var(--bg) 45%, transparent);
-        -webkit-backdrop-filter: blur(18px);
-        backdrop-filter: blur(18px);
-        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
+        background: color-mix(in srgb, var(--bg) 95%, transparent);
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.95);
 
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
         transform: translateY(-6px);
-        transition: opacity 0.12s ease, transform 0.12s ease, visibility 0.12s;
+        transition:
+            opacity 0.12s ease,
+            transform 0.12s ease,
+            visibility 0.12s;
     }
 
     .nav__links a {
@@ -408,7 +412,7 @@ a:hover {
     --prism-size: clamp(420px, 78vw, 760px);
     --prism-left: 50%;
     --prism-top: 58%;
-    --prism-alpha: 0.9;
+    --prism-alpha: 1;
     --prism-img-x: 70%;
     --prism-img-y: 70%;
 }
@@ -464,8 +468,8 @@ a:hover {
     top: var(--prism-top);
     transform: translate(-50%, -50%);
 
-    background: url("../img/prism_bg.jpeg") var(--prism-img-x) var(--prism-img-y) /
-        cover no-repeat;
+    background: url("../img/prism_bg.jpeg") var(--prism-img-x)
+        var(--prism-img-y) / cover no-repeat;
     opacity: var(--prism-alpha);
 
     /* A soft "glass" circle – transparent at edges => no visible clipping */
@@ -664,7 +668,6 @@ a:hover {
 .form__status {
     margin: 10px 0 0;
 }
-
 
 .split {
     display: grid;
@@ -925,7 +928,6 @@ a:hover {
         transform: none;
     }
 }
-
 
 /* pokazuj CTA po „uzbrojeniu” slajdu (JS dodaje .is-armed po 1s od wycentrowania) */
 .slide.is-armed .slide__ctaBtn {
@@ -1521,7 +1523,6 @@ html.home main > section {
         scroll-snap-stop: normal;
     }
 }
-
 
 /* ====== FAQ (accordion) ====== */
 
