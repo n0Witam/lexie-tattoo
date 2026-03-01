@@ -283,7 +283,7 @@ a:hover {
     pointer-events: none;
 
     /* Background image under the mask */
-    background: url("../img/prism_bg.jpeg") bottom right / cover no-repeat;
+    background: url("../img/prism_bg.jpeg") bottom right / 80% no-repeat;
     opacity: 0.95;
 
     /* Mask = animated “glow window” (fully hides image outside the mask) */
@@ -338,9 +338,10 @@ a:hover {
         gap: 0px;
     }
     .hero::before {
-        height: 125vw;
-        bottom: -1.75%;
-        left: -50%;
+        --mask-x: 55%;
+        --mask-y: 84%;
+        --mask-r: clamp(120px, 47vw, 240px);
+        background: url("../img/prism_bg.jpeg") bottom right / 130% no-repeat;
     }
 }
 
