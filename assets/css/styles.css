@@ -275,8 +275,8 @@ a:hover {
     --bg-alpha: 0.95;
     --bg-mask-x: 55%;
     --bg-mask-y: 62%;
-    --bg-mask-inner: 50%;
-    --bg-mask-outer: 82%;
+    --bg-mask-inner: 15%;
+    --bg-mask-outer: 75%;
 }
 
 /* ===== HERO: tło skorelowane z sylwetką (lexie_fg.png) ===== */
@@ -411,8 +411,8 @@ a:hover {
         /* maska na mobile (często lepiej niżej i trochę większa) */
         --bg-mask-x: 55%;
         --bg-mask-y: 62%;
-        --bg-mask-inner: 50%;
-        --bg-mask-outer: 82%;
+        --bg-mask-inner: 25%;
+        --bg-mask-outer: 75%;
     }
 }
 
