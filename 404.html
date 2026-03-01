@@ -1,23 +1,62 @@
 <!doctype html>
 <html lang="pl">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>404 — Lexie Tattoo</title>
-  <link rel="stylesheet" href="./assets/css/styles.css" />
-</head>
-<body>
-  <main class="hero">
-    <div class="container">
-      <div class="card">
-        <h1 style="margin:0 0 10px;">404</h1>
-        <p>Nie znaleziono strony. Wróć na stronę główną.</p>
-        <p style="margin-top:14px;">
-          <a class="btn btn--primary" href="./">Strona główna</a>
-          <a class="btn" href="./portfolio/">Portfolio</a>
-        </p>
-      </div>
-    </div>
-  </main>
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>404 — Lexie Tattoo</title>
+
+        <link rel="icon" href="./assets/img/hero.svg" />
+        <link rel="stylesheet" href="./assets/css/styles.css" />
+    </head>
+
+    <body>
+        <header class="site-header">
+            <div class="container">
+                <nav class="nav" aria-label="Nawigacja główna" data-nav>
+                    <button
+                        class="nav__toggle"
+                        type="button"
+                        aria-controls="navLinks"
+                        aria-expanded="false"
+                    >
+                        <span class="sr-only">Menu</span>
+                        <span class="nav__toggleIcon" aria-hidden="true"></span>
+                    </button>
+
+                    <div class="nav__links" id="navLinks" data-nav-links>
+                        <a href="./">Strona główna</a>
+                        <a href="./portfolio/">Portfolio</a>
+                        <a href="./faq/">FAQ</a>
+                    </div>
+
+                    <div class="nav__cta">
+                        <a class="btn btn--primary" href="./#contact">Zapisz się!</a>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero">
+                <div class="container">
+                    <div class="card reveal" style="max-width: 720px; margin: 40px auto 0">
+                        <h1 style="margin-top: 0">404 — nie znaleziono strony</h1>
+                        <p class="muted">
+                            Ten link nie prowadzi do żadnej podstrony. Wróć na stronę
+                            główną lub przejdź do portfolio.
+                        </p>
+                        <div class="hero__actions" style="padding-top: 10px">
+                            <a class="btn btn--primary" href="./">Strona główna</a>
+                            <a class="btn btn--ghost" href="./portfolio/">Portfolio</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <script type="module">
+            import { initSite } from "./assets/js/site.js";
+            window.addEventListener("DOMContentLoaded", initSite);
+        </script>
+    </body>
 </html>

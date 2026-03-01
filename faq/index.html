@@ -16,38 +16,33 @@
     <body>
         <header class="site-header">
             <div class="container">
-                <nav aria-label="Nawigacja główna" class="nav">
-                    <div class="nav__links">
+                <nav class="nav" aria-label="Nawigacja główna" data-nav>
+                    <button
+                        class="nav__toggle"
+                        type="button"
+                        aria-controls="navLinks"
+                        aria-expanded="false"
+                    >
+                        <span class="sr-only">Menu</span>
+                        <span class="nav__toggleIcon" aria-hidden="true"></span>
+                    </button>
+
+                    <div class="nav__links" id="navLinks" data-nav-links>
                         <a href="../">Strona główna</a>
                         <a href="../portfolio/">Portfolio</a>
+                        <a href="./" aria-current="page">FAQ</a>
                     </div>
+
                     <div class="nav__cta">
-                    <div class="nav__cta">
-                        <a
-                            class="btn btn--primary"
-                            href="../#contact"
-                            rel="noreferrer"
-                            >Zapisz się!</a
-                        >
+                        <a class="btn btn--primary" href="../#contact">Zapisz się!</a>
                     </div>
                 </nav>
             </div>
         </header>
         <main>
-        <section class="section" style="padding-top: 0;">
+        <section class="section section--page">
                 <div class="container">
-                    <span
-                        style="
-                            font-size: 4.5vh;
-                            font-family: Chomsky;
-                            text-align: center;
-                            display: block;
-                            padding: 4vh 0;
-                            letter-spacing: -0.05em;
-                        "
-                    >
-                        FAQ - Pytania i Odpowiedzi
-                    </span>
+                    <h1 class="page-title">FAQ — Pytania i Odpowiedzi</h1>
                     <div class="faq" data-faq>
                         <article class="faq__item" data-faq-item>
                             <button

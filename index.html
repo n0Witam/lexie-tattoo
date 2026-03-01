@@ -17,7 +17,7 @@
         />
         <meta content="website" property="og:type" />
         <meta content="./assets/img/lexie_fg.png" property="og:image" />
-        <link rel="icon" href="../assets/img/hero.svg" type="image/svg+xml" />
+        <link rel="icon" href="./assets/img/hero.svg" type="image/svg+xml" />
         <link href="./assets/css/styles.css" rel="stylesheet" />
         <link
             href="https://cdn.jsdelivr.net/npm/@uploadcare/file-uploader@v1/web/uc-file-uploader-minimal.min.css"
@@ -34,19 +34,25 @@
     <body>
         <header class="site-header">
             <div class="container">
-                <nav aria-label="Nawigacja główna" class="nav">
-                    <div class="nav__links">
+                <nav class="nav" aria-label="Nawigacja główna" data-nav>
+                    <button
+                        class="nav__toggle"
+                        type="button"
+                        aria-controls="navLinks"
+                        aria-expanded="false"
+                    >
+                        <span class="sr-only">Menu</span>
+                        <span class="nav__toggleIcon" aria-hidden="true"></span>
+                    </button>
+
+                    <div class="nav__links" id="navLinks" data-nav-links>
+                        <a href="./" aria-current="page">Strona główna</a>
                         <a href="./portfolio/">Portfolio</a>
                         <a href="./faq/">FAQ</a>
                     </div>
-                    <div class="nav__cta"></div>
+
                     <div class="nav__cta">
-                        <a
-                            class="btn btn--primary"
-                            href="./#contact"
-                            rel="noreferrer"
-                            >Zapisz się!</a
-                        >
+                        <a class="btn btn--primary" href="./#contact">Zapisz się!</a>
                     </div>
                 </nav>
             </div>
@@ -114,7 +120,7 @@
                             </p>
                             <div
                                 class="hero__actions reveal"
-                                style="padding-bottom: 36px"
+                                
                             >
                                 <a class="btn btn--ghost" href="./portfolio/"
                                     >Pełne portfolio</a
@@ -127,10 +133,10 @@
                             </div>
                         </div>
                         <div aria-hidden="true" class="hero__side reveal">
-                            <div class="contact__imageWrap">
+                            <div class="hero__imageWrap">
                                 <img
                                     alt=""
-                                    class="contact__image"
+                                    class="hero__image"
                                     src="./assets/img/lexie_fg.png"
                                 />
                             </div>
@@ -157,9 +163,7 @@
                     <div class="split split--contact">
                         <div class="card contact__formCard">
                             <form
-                                class="form"
-                                data-gform-action="https://docs.google.com/forms/d/e/1FAIpQLSfPa5Xlf3jLDeWNyr4rr6Le30GBFlundXqoU2JUIaOK8H2D9A/formResponse"
-                                id="contactForm"
+                                class="form" id="contactForm"
                                 method="POST"
                                 novalidate=""
                                 target="gformIframe"
@@ -218,7 +222,6 @@
                                         / heic) • max 3 MB / plik • do 7 plików
                                     </small>
                                 </div>
-                                <br />
                                 <button class="btn btn--primary" type="submit">
                                     Wyślij
                                 </button>
@@ -226,7 +229,7 @@
                                     aria-live="polite"
                                     class="form__status"
                                     role="status"
-                                    style="margin-bottom: 0"
+                                    
                                 ></p>
                             </form>
                             <iframe
@@ -235,154 +238,12 @@
                                 style="display: none"
                                 title="Google Forms submit"
                             ></iframe>
-                            <script>
-                                (() => {
-                                    const form =
-                                        document.getElementById("contactForm");
-                                    const statusEl =
-                                        form.querySelector(".form__status");
-
-                                    const nameEl = form.querySelector("#name");
-                                    const mobileEl =
-                                        form.querySelector("#mobile");
-                                    const msgEl = form.querySelector("#msg");
-
-                                    // Regex EXACTLY as provided (anchored)
-                                    const NAME_RE = new RegExp(
-                                        "^[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*\\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*(?:\\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+(?:[-'’][A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿĀ-žḀ-ỿ]+)*)*$",
-                                    );
-
-                                    const PHONE_RE = new RegExp(
-                                        "^(?:(?:\\+48|0048)[ -]?)?(?:[5-7]\\d{2})[ -]?\\d{3}[ -]?\\d{3}$",
-                                    );
-
-                                    const setStatus = (msg) => {
-                                        statusEl.textContent = msg || "";
-                                    };
-
-                                    const setFieldError = (el, message) => {
-                                        el.setCustomValidity(message || "");
-                                        // wyświetl natychmiast “dymek” przeglądarki przy błędzie
-                                        if (message) el.reportValidity();
-                                    };
-
-                                    const normalizeSpaces = (s) =>
-                                        s.replace(/\s+/g, " ").trim();
-
-                                    const validateName = () => {
-                                        const v = normalizeSpaces(nameEl.value);
-                                        nameEl.value = v;
-
-                                        if (!v)
-                                            return (
-                                                setFieldError(
-                                                    nameEl,
-                                                    "Podaj imię i nazwisko.",
-                                                ),
-                                                false
-                                            );
-                                        if (!NAME_RE.test(v)) {
-                                            return (
-                                                setFieldError(
-                                                    nameEl,
-                                                    "Wpisz imię i nazwisko (min. 2 człony), każdy zaczynający się wielką literą.",
-                                                ),
-                                                false
-                                            );
-                                        }
-                                        setFieldError(nameEl, "");
-                                        return true;
-                                    };
-
-                                    const validatePhone = () => {
-                                        const v = mobileEl.value.trim();
-                                        mobileEl.value = v;
-
-                                        if (!v)
-                                            return (
-                                                setFieldError(
-                                                    mobileEl,
-                                                    "Podaj numer telefonu.",
-                                                ),
-                                                false
-                                            );
-                                        if (!PHONE_RE.test(v)) {
-                                            return (
-                                                setFieldError(
-                                                    mobileEl,
-                                                    "Podaj poprawny numer (np. 512 345 678, +48 512 345 678, 0048 512 345 678).",
-                                                ),
-                                                false
-                                            );
-                                        }
-                                        setFieldError(mobileEl, "");
-                                        return true;
-                                    };
-
-                                    const validateMsg = () => {
-                                        const v = msgEl.value.trim();
-                                        if (!v)
-                                            return (
-                                                setFieldError(
-                                                    msgEl,
-                                                    "Wpisz wiadomość.",
-                                                ),
-                                                false
-                                            );
-                                        setFieldError(msgEl, "");
-                                        return true;
-                                    };
-
-                                    // Walidacja “na bieżąco”
-                                    nameEl.addEventListener(
-                                        "blur",
-                                        validateName,
-                                    );
-                                    mobileEl.addEventListener(
-                                        "blur",
-                                        validatePhone,
-                                    );
-                                    msgEl.addEventListener("blur", validateMsg);
-
-                                    // Opcjonalnie: przy wpisywaniu czyść komunikaty po poprawie
-                                    nameEl.addEventListener("input", () =>
-                                        nameEl.setCustomValidity(""),
-                                    );
-                                    mobileEl.addEventListener("input", () =>
-                                        mobileEl.setCustomValidity(""),
-                                    );
-                                    msgEl.addEventListener("input", () =>
-                                        msgEl.setCustomValidity(""),
-                                    );
-
-                                    form.addEventListener("submit", (e) => {
-                                        setStatus("");
-
-                                        const ok = [
-                                            validateName(),
-                                            validatePhone(),
-                                            validateMsg(),
-                                        ].every(Boolean);
-                                        if (!ok) {
-                                            e.preventDefault();
-                                            setStatus(
-                                                "Popraw błędy w formularzu.",
-                                            );
-                                            return;
-                                        }
-
-                                        // Jeśli chcesz utrzymać “post do iframe”, zostawiasz submit normalnie.
-                                        // Tu możesz też ustawić komunikat “wysyłanie…”
-                                        setStatus("Wysyłanie…");
-                                    });
-                                })();
-                            </script>
-                        </div>
+</div>
                         <div class="card ig-card">
                             <a
                                 class="ig-profile__link"
                                 href="https://instagram.com/lexietattoo"
-                                rel="noreferrer"
+                               
                                 target="_blank"
                             >
                                 <img
@@ -393,7 +254,7 @@
                             <a
                                 class="btn btn--primary btn--ig"
                                 href="https://instagram.com/lexietattoo"
-                                rel="noreferrer"
+                               
                                 target="_blank"
                             >
                                 <svg
@@ -411,7 +272,7 @@
                             <a
                                 class="btn btn--primary btn--ig"
                                 href="https://ig.me/m/lexietattoo"
-                                rel="noreferrer"
+                               
                                 target="_blank"
                             >
                                 <svg
@@ -476,7 +337,7 @@
                                 <li>Tramwaj 170 m – Park Dreszera</li>
                             </ul>
                         </div>
-                        <div class="card card--map" style="list-style: none">
+                        <div class="card card--map" >
                             <a
                                 class="mapLink"
                                 href="https://maps.app.goo.gl/jwE6DrTtevjHMHL5A?g_st=ic"
@@ -486,7 +347,7 @@
                                     src="./assets/img/map.png"
                                 />
                                 <div class="mapOverlay card">
-                                    <ul class="list" style="list-style: none">
+                                    <ul class="list" >
                                         <li>
                                             <center>
                                                 <strong
@@ -516,103 +377,11 @@
         <footer class="footer">
             <div class="container">
                 <div class="footer__row">
-                    <div>© <span data-year=""></span> Lexie Tattoo</div>
+                    <div>© <span data-year></span> Lexie Tattoo</div>
                     <div></div>
                 </div>
             </div>
         </footer>
         <script src="./assets/js/main.js" type="module"></script>
-        <script type="module">
-            import * as UC from "https://cdn.jsdelivr.net/npm/@uploadcare/file-uploader@v1/web/file-uploader.min.js";
-            UC.defineComponents(UC);
-
-            (async () => {
-                await customElements.whenDefined("uc-upload-ctx-provider");
-
-                const ctxEl = document.getElementById("lexieUploadCtx");
-                const form = document.getElementById("contactForm");
-                const msgEl = document.getElementById("msg");
-
-                if (!ctxEl || !form || !msgEl) return;
-
-                // Block marker used only to REMOVE old, previously appended URL blocks (we never append now).
-                const SENTINEL_START = "\n\n---\nZdjęcia:\n";
-                const SENTINEL_RE = /\n\n---\nZdjęcia:\n[\s\S]*$/;
-
-                const stripBlock = () =>
-                    (msgEl.value || "").replace(SENTINEL_RE, "");
-
-                const urlById = new Map();
-
-                const toUrl = (entry) => {
-                    if (entry?.cdnUrl) return entry.cdnUrl;
-
-                    const uuid =
-                        entry?.uuid ||
-                        entry?.fileId ||
-                        entry?.file ||
-                        entry?.fileInfo?.uuid ||
-                        entry?.originalFileInfo?.uuid;
-
-                    return uuid ? `https://ucarecdn.com/${uuid}/` : null;
-                };
-
-                const render = () => {
-                    const urls = Array.from(urlById.values()).filter(Boolean);
-
-                    // ✅ Store URLs globally for main.js (do NOT show them inside textarea)
-                    window.__lexieUploadUrls = urls;
-
-                    // ✅ Ensure any old block is removed from the visible textarea (URL-e niewidoczne dla użytkownika)
-                    const base = stripBlock();
-                    if (msgEl.value !== base) msgEl.value = base;
-                };
-
-                // Listen on ctx-provider (these events are emitted there in your setup)
-                ctxEl.addEventListener("file-upload-success", (e) => {
-                    const entry = e.detail || {};
-                    const id =
-                        entry.internalId ||
-                        entry.uuid ||
-                        entry.fileId ||
-                        entry.file;
-                    const url = toUrl(entry);
-                    if (id && url) urlById.set(id, url);
-                    render();
-                });
-
-                ctxEl.addEventListener("file-url-changed", (e) => {
-                    const entry = e.detail || {};
-                    const id =
-                        entry.internalId ||
-                        entry.uuid ||
-                        entry.fileId ||
-                        entry.file;
-                    const url = toUrl(entry);
-                    if (id && url) urlById.set(id, url);
-                    render();
-                });
-
-                ctxEl.addEventListener("file-removed", (e) => {
-                    const entry = e.detail || {};
-                    const id =
-                        entry.internalId ||
-                        entry.uuid ||
-                        entry.fileId ||
-                        entry.file;
-                    if (id) urlById.delete(id);
-                    render();
-                });
-
-                // Make sure we snapshot URLs right before submit
-                form.addEventListener("submit", () => render(), true);
-
-                // Expose manual sync hook (used by main.js before sending)
-                window.__lexieSyncUploadUrls = render;
-
-                // Initial cleanup (if textarea contains stale block)
-                render();
-            })();
-        </script>
-    </body>
+</body>
 </html>

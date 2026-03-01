@@ -16,48 +16,40 @@
     <body>
         <header class="site-header">
             <div class="container">
-                <nav class="nav" aria-label="Nawigacja główna">
-                    <div class="nav__links">
+                <nav class="nav" aria-label="Nawigacja główna" data-nav>
+                    <button
+                        class="nav__toggle"
+                        type="button"
+                        aria-controls="navLinks"
+                        aria-expanded="false"
+                    >
+                        <span class="sr-only">Menu</span>
+                        <span class="nav__toggleIcon" aria-hidden="true"></span>
+                    </button>
+
+                    <div class="nav__links" id="navLinks" data-nav-links>
                         <a href="../">Strona główna</a>
+                        <a href="./" aria-current="page">Portfolio</a>
                         <a href="../faq/">FAQ</a>
                     </div>
 
                     <div class="nav__cta">
-                        <a
-                            class="btn btn--primary"
-                            href="../#contact"
-                            rel="noreferrer"
-                            >Zapisz się!</a
-                        >
+                        <a class="btn btn--primary" href="../#contact">Zapisz się!</a>
                     </div>
                 </nav>
             </div>
         </header>
 
         <main>
-            <div class="container" style="padding-bottom: 10vh">
-                <span
-                    style="
-                        font-size: 4.5vh;
-                        font-family: Chomsky;
-                        text-align: center;
-                        display: block;
-                        padding: 4vh 0;
-                        letter-spacing: -0.05em;
-                    "
-                >
-                    Portfolio - Lexie Salome
-                </span>
+            <section class="section section--page">
+                <div class="container">
+                    <h1 class="page-title">Portfolio — Lexie Salome</h1>
 
-                <div
-                    id="portfolioGrid"
-                    class="grid"
-                    aria-label="Portfolio (grid)"
-                ></div>
+                    <div id="portfolioGrid" class="grid" aria-label="Portfolio (grid)"></div>
 
                 <div class="toolbar">
                     <div>
-                        <div style="color: var(--muted); font-size: 13px">
+                        <div class="toolbar__meta">
                             Aktualizacja: <span data-updated>—</span>
                             <span aria-hidden="true"> · </span>
                             Kliknij zdjęcie, aby powiększyć
@@ -65,6 +57,7 @@
                     </div>
                 </div>
             </div>
+            </section>
 
             <!-- Lightbox -->
             <div
@@ -78,7 +71,7 @@
                     <img id="lightboxImg" class="lightbox__img" alt="" />
                     <div class="lightbox__bar">
                         <div id="lightboxCaption"></div>
-                        <div style="display: flex; gap: 10px">
+                        <div class="lightbox__actions">
                             <button
                                 id="lightboxPrev"
                                 class="btn"
@@ -117,15 +110,6 @@
                 </div>
             </div>
         </footer>
-
-        <script type="module">
-            // Ustaw rok w stopce (lokalnie, bez bundlera)
-            document
-                .querySelectorAll("[data-year]")
-                .forEach(
-                    (el) => (el.textContent = String(new Date().getFullYear())),
-                );
-        </script>
         <script type="module" src="../assets/js/portfolio.js"></script>
     </body>
 </html>
