@@ -285,25 +285,25 @@ a:hover {
     pointer-events: none;
 
     /* Background image under the mask */
-    background: url("../img/prism_bg.jpeg") center right / cover no-repeat;
+    background: url("../img/prism_bg.jpeg") bottom right / cover no-repeat;
     opacity: 0.95;
 
     /* Mask = animated “glow window” (fully hides image outside the mask) */
     -webkit-mask-image: radial-gradient(
-        circle calc(var(--mask-r) * 1) at calc(var(--mask-x) + 6%)
-            calc(var(--mask-y) + 12%),
+        circle calc(var(--mask-r) * 2) at calc(var(--mask-x) - 0%)
+            calc(var(--mask-y) - 1%),
         #000 0 35%,
-        transparent 72%
+        transparent 60%
     );
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-composite: source-over, source-over; /* “doklej” warstwy */
 
     /* standard (Firefox) – zwykle zadziała “wystarczająco” */
     mask-image: radial-gradient(
-        circle calc(var(--mask-r) * 1) at calc(var(--mask-x) + 6%)
-            calc(var(--mask-y) + 12%),
+        circle calc(var(--mask-r) * 2) at calc(var(--mask-x) - 0%)
+            calc(var(--mask-y) - 1%),
         #000 0 35%,
-        transparent 72%
+        transparent 60%
     );
     mask-repeat: no-repeat;
     -webkit-mask-repeat: no-repeat;
@@ -1201,12 +1201,8 @@ uc-copyright * {
     position: relative;
     z-index: 1;
 
-    -webkit-mask-image:
-        radial-gradient(circle at 55% 38%, #000 62%, transparent 82%),
-        linear-gradient(#000 78%, transparent 100%);
-    mask-image:
-        radial-gradient(circle at 55% 38%, #000 62%, transparent 82%),
-        linear-gradient(#000 78%, transparent 100%);
+    -webkit-mask-image: linear-gradient(#000 95%, transparent 100%);
+    mask-image: linear-gradient(#000 95%, transparent 100%);
 }
 
 .btn--ig {
