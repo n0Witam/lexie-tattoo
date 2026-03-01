@@ -306,33 +306,6 @@ a:hover {
     background: url("../img/prism_bg.jpeg") var(--bg-x) var(--bg-y) / cover
         no-repeat;
     opacity: var(--bg-alpha);
-
-    /* Mask = animated “glow window” (fully hides image outside the mask) */
-    -webkit-mask-image: radial-gradient(
-        circle calc(var(--mask-r) * 2) at calc(var(--mask-x) - 0%)
-            calc(var(--mask-y) - 1%),
-        #000 0 15%,
-        transparent 60%
-    );
-    -webkit-mask-repeat: no-repeat;
-    -webkit-mask-composite: source-over, source-over; /* “doklej” warstwy */
-
-    /* standard (Firefox) – zwykle zadziała “wystarczająco” */
-    mask-image: radial-gradient(
-        circle calc(var(--mask-r) * 2) at calc(var(--mask-x) - 0%)
-            calc(var(--mask-y) - 1%),
-        #000 0 15%,
-        transparent 60%
-    );
-    mask-repeat: no-repeat;
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-
-    -webkit-mask-size: 120% 120%;
-    mask-size: 120% 120%;
-
-    -webkit-mask-position: 60% 57%;
-    mask-position: 60% 57%;
 }
 
 /* Glow (jeśli używasz) powinien być nad tłem, ale pod sylwetką */
