@@ -574,6 +574,10 @@ a:hover {
         --prism-alpha: 1;
     }
 
+    .hero__logo {
+        margin-bottom: -15px;
+    }
+
     .hero__grid {
         grid-template-columns: 1fr;
         gap: 18px;
