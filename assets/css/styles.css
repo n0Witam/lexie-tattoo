@@ -392,7 +392,13 @@ a:hover {
 }
 
 .btn--ghost {
-    background: color-mix(in srgb, var(--bg) 16%, transparent);
+    background: rgba(23, 23, 23, 0.25); /* fallback */
+    background: color-mix(in srgb, var(--bg) 25%, transparent);
+
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+
+    border: 1px solid var(--border);
 }
 
 /* ====== Hero ====== */
