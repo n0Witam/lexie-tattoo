@@ -542,7 +542,7 @@ a:hover {
 }
 
 .hero__kicker {
-    color: var(--muted);
+    color: color-mix(in srgb, var(--muted) 80%, transparent);
     font-size: 14px;
     letter-spacing: 0.8px;
     text-transform: uppercase;
