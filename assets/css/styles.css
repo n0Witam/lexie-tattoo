@@ -34,10 +34,10 @@
 }
 
 @font-face {
-    font-family: "Abuget";
+    font-family: "TheSignature";
     src:
-        url("../fonts/Abuget.woff2") format("woff2"),
-        url("../fonts/Abuget.woff") format("woff");
+        url("../fonts/TheSignature.woff2") format("woff2"),
+        url("../fonts/TheSignature.woff") format("woff");
     font-weight: 400;
     font-style: normal;
     font-display: swap;
@@ -681,8 +681,8 @@ a:hover {
 }
 
 .page-title {
-    font-size: clamp(32px, 6vh, 54px);
-    font-family: "Abuget", ui-serif, Georgia, serif;
+    font-size: clamp(48px, 5vh, 64px);
+    font-family: "TheSignature", ui-serif, Georgia, serif;
     text-align: center;
     display: block;
     padding: 4vh 0;
