@@ -681,7 +681,7 @@ a:hover {
 }
 
 .page-title {
-    font-size: clamp(48px, 5vh, 64px);
+    font-size: clamp(52px, 5vh, 64px);
     font-family: "TheSignature", ui-serif, Georgia, serif;
     text-align: center;
     display: block;
