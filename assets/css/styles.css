@@ -178,6 +178,7 @@ a:hover {
     position: sticky;
     top: 0;
     z-index: 10;
+    transition: padding 0.22s ease;
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     background: color-mix(in srgb, var(--bg) 76%, transparent);
@@ -331,6 +332,8 @@ a:hover {
 @media (max-width: 720px) {
     .nav {
         position: relative;
+
+        align-items: flex-start; /* let header grow downward */
     }
 
     .nav__toggle {
@@ -338,11 +341,9 @@ a:hover {
     }
 
     .nav__links {
-        position: absolute;
-        top: calc(100% + 10px);
-        left: 0;
-        right: 0;
-        z-index: 20;
+        position: static; /* was absolute dropdown; now part of header flow */
+        width: 100%;
+        margin-top: 10px;
 
         flex-direction: column;
         gap: 6px;
@@ -350,19 +351,25 @@ a:hover {
 
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        /* More transparency so blur is actually visible */
-        background: rgba(23, 23, 23, 0.35);
-        background: color-mix(in srgb, var(--bg) 95%, transparent);
-        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.95);
 
+        /* glass background (blur visible) */
+        background: rgba(23, 23, 23, 0.35); /* fallback */
+        background: color-mix(in srgb, var(--bg) 85%, transparent);
+        -webkit-backdrop-filter: blur(16px);
+        backdrop-filter: blur(16px);
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.55);
+
+        /* smooth expand/collapse */
+        overflow: hidden;
+        max-height: 0;
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
-        transform: translateY(-6px);
+
         transition:
-            opacity 0.12s ease,
-            transform 0.12s ease,
-            visibility 0.12s;
+            max-height 0.28s cubic-bezier(0.2, 0.9, 0.2, 1),
+            opacity 0.18s ease,
+            visibility 0s linear 0.28s;
     }
 
     .nav__links a {
@@ -372,10 +379,14 @@ a:hover {
     }
 
     .nav.is-open .nav__links {
+        max-height: 60vh; /* enough for 3-6 links on small screens */
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
-        transform: translateY(0);
+        transition:
+            max-height 0.32s cubic-bezier(0.2, 0.9, 0.2, 1),
+            opacity 0.18s ease,
+            visibility 0s linear 0s;
     }
 }
 
