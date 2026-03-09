@@ -1387,6 +1387,7 @@ uc-copyright * {
 .lightbox__inner {
     width: min(920px, 100%);
     background: var(--bg);
+    margin-top: 6vh;
     border-radius: var(--radius);
     border: 1px solid var(--border);
     overflow: hidden;
