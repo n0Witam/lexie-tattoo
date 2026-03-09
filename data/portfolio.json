@@ -1,14 +1,25 @@
 {
   "version": 2,
   "updated": "2026-03-09",
-  "featuredOrder": ["p01", "p06", "p02", "p04", "p03", "p08"],
+  "featuredOrder": [
+    "p_5765",
+    "p01",
+    "p_2106",
+    "p02",
+    "p06",
+    "p_8331",
+    "p04",
+    "p03",
+    "p08",
+    "p_9993",
+    "p_4738",
+    "p_9025"
+  ],
   "groups": [
     {
       "id": "wolne-wzory",
       "name": "Wolne wzory",
       "items": [
-        "p_9622",
-        "p_8442",
         "p06",
         "p08",
         "p04",
@@ -132,7 +143,7 @@
       "id": "p_5765",
       "src": "../assets/img/portfolio/F256D8E8-020E-478E-B5A5-149E5CD23910.JPG",
       "alt": "Opis",
-      "featured": false
+      "featured": true
     },
     {
       "id": "p_3112",
@@ -240,7 +251,7 @@
       "id": "p_4738",
       "src": "../assets/img/portfolio/IMG_7923.JPG",
       "alt": "Opis",
-      "featured": false
+      "featured": true
     },
     {
       "id": "p_3323",
@@ -312,7 +323,7 @@
       "id": "p_2106",
       "src": "../assets/img/portfolio/IMG_9139.JPG",
       "alt": "Opis",
-      "featured": false
+      "featured": true
     },
     {
       "id": "p_1784",
@@ -414,7 +425,7 @@
       "id": "p_9025",
       "src": "../assets/img/portfolio/115.jpg",
       "alt": "Baba",
-      "featured": false
+      "featured": true
     },
     {
       "id": "p_1782",
@@ -450,7 +461,7 @@
       "id": "p_8331",
       "src": "../assets/img/portfolio/66.jpg",
       "alt": "Opis",
-      "featured": false
+      "featured": true
     },
     {
       "id": "p_5799",
@@ -486,7 +497,7 @@
       "id": "p_9993",
       "src": "../assets/img/portfolio/328.jpg",
       "alt": "Opis",
-      "featured": false
+      "featured": true
     }
   ]
 }
