@@ -125,6 +125,9 @@ function normalizeGroups(data, items) {
 
 async function renderPortfolio() {
   const root = qs("#portfolioGrid");
+  const view = (
+    document.body?.dataset?.portfolioView || "portfolio"
+  ).toLowerCase();
   if (!root) return;
 
   try {
@@ -145,25 +148,49 @@ async function renderPortfolio() {
     root.innerHTML = "";
 
     const lightboxEnabled = window.matchMedia(
-      "(hover: hover) and (pointer: fine)"
+      "(hover: hover) and (pointer: fine)",
     ).matches;
 
     const orderedForLightbox = [];
     const lb = lightboxEnabled ? setupLightbox(orderedForLightbox) : null;
 
-    const groups = normalizeGroups(data, items);
+    const groupsAll = normalizeGroups(data, items);
 
-    const freeGroup = groups.find((g) =>
-      String(g?.name || "").trim().toLowerCase() === DEFAULT_GROUP_KEY ||
-      String(g?.id || "").toLowerCase().includes("wolne")
+    const freeGroup = groupsAll.find(
+      (g) =>
+        String(g?.name || "")
+          .trim()
+          .toLowerCase() === DEFAULT_GROUP_KEY ||
+        String(g?.id || "")
+          .toLowerCase()
+          .includes("wolne"),
     );
 
-    const freeIds = Array.isArray(data.freePatternIds) ? data.freePatternIds : null;
+    const freeIds = Array.isArray(data.freePatternIds)
+      ? data.freePatternIds
+      : null;
     const freeSet = new Set(
-      freeIds && freeIds.length ? freeIds : freeGroup?.items || []
+      freeIds && freeIds.length ? freeIds : freeGroup?.items || [],
     );
 
     let renderedAny = false;
+
+    const isFreeGroup = (g) => {
+      const name = String(g?.name || "")
+        .trim()
+        .toLowerCase();
+      const id = String(g?.id || "")
+        .trim()
+        .toLowerCase();
+      return name === DEFAULT_GROUP_KEY || id.includes("wolne");
+    };
+
+    const groups =
+      view === "available"
+        ? freeGroup
+          ? [freeGroup]
+          : []
+        : groupsAll.filter((g) => !isFreeGroup(g));
 
     for (const group of groups) {
       const ids = (group.items || []).filter((id) => byId.has(id));
@@ -205,9 +232,12 @@ async function renderPortfolio() {
         if (isFreePattern) {
           tile.dataset.freePattern = "1";
 
-          const badge = document.createElement("div");
-          badge.className = "slide__badge";
-          badge.textContent = "Wolny wzór!";
+          let badge = null;
+          if (view !== "available") {
+            badge = document.createElement("div");
+            badge.className = "slide__badge";
+            badge.textContent = "Wolny wzór!";
+          }
 
           const ctaWrap = document.createElement("div");
           ctaWrap.className = "slide__ctaWrap";
@@ -223,7 +253,8 @@ async function renderPortfolio() {
           ctaBtn.addEventListener("keydown", (e) => e.stopPropagation());
 
           ctaWrap.appendChild(ctaBtn);
-          tile.append(badge, ctaWrap);
+          if (badge) tile.append(badge);
+          tile.append(ctaWrap);
         }
 
         if (lightboxEnabled && lb) {
