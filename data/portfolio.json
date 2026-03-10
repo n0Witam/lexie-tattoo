@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "updated": "2026-03-09",
+  "version": 3,
+  "updated": "2026-03-10",
   "featuredOrder": [
     "p_5765",
     "p01",
@@ -20,6 +20,8 @@
       "id": "wolne-wzory",
       "name": "Wolne wzory",
       "items": [
+        "p_2106",
+        "p_4738",
         "p06",
         "p08",
         "p04",
@@ -29,7 +31,6 @@
         "p_5827",
         "p_5765",
         "p_3112",
-        "p_7082",
         "p_5784",
         "p_9742",
         "p_4874",
@@ -45,7 +46,6 @@
         "p_2460",
         "p_9179",
         "p_6614",
-        "p_4738",
         "p_3323",
         "p_7875",
         "p_3679",
@@ -56,8 +56,7 @@
         "p_6710",
         "p_6933",
         "p_6880",
-        "p_3137",
-        "p_2106"
+        "p_3137"
       ]
     },
     {
@@ -97,6 +96,18 @@
     }
   ],
   "items": [
+    {
+      "id": "p_2106",
+      "src": "../assets/img/portfolio/IMG_9139.JPG",
+      "alt": "Opis",
+      "featured": true
+    },
+    {
+      "id": "p_4738",
+      "src": "../assets/img/portfolio/IMG_7923.JPG",
+      "alt": "Opis",
+      "featured": true
+    },
     {
       "id": "p06",
       "src": "../assets/img/portfolio/mucha1.png",
@@ -242,12 +253,6 @@
       "featured": false
     },
     {
-      "id": "p_4738",
-      "src": "../assets/img/portfolio/IMG_7923.JPG",
-      "alt": "Opis",
-      "featured": true
-    },
-    {
       "id": "p_3323",
       "src": "../assets/img/portfolio/IMG_7930.JPG",
       "alt": "Opis",
@@ -312,12 +317,6 @@
       "src": "../assets/img/portfolio/IMG_9070.JPG",
       "alt": "Opis",
       "featured": false
-    },
-    {
-      "id": "p_2106",
-      "src": "../assets/img/portfolio/IMG_9139.JPG",
-      "alt": "Opis",
-      "featured": true
     },
     {
       "id": "p_1784",
