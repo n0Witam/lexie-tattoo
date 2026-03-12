@@ -119,7 +119,7 @@ export function initSite() {
 // -----------------------------
 
 const NAME_RE = /^[A-Za-zÀ-ÖØ-öø-ÿĄąĆćĘęŁłŃńÓóŚśŹźŻż'\-\s]{2,60}$/;
-const PHONE_RE = /^\+?[0-9\s\-]{7,20}$/;
+const EMAIL_RE = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/i;
 
 function normalizeSpaces(v) {
   return String(v || "")
@@ -156,11 +156,20 @@ function validateName(el) {
   return true;
 }
 
-function validatePhone(el) {
-  const v = normalizeSpaces(el.value);
-  if (!v) return (setFieldError(el, "Podaj numer telefonu."), false);
-  if (!PHONE_RE.test(v))
-    return (setFieldError(el, "Podaj poprawny numer telefonu."), false);
+function validateEmail(el) {
+  const v = normalizeSpaces(el.value).toLowerCase();
+  if (!v) return (setFieldError(el, "Podaj adres e-mail."), false);
+
+  // Najpierw podstawowa walidacja przeglądarki dla type="email"
+  if (typeof el.checkValidity === "function" && !el.checkValidity()) {
+    return (setFieldError(el, "Podaj poprawny adres e-mail."), false);
+  }
+
+  // Dodatkowy regex jako zabezpieczenie
+  if (!EMAIL_RE.test(v)) {
+    return (setFieldError(el, "Podaj poprawny adres e-mail."), false);
+  }
+
   clearFieldError(el);
   return true;
 }
@@ -177,17 +186,17 @@ function validateMessage(el) {
   return true;
 }
 
-function bindLiveValidation({ nameEl, phoneEl, msgEl }) {
+function bindLiveValidation({ nameEl, emailEl, msgEl }) {
   nameEl?.addEventListener("input", () => clearFieldError(nameEl));
-  phoneEl?.addEventListener("input", () => clearFieldError(phoneEl));
+  emailEl?.addEventListener("input", () => clearFieldError(emailEl));
   msgEl?.addEventListener("input", () => clearFieldError(msgEl));
 }
 
-function validateAll({ nameEl, phoneEl, msgEl }) {
+function validateAll({ nameEl, emailEl, msgEl }) {
   const okName = validateName(nameEl);
-  const okPhone = validatePhone(phoneEl);
+  const okEmail = validateEmail(emailEl);
   const okMsg = validateMessage(msgEl);
-  return okName && okPhone && okMsg;
+  return okName && okEmail && okMsg;
 }
 
 // -----------------------------
@@ -319,13 +328,13 @@ export async function setupContactForm() {
   form.setAttribute("action", GFORM_ACTION);
 
   const nameEl = qs("#name", form);
-  const phoneEl = qs("#mobile", form);
+  const emailEl = qs("#email", form);
   const msgEl = qs("#msg", form);
   const statusEl = qs(".form__status", form);
   const iframe = qs("#gformIframe");
   const uploadUrlsEl = qs("#uploadUrls", form);
 
-  if (!nameEl || !phoneEl || !msgEl) return;
+  if (!nameEl || !emailEl || !msgEl) return;
 
   // Ensure Uploadcare components are defined (only if present).
   const ctxEl = qs("#lexieUploadCtx");
@@ -333,7 +342,7 @@ export async function setupContactForm() {
 
   const collector = ctxEl ? createUploadcareCollector(ctxEl) : null;
 
-  bindLiveValidation({ nameEl, phoneEl, msgEl });
+  bindLiveValidation({ nameEl, emailEl, msgEl });
 
   const setStatus = (text) => {
     if (!statusEl) return;
@@ -353,7 +362,7 @@ export async function setupContactForm() {
   form.addEventListener("submit", (e) => {
     setStatus("");
 
-    const ok = validateAll({ nameEl, phoneEl, msgEl });
+    const ok = validateAll({ nameEl, emailEl, msgEl });
     if (!ok) {
       e.preventDefault();
       return;
@@ -415,10 +424,16 @@ function ensureFreePatternModal() {
               <input id="fp_name" name="entry.2005620554" autocomplete="name" required />
             </div>
 
-            <div class="field">
-              <label for="fp_mobile">Telefon</label>
-              <input id="fp_mobile" name="entry.1166974658" type="tel" inputmode="tel" autocomplete="tel" required />
-            </div>
+            <label for="fp_email">E-Mail</label>
+            <input
+              id="fp_email"
+              name="entry.1166974658"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
+              required
+            />
 
             <div class="field">
               <label for="fp_msg">Wiadomość</label>
@@ -482,17 +497,17 @@ function setupFreePatternForm(modal) {
   form.setAttribute("action", GFORM_ACTION);
 
   const nameEl = qs("#fp_name", form);
-  const phoneEl = qs("#fp_mobile", form);
+  const emailEl = qs("#fp_email", form);
   const msgEl = qs("#fp_msg", form);
   const statusEl = qs("#fp_status", form);
 
-  bindLiveValidation({ nameEl, phoneEl, msgEl });
+  bindLiveValidation({ nameEl, emailEl, msgEl });
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (statusEl) statusEl.textContent = "";
 
-    const ok = validateAll({ nameEl, phoneEl, msgEl });
+    const ok = validateAll({ nameEl, emailEl, msgEl });
     if (!ok) return;
 
     if (statusEl) statusEl.textContent = "Wysyłanie…";
