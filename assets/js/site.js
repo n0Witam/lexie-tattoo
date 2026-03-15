@@ -424,6 +424,7 @@ function ensureFreePatternModal() {
               <input id="fp_name" name="entry.2005620554" autocomplete="name" required />
             </div>
 
+            <div class="field">
             <label for="fp_email">E-Mail</label>
             <input
               id="fp_email"
@@ -434,6 +435,7 @@ function ensureFreePatternModal() {
               pattern="[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
               required
             />
+            </div>
 
             <div class="field">
               <label for="fp_msg">Wiadomość</label>
@@ -486,7 +488,7 @@ function buildFreePatternMessageForSubmit(visibleText, imgUrl) {
     .join("\n")
     .trimEnd();
 
-  const header = imgUrl ? `• Wybrany wzór: ${imgUrl}\n` : "";
+  const header = imgUrl ? `✧ Wybrany wzór: ${imgUrl}\n` : "";
   return (header + cleaned).trimEnd() + "\n";
 }
 
