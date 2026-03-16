@@ -221,8 +221,6 @@ a:hover {
     /* Fallback first, then modern color-mix */
     background: rgba(23, 23, 23, 0.45);
     background: color-mix(in srgb, var(--bg) 55%, transparent);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
 }
 
 .nav__links a {
@@ -1540,7 +1538,7 @@ uc-copyright * {
 
 /* ======== snap scroll (DESKTOP ONLY) ======== */
 
-/* domyślnie: bez snapa (mobile/tablet) */
+/* domyślnie: bez snapa (mobile/tablet)
 html.home {
     scroll-snap-type: none;
     scroll-padding-top: var(--header-h, 72px);
@@ -1551,19 +1549,21 @@ html.home main > section {
     scroll-snap-stop: normal;
 }
 
-/* tylko desktop + mysz/trackpad */
+/* tylko desktop + mysz/trackpad
 @media (min-width: 1200px) and (hover: hover) and (pointer: fine) {
     html.home {
         scroll-snap-type: y mandatory;
-        scroll-padding-top: var(--header-h, 72px); /* sticky header */
+        scroll-padding-top: var(--header-h, 72px); /* sticky header
     }
 
     html.home main > section {
         scroll-snap-align: start;
-        /* scroll-snap-stop na Y potrafi pogarszać UX — lepiej normal */
+        /* scroll-snap-stop na Y potrafi pogarszać UX — lepiej normal
         scroll-snap-stop: normal;
     }
 }
+
+*/
 
 /* ====== FAQ (accordion) ====== */
 
