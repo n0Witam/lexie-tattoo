@@ -5,6 +5,7 @@
 :root {
     --bg: #171717;
     --bg-2: #101114;
+    --bg-3: #1d1c1c;
     --text: #fbf8f4;
     --muted: rgba(244, 244, 245, 0.72);
     --border: rgba(244, 244, 245, 0.12);
@@ -24,6 +25,7 @@
     :root {
         --bg: #fbf8f4;
         --bg-2: #f5f6f8;
+        --bg-3: #f6f2ef;
         --text: #171717;
         --muted: rgba(11, 11, 12, 0.68);
         --border: rgba(11, 11, 12, 0.12);
@@ -854,19 +856,19 @@ a:hover {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 56px;
+    width: 50px;
     pointer-events: none;
     z-index: 2;
 }
 
 .carousel::before {
     left: 0;
-    background: linear-gradient(90deg, var(--bg) 0%, transparent 100%);
+    background: linear-gradient(90deg, var(--bg-3) 0%, transparent 100%);
 }
 
 .carousel::after {
     right: 0;
-    background: linear-gradient(270deg, var(--bg) 0%, transparent 100%);
+    background: linear-gradient(270deg, var(--bg-3) 0%, transparent 100%);
 }
 
 .carousel__track {
@@ -892,12 +894,10 @@ a:hover {
     flex: 0 0 var(--slide-w);
     scroll-snap-align: center;
     scroll-snap-stop: always;
-
     border-radius: var(--radius);
     overflow: hidden;
-    border: 1px solid var(--border);
     background: var(--bg-2);
-    box-shadow: var(--shadow);
+    box-shadow: 0 7px 10px rgba(0, 0, 0, 0.24);
     position: relative;
     aspect-ratio: 4/5;
 }
@@ -1664,4 +1664,143 @@ html.home main > section {
 
 .faq-list li {
     margin: 6px 0;
+}
+
+/* ====== Reviews ====== */
+
+.section--reviews {
+    overflow: clip;
+}
+
+.reviews__header {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.reviews__title {
+    margin-bottom: 0;
+}
+
+.reviews__lead,
+.reviews__empty {
+    margin: 0;
+    color: var(--muted);
+    max-width: 720px;
+}
+
+.carousel--reviews {
+    --slide-w: clamp(300px, 58vw, 500px);
+    --gap: 28px;
+}
+
+.carousel__track--reviews {
+    align-items: stretch;
+    padding-block: 10px 22px;
+}
+
+.review-card {
+    aspect-ratio: auto;
+    min-height: 260px;
+    padding: 24px 25px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    border: 1px solid color-mix(in srgb, var(--border) 86%, transparent);
+    box-shadow: 0 7px 10px rgba(0, 0, 0, 0.24);
+}
+
+.review-card__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.review-card__identity {
+    display: grid;
+    gap: 6px;
+}
+
+.review-card__name {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.review-card__year {
+    display: inline-flex;
+    width: fit-content;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: 0.35px;
+}
+
+.review-card__stars {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    opacity: 0.92;
+    flex: 0 0 auto;
+}
+
+.review-card__star {
+    width: 18px;
+    height: 18px;
+    fill: transparent;
+    stroke: color-mix(in srgb, var(--accent) 65%, var(--border));
+    stroke-width: 1.2;
+}
+
+.review-card__star.is-filled {
+    fill: #c0ae99;
+    stroke: #c0ae99;
+}
+
+.review-card__text {
+    margin: 0;
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.75;
+    display: -webkit-box;
+    -webkit-line-clamp: 8;
+    line-clamp: 8;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+@media (max-width: 900px) {
+    .carousel--reviews {
+        --slide-w: min(90vw, 560px);
+    }
+
+    .review-card {
+        min-height: 240px;
+        padding: 22px 20px 20px;
+    }
+
+    .review-card__top {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .review-card__stars {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 600px) {
+    .review-card__text {
+        font-size: 13px;
+        line-height: 1.7;
+        -webkit-line-clamp: 9;
+        line-clamp: 9;
+    }
 }

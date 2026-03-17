@@ -1,7 +1,40 @@
-import { fetchJSON, resolveUrl, qs, qsa } from "./util.js";
+import { fetchJSON, qs, qsa } from "./util.js";
 import { initSite, openFreePatternModal, setupContactForm } from "./site.js";
 
 const DATA_URL = "./data/portfolio.json";
+const REVIEWS_URL = "./data/reviews.json";
+
+function normalizeReviewText(value = "") {
+  return String(value)
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/\r\n/g, "\n")
+    .trim();
+}
+
+function escapeHTML(value = "") {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function renderStars(rating = 5) {
+  const safeRating = Math.max(0, Math.min(5, Number(rating) || 0));
+  return Array.from({ length: 5 }, (_, index) => {
+    const filled = index < safeRating;
+    return `
+      <svg
+        class="review-card__star${filled ? " is-filled" : ""}"
+        viewBox="0 0 20 20"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M10 1.2l2.46 4.98 5.5.8-3.98 3.88.94 5.48L10 13.76l-4.92 2.58.94-5.48L2.04 6.98l5.5-.8L10 1.2z"></path>
+      </svg>`;
+  }).join("");
+}
 
 /* ============================================================
    Carousel
@@ -27,7 +60,7 @@ function setupCarousel(root) {
     if (t && t.tagName === "IMG") e.preventDefault();
   });
 
-  const slidesAll = () => Array.from(track.querySelectorAll(".slide"));
+  const slidesAll = () => Array.from(track.querySelectorAll("[data-slide]"));
 
   const getStep = () => {
     const slides = slidesAll();
@@ -98,14 +131,14 @@ function setupCarousel(root) {
     centerToIndex(getCenteredIndex() - 1, behavior);
   };
 
-  // Desktop: click slide to center
   const isDesktopPointer = window.matchMedia(
     "(hover: hover) and (pointer: fine)",
   ).matches;
 
   if (isDesktopPointer) {
     track.addEventListener("click", (e) => {
-      const slide = e.target.closest(".slide");
+      if (e.target.closest(".slide__ctaBtn")) return;
+      const slide = e.target.closest("[data-slide]");
       if (!slide) return;
       const slides = slidesAll();
       const idx = slides.indexOf(slide);
@@ -116,24 +149,38 @@ function setupCarousel(root) {
     });
   }
 
-  // Desktop: invisible prev/next hit-areas (56px) – inserted once
+  track.addEventListener("click", (e) => {
+    const button = e.target.closest(".slide__ctaBtn");
+    if (!button) return;
+
+    const slide = button.closest("[data-free-pattern='1']");
+    if (!slide) return;
+
+    const src = slide.dataset.imageSrc;
+    const alt = slide.dataset.imageAlt || "Wolny wzór Lexie";
+    if (!src) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    openFreePatternModal(src, alt);
+  });
+
   if (isDesktopPointer && !root.querySelector(".carousel__nav--prev")) {
     const btnPrev = document.createElement("button");
     btnPrev.type = "button";
     btnPrev.className = "carousel__nav carousel__nav--prev";
-    btnPrev.setAttribute("aria-label", "Poprzednie zdjęcie");
+    btnPrev.setAttribute("aria-label", "Poprzedni slajd");
     btnPrev.addEventListener("click", () => prev());
 
     const btnNext = document.createElement("button");
     btnNext.type = "button";
     btnNext.className = "carousel__nav carousel__nav--next";
-    btnNext.setAttribute("aria-label", "Następne zdjęcie");
+    btnNext.setAttribute("aria-label", "Następny slajd");
     btnNext.addEventListener("click", () => next());
 
     root.append(btnPrev, btnNext);
   }
 
-  // ========== Loop clones ==========
   const initLoop = () => {
     if (track.dataset.loopInit === "1") return;
 
@@ -202,7 +249,6 @@ function setupCarousel(root) {
     );
   };
 
-  // ========== Autoplay ==========
   const autoplayMs = Number(root.getAttribute("data-autoplay") || "5000");
   const enabledAutoplay = Number.isFinite(autoplayMs) && autoplayMs > 0;
 
@@ -237,7 +283,6 @@ function setupCarousel(root) {
   track.addEventListener("touchstart", pauseOnUser, { passive: true });
   track.addEventListener("wheel", pauseOnUser, { passive: true });
 
-  // ========== CTA arming ==========
   let armT = null;
   let armDebounceT = null;
 
@@ -275,8 +320,6 @@ function setupCarousel(root) {
 
   initLoop();
   start();
-
-  // initial arm after initial loop jump
   window.setTimeout(armCenteredCta, 900);
 }
 
@@ -293,7 +336,6 @@ async function renderFeatured() {
     const items = Array.isArray(data.items) ? data.items : [];
     const byId = new Map(items.map((x) => [x.id, x]));
 
-    // IDs in "Wolne wzory" group
     const groups = Array.isArray(data.groups) ? data.groups : [];
     const freeGroup = groups.find(
       (g) =>
@@ -305,7 +347,6 @@ async function renderFeatured() {
     const freeIds = Array.isArray(freeIdsRaw) ? freeIdsRaw : [];
     const freeSet = new Set(freeIds);
 
-    // Order: featuredOrder + append missing featured
     const seen = new Set();
     const featuredIds = [];
 
@@ -339,7 +380,7 @@ async function renderFeatured() {
     carouselTrack.innerHTML = "";
 
     for (const item of featured) {
-      const src = resolveUrl(item.src, url);
+      const src = new URL(item.src, url).toString();
 
       const img = document.createElement("img");
       img.src = src;
@@ -350,9 +391,12 @@ async function renderFeatured() {
 
       const fig = document.createElement("figure");
       fig.className = "slide";
+      fig.dataset.slide = "1";
 
       if (freeSet.has(item.id)) {
         fig.dataset.freePattern = "1";
+        fig.dataset.imageSrc = src;
+        fig.dataset.imageAlt = img.alt;
 
         const badge = document.createElement("div");
         badge.className = "slide__badge";
@@ -366,11 +410,6 @@ async function renderFeatured() {
         btn.type = "button";
         btn.className = "slide__ctaBtn btn btn--primary";
         btn.textContent = "Chcę ten wzór!";
-        btn.addEventListener("click", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          openFreePatternModal(src, img.alt);
-        });
 
         ctaWrap.append(btn);
         fig.append(ctaWrap);
@@ -389,16 +428,61 @@ async function renderFeatured() {
 }
 
 /* ============================================================
-   Boot
+   Reviews carousel
    ============================================================ */
+async function renderReviews() {
+  const track = qs("#reviewsTrack");
+  if (!track) return;
 
+  try {
+    const { data } = await fetchJSON(REVIEWS_URL);
+    const items = Array.isArray(data.items) ? data.items : [];
+    const featured = items.filter((item) => item && item.featured !== false);
+
+    if (!featured.length) {
+      track.innerHTML =
+        '<p class="reviews__empty">Opinie pojawią się wkrótce.</p>';
+      return;
+    }
+
+    track.innerHTML = featured
+      .map((item) => {
+        const name = escapeHTML(item.name || "Anonimowa opinia");
+        const year = item.year
+          ? `<span class="review-card__year">${escapeHTML(item.year)}</span>`
+          : "";
+        const content = escapeHTML(normalizeReviewText(item.content)).replace(
+          /\n/g,
+          "<br>",
+        );
+        const rating = Number(item.star) || 5;
+
+        return `
+          <article class="slide review-card" data-slide="1" aria-label="Opinia klientki lub klienta od ${name}">
+            <div class="review-card__top">
+              <div class="review-card__identity">
+                <h3 class="review-card__name">${name}</h3>
+              </div>
+              <div class="review-card__stars" aria-label="Ocena ${rating} na 5">
+                ${renderStars(rating)}
+              </div>
+            </div>
+            <p class="review-card__text">${content}</p>
+          </article>`;
+      })
+      .join("");
+  } catch (error) {
+    console.error(error);
+    track.innerHTML =
+      '<p class="reviews__empty">Nie udało się wczytać opinii.</p>';
+  }
+}
 
 window.addEventListener("DOMContentLoaded", async () => {
   initSite();
 
-  await renderFeatured();
+  await Promise.all([renderFeatured(), renderReviews()]);
   qsa("[data-carousel]").forEach(setupCarousel);
 
-  // Home page only.
   await setupContactForm();
 });
