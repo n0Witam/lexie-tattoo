@@ -72,6 +72,7 @@ function setupCarousel(root) {
   const prefersReduced = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
   ).matches;
+  const isCoarsePointer = window.matchMedia("(hover: none), (pointer: coarse)").matches;
 
   // ========== Center-snap helpers ==========
   const getSlideCenterInTrack = (el) => el.offsetLeft + el.offsetWidth / 2;
@@ -95,11 +96,13 @@ function setupCarousel(root) {
     return best;
   };
 
-  const updateSlideStates = () => {
+  let settledIndex = 0;
+
+  const updateSlideStates = (forcedIndex = settledIndex) => {
     const slides = slidesAll();
     if (!slides.length) return;
 
-    const centered = getCenteredIndex();
+    const centered = Math.max(0, Math.min(slides.length - 1, forcedIndex));
     slides.forEach((el, i) => {
       el.classList.remove("is-center", "is-prev", "is-next", "is-far");
 
@@ -135,11 +138,17 @@ function setupCarousel(root) {
     idx = Math.max(0, Math.min(slides.length - 1, idx));
     const el = slides[idx];
 
-    markProgrammatic(350);
+    markProgrammatic(behavior === "auto" ? 80 : 350);
     track.scrollTo({
       left: getTargetScrollLeft(el),
       behavior,
     });
+  };
+
+  const getSettleBehavior = () => {
+    if (prefersReduced) return "auto";
+    if (isCoarsePointer) return "auto";
+    return "smooth";
   };
 
   const next = () => {
@@ -205,6 +214,11 @@ function setupCarousel(root) {
   let normalizeLoop = () => {};
   let scrollEndT = null;
   let loopState = null;
+  let pointerDown = false;
+  let dragStartX = 0;
+  let dragLastX = 0;
+  let dragStartTime = 0;
+  let gestureBaseIndex = 0;
 
   const initLoop = () => {
     if (track.dataset.loopInit === "1") return;
@@ -241,7 +255,8 @@ function setupCarousel(root) {
       const initial = initialSlides[initialIdx] || initialSlides[cloneCount] || initialSlides[0];
       if (!initial) return;
       track.scrollLeft = getTargetScrollLeft(initial);
-      updateSlideStates();
+      settledIndex = initialIdx;
+      updateSlideStates(settledIndex);
       scheduleArmCenteredCta();
     });
 
@@ -265,7 +280,10 @@ function setupCarousel(root) {
       if (Number.isNaN(originalIdx)) return;
 
       const targetIdx = loopState.cloneCount + originalIdx;
-      if (centeredIdx === targetIdx) return;
+      if (centeredIdx === targetIdx) {
+        settledIndex = targetIdx;
+        return;
+      }
 
       const targetSlide = slidesNow[targetIdx];
       if (!targetSlide) return;
@@ -274,7 +292,8 @@ function setupCarousel(root) {
       markProgrammatic(220);
       track.scrollLeft = getTargetScrollLeft(targetSlide);
       requestAnimationFrame(() => {
-        updateSlideStates();
+        settledIndex = targetIdx;
+        updateSlideStates(settledIndex);
         scheduleArmCenteredCta();
         loopState.lock = false;
       });
@@ -315,6 +334,54 @@ function setupCarousel(root) {
   track.addEventListener("touchstart", pauseOnUser, { passive: true });
   track.addEventListener("wheel", pauseOnUser, { passive: true });
 
+  const finishGesture = () => {
+    if (!pointerDown) return;
+
+    pointerDown = false;
+    root.classList.remove("is-pointer-down");
+
+    if (!isCoarsePointer) return;
+
+    const slides = slidesAll();
+    if (!slides.length) return;
+
+    const dt = Math.max(1, performance.now() - dragStartTime);
+    const deltaX = dragLastX - dragStartX;
+    const velocity = deltaX / dt;
+    const slideWidth = slides[Math.max(0, Math.min(slides.length - 1, gestureBaseIndex))]?.offsetWidth || track.clientWidth;
+    const threshold = Math.min(72, Math.max(28, slideWidth * 0.16));
+    let target = gestureBaseIndex;
+
+    if (Math.abs(deltaX) > threshold || Math.abs(velocity) > 0.35) {
+      target += deltaX < 0 ? 1 : -1;
+    } else {
+      target = getCenteredIndex();
+    }
+
+    target = Math.max(0, Math.min(slides.length - 1, target));
+    settledIndex = target;
+    updateSlideStates(settledIndex);
+    centerToIndex(target, getSettleBehavior());
+    scheduleArmCenteredCta();
+  };
+
+  track.addEventListener("pointerdown", (e) => {
+    pointerDown = true;
+    dragStartX = e.clientX;
+    dragLastX = e.clientX;
+    dragStartTime = performance.now();
+    gestureBaseIndex = getCenteredIndex();
+    root.classList.add("is-pointer-down");
+  }, { passive: true });
+
+  track.addEventListener("pointermove", (e) => {
+    if (!pointerDown) return;
+    dragLastX = e.clientX;
+  }, { passive: true });
+
+  window.addEventListener("pointerup", finishGesture, { passive: true });
+  window.addEventListener("pointercancel", finishGesture, { passive: true });
+
   let armT = null;
   let armDebounceT = null;
 
@@ -349,31 +416,49 @@ function setupCarousel(root) {
   };
 
   const onScroll = () => {
-    updateSlideStates();
+    if (!(pointerDown && isCoarsePointer)) {
+      updateSlideStates(getCenteredIndex());
+    }
     scheduleArmCenteredCta();
 
     if (scrollEndT) clearTimeout(scrollEndT);
     scrollEndT = setTimeout(() => {
+      if (pointerDown) return;
+
       normalizeLoop();
 
-      if (!isProgrammatic()) {
-        const behavior = prefersReduced ? "auto" : "smooth";
-        centerToIndex(getCenteredIndex(), behavior);
+      const centered = getCenteredIndex();
+      const slides = slidesAll();
+      const current = slides[centered];
+      if (!current) return;
+
+      const targetLeft = getTargetScrollLeft(current);
+      const shouldSettle = Math.abs(track.scrollLeft - targetLeft) > 1;
+
+      settledIndex = centered;
+      updateSlideStates(settledIndex);
+
+      if (!isProgrammatic() && shouldSettle) {
+        centerToIndex(centered, getSettleBehavior());
+        return;
       }
-    }, 120);
+
+      scheduleArmCenteredCta();
+    }, 90);
   };
 
   track.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", () => {
-    updateSlideStates();
-    const behavior = prefersReduced ? "auto" : "smooth";
-    centerToIndex(getCenteredIndex(), behavior);
+    settledIndex = getCenteredIndex();
+    updateSlideStates(settledIndex);
+    centerToIndex(settledIndex, "auto");
   }, { passive: true });
 
   initLoop();
   window.setTimeout(() => {
-    updateSlideStates();
-    centerToIndex(getCenteredIndex(), "auto");
+    settledIndex = getCenteredIndex();
+    updateSlideStates(settledIndex);
+    centerToIndex(settledIndex, "auto");
   }, 80);
   start();
   window.setTimeout(armCenteredCta, 900);
