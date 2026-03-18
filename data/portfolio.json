@@ -1,19 +1,16 @@
 {
   "version": 3,
-  "updated": "2026-03-10",
+  "updated": "2026-03-18",
   "featuredOrder": [
-    "p_5765",
+    "p_9857",
     "p01",
-    "p_2106",
-    "p02",
-    "p06",
-    "p_8331",
-    "p04",
-    "p03",
-    "p08",
     "p_9993",
-    "p_4738",
-    "p_9025"
+    "p02",
+    "p_4574",
+    "p03",
+    "p_9025",
+    "p_5687",
+    "p_6820"
   ],
   "groups": [
     {
@@ -100,31 +97,31 @@
       "id": "p_2106",
       "src": "../assets/img/portfolio/IMG_9139.JPG",
       "alt": "Opis",
-      "featured": true
+      "featured": false
     },
     {
       "id": "p_4738",
       "src": "../assets/img/portfolio/IMG_7923.JPG",
       "alt": "Opis",
-      "featured": true
+      "featured": false
     },
     {
       "id": "p06",
       "src": "../assets/img/portfolio/mucha1.png",
       "alt": "Alfons Mucha – Odpoczynek nocy",
-      "featured": true
+      "featured": false
     },
     {
       "id": "p08",
       "src": "../assets/img/portfolio/wiedzma.png",
       "alt": "Wiedźma",
-      "featured": true
+      "featured": false
     },
     {
       "id": "p04",
       "src": "../assets/img/portfolio/faun.png",
       "alt": "Faun",
-      "featured": true
+      "featured": false
     },
     {
       "id": "p_3052",
@@ -154,7 +151,7 @@
       "id": "p_5765",
       "src": "../assets/img/portfolio/F256D8E8-020E-478E-B5A5-149E5CD23910.JPG",
       "alt": "Opis",
-      "featured": true
+      "featured": false
     },
     {
       "id": "p_3112",
@@ -346,7 +343,7 @@
       "id": "p_9857",
       "src": "../assets/img/portfolio/125.jpg",
       "alt": "Baba ale płacze",
-      "featured": false
+      "featured": true
     },
     {
       "id": "p_4487",
@@ -358,7 +355,7 @@
       "id": "p_6820",
       "src": "../assets/img/portfolio/229.jpg",
       "alt": "Narsil",
-      "featured": false
+      "featured": true
     },
     {
       "id": "p_5595",
@@ -430,13 +427,13 @@
       "id": "p_4574",
       "src": "../assets/img/portfolio/180.jpg",
       "alt": "Opis",
-      "featured": false
+      "featured": true
     },
     {
       "id": "p_5687",
       "src": "../assets/img/portfolio/62.jpg",
       "alt": "Opis",
-      "featured": false
+      "featured": true
     },
     {
       "id": "p02",
@@ -454,7 +451,7 @@
       "id": "p_8331",
       "src": "../assets/img/portfolio/66.jpg",
       "alt": "Opis",
-      "featured": true
+      "featured": false
     },
     {
       "id": "p_5799",

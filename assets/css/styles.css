@@ -107,7 +107,6 @@ body > footer {
 @media (min-width: 600px) {
     body:not(.no-justify) p,
     body:not(.no-justify) li {
-        text-align: justify;
         text-wrap: pretty;
     }
 }
@@ -814,7 +813,7 @@ a:hover {
     top: 0;
     bottom: 0;
     width: 56px;
-    z-index: 3;
+    z-index: 5;
     background: transparent;
     border: 0;
     padding: 0;
@@ -833,23 +832,6 @@ a:hover {
     box-shadow: var(--focus);
 }
 
-@media (max-width: 600px) {
-    .carousel {
-        --slide-w: 90vw; /* trochę większe slajdy */
-        --gap: 0px; /* mniejsza przerwa */
-    }
-
-    .carousel__nav {
-        display: none;
-    }
-
-    /* żeby “peek” boków był widoczny (jeśli masz fade overlay) */
-    .carousel::before,
-    .carousel::after {
-        display: none;
-    }
-}
-
 .carousel::before,
 .carousel::after {
     content: "";
@@ -858,7 +840,7 @@ a:hover {
     bottom: 0;
     width: 50px;
     pointer-events: none;
-    z-index: 2;
+    z-index: 3;
 }
 
 .carousel::before {
@@ -875,11 +857,12 @@ a:hover {
     display: flex;
     gap: var(--gap);
     overflow-x: auto;
+    overflow-y: visible;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
 
     /* klucz: padding, który pozwala centrować pierwszy i ostatni slajd */
-    padding-block: 10px 16px;
+    padding-block: 22px 26px;
     padding-inline: calc((100% - var(--slide-w)) / 2);
     scroll-padding-inline: calc((100% - var(--slide-w)) / 2);
 
@@ -894,12 +877,19 @@ a:hover {
     flex: 0 0 var(--slide-w);
     scroll-snap-align: center;
     scroll-snap-stop: always;
-    border-radius: var(--radius);
+    border-radius: calc(var(--radius) + 4px);
     overflow: hidden;
     background: var(--bg-2);
-    box-shadow: 0 7px 10px rgba(0, 0, 0, 0.24);
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.24);
     position: relative;
     aspect-ratio: 4/5;
+    transform-origin: center center;
+    transition:
+        transform 0.4s ease,
+        opacity 0.4s ease,
+        filter 0.4s ease,
+        box-shadow 0.4s ease;
+    will-change: transform, opacity;
 }
 
 .slide img {
@@ -912,7 +902,7 @@ a:hover {
     position: absolute;
     top: 10px;
     left: 10px;
-    z-index: 3;
+    z-index: 6;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -927,7 +917,6 @@ a:hover {
     pointer-events: none;
 }
 
-/* CTA button on free patterns */
 .slide__ctaWrap {
     position: absolute;
     inset: 0;
@@ -935,7 +924,7 @@ a:hover {
     align-items: flex-end;
     justify-content: center;
     padding: 14px;
-    z-index: 4;
+    z-index: 7;
     pointer-events: none; /* allow scroll/drag; button will re-enable */
 }
 
@@ -979,6 +968,115 @@ a:hover {
     .slide[data-free-pattern="1"]:hover .slide__ctaBtn {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+.carousel--featured {
+    --slide-w: min(62vw, 500px);
+    --gap: clamp(14px, 3vw, 24px);
+}
+
+.carousel--featured::before,
+.carousel--featured::after {
+    display: none;
+}
+
+.carousel--featured .carousel__track {
+    align-items: center;
+    padding-block: 32px 38px;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 50%;
+}
+
+.carousel--featured .slide {
+    opacity: 0.38;
+    filter: saturate(0.78);
+    transform: translateX(0) scale(0.82);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+    z-index: 1;
+}
+
+.carousel--featured .slide.is-center {
+    opacity: 1;
+    filter: none;
+    transform: translateX(0) scale(1);
+    box-shadow: 0 24px 44px rgba(0, 0, 0, 0.28);
+    z-index: 4;
+}
+
+.carousel--featured .slide.is-prev {
+    opacity: 0.48;
+    transform: translateX(110px) scale(0.82);
+    z-index: 2;
+}
+
+.carousel--featured .slide.is-next {
+    opacity: 0.48;
+    transform: translateX(-110px) scale(0.82);
+    z-index: 2;
+}
+
+.carousel--featured .slide.is-far {
+    opacity: 0.18;
+    transform: translateX(0) scale(0.72);
+    z-index: 1;
+}
+
+@media (max-width: 900px) {
+    .carousel--featured {
+        --slide-w: min(70vw, 290px);
+    }
+
+    .carousel--featured .slide.is-prev {
+        transform: translateX(28px) scale(0.84);
+    }
+
+    .carousel--featured .slide.is-next {
+        transform: translateX(-28px) scale(0.84);
+    }
+}
+
+@media (max-width: 600px) {
+    .carousel {
+        --slide-w: 90vw;
+        --gap: 0px;
+    }
+
+    .carousel__nav {
+        display: none;
+    }
+
+    .carousel::before,
+    .carousel::after {
+        display: none;
+    }
+
+    .carousel__track {
+        padding-block: 14px 18px;
+    }
+
+    .carousel--featured {
+        --slide-w: min(80vw, 480px);
+        --gap: 10px;
+    }
+
+    .carousel--featured .carousel__track {
+        padding-block: 22px 24px;
+    }
+
+    .carousel--featured .slide.is-prev {
+        transform: translateX(12px) scale(0.88);
+        opacity: 0.56;
+    }
+
+    .carousel--featured .slide.is-next {
+        transform: translateX(-12px) scale(0.88);
+        opacity: 0.56;
+    }
+
+    .carousel--featured .slide.is-far {
+        opacity: 0.01;
+        transform: scale(0.8);
     }
 }
 
