@@ -104,7 +104,14 @@ function setupCarousel(root) {
 
     const centered = Math.max(0, Math.min(slides.length - 1, forcedIndex));
     slides.forEach((el, i) => {
-      el.classList.remove("is-center", "is-prev", "is-next", "is-far");
+      el.classList.remove(
+        "is-center",
+        "is-prev",
+        "is-next",
+        "is-outer-prev",
+        "is-outer-next",
+        "is-far",
+      );
 
       const delta = i - centered;
       if (delta === 0) {
@@ -113,6 +120,10 @@ function setupCarousel(root) {
         el.classList.add("is-prev");
       } else if (delta === 1) {
         el.classList.add("is-next");
+      } else if (delta === -2) {
+        el.classList.add("is-outer-prev");
+      } else if (delta === 2) {
+        el.classList.add("is-outer-next");
       } else {
         el.classList.add("is-far");
       }
@@ -416,7 +427,7 @@ function setupCarousel(root) {
   };
 
   const onScroll = () => {
-    if (!(pointerDown && isCoarsePointer)) {
+    if (pointerDown && isCoarsePointer) {
       updateSlideStates(getCenteredIndex());
     }
     scheduleArmCenteredCta();
@@ -433,7 +444,7 @@ function setupCarousel(root) {
       if (!current) return;
 
       const targetLeft = getTargetScrollLeft(current);
-      const shouldSettle = Math.abs(track.scrollLeft - targetLeft) > 1;
+      const shouldSettle = Math.abs(track.scrollLeft - targetLeft) > 2;
 
       settledIndex = centered;
       updateSlideStates(settledIndex);
@@ -444,7 +455,7 @@ function setupCarousel(root) {
       }
 
       scheduleArmCenteredCta();
-    }, 90);
+    }, 110);
   };
 
   track.addEventListener("scroll", onScroll, { passive: true });
