@@ -1000,7 +1000,7 @@ a:hover {
     opacity: 1;
     filter: none;
     transform: translateX(0) scale(1);
-    box-shadow: 0 22px 30px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 24px 44px rgba(0, 0, 0, 0.28);
     z-index: 4;
 }
 
