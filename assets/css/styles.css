@@ -705,7 +705,7 @@ a:hover {
 .card {
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 18px;
+    padding: 24px 25px 22px;
     background: color-mix(in srgb, var(--bg) 76%, transparent);
     box-shadow: var(--shadow);
     font-size: 14px;
