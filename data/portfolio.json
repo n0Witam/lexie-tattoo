@@ -1,6 +1,6 @@
 {
-  "version": 3,
-  "updated": "2026-03-18",
+  "version": 4,
+  "updated": "2026-03-21",
   "featuredOrder": [
     "p_9857",
     "p01",
@@ -9,25 +9,28 @@
     "p_4574",
     "p03",
     "p_9025",
-    "p_5687",
-    "p_6820"
+    "p_6820",
+    "p_5886"
   ],
   "groups": [
     {
       "id": "wolne-wzory",
       "name": "Wolne wzory",
       "items": [
-        "p_2106",
-        "p_4738",
         "p06",
+        "p_6710",
+        "p_6880",
+        "p_6933",
+        "p_4738",
+        "p_2106",
         "p08",
+        "p_7131",
         "p04",
         "p_3052",
         "p_7458",
         "p_5431",
         "p_5827",
         "p_5765",
-        "p_3112",
         "p_5784",
         "p_9742",
         "p_4874",
@@ -35,12 +38,12 @@
         "p_3476",
         "p_3324",
         "p_6659",
-        "p_7131",
         "p_2463",
         "p_8329",
         "p_8129",
         "p_6903",
         "p_2460",
+        "p_3112",
         "p_9179",
         "p_6614",
         "p_3323",
@@ -50,9 +53,6 @@
         "p_1085",
         "p_7062",
         "p_9903",
-        "p_6710",
-        "p_6933",
-        "p_6880",
         "p_3137"
       ]
     },
@@ -60,42 +60,60 @@
       "id": "g_mldoad9l_77yf3y",
       "name": "Wykonane prace",
       "items": [
-        "p_1784",
-        "p_5319",
-        "p_7345",
         "p_7711",
         "p_9857",
         "p_4487",
+        "p_6165",
+        "p_7345",
+        "p01",
         "p_6820",
         "p_5595",
         "p_1489",
-        "p_6165",
-        "p_5846",
-        "p_3944",
-        "p_7595",
-        "p01",
-        "p_4501",
-        "p_5800",
-        "p_9025",
-        "p_1782",
+        "p_5886",
         "p_4574",
+        "p_1784",
+        "p_9025",
+        "p_5800",
+        "p_9993",
+        "p_1782",
+        "p_3072",
+        "p_7595",
+        "p_4501",
+        "p03",
+        "p_5319",
+        "p_3944",
+        "p_5846",
         "p_5687",
         "p02",
-        "p03",
         "p_8331",
         "p_5799",
-        "p_5886",
         "p05",
-        "p07",
-        "p_3072",
-        "p_9993"
+        "p07"
       ]
     }
   ],
   "items": [
     {
-      "id": "p_2106",
-      "src": "../assets/img/portfolio/IMG_9139.JPG",
+      "id": "p06",
+      "src": "../assets/img/portfolio/mucha1.png",
+      "alt": "Alfons Mucha – Odpoczynek nocy",
+      "featured": false
+    },
+    {
+      "id": "p_6710",
+      "src": "../assets/img/portfolio/IMG_8784.JPG",
+      "alt": "Opis",
+      "featured": false
+    },
+    {
+      "id": "p_6880",
+      "src": "../assets/img/portfolio/IMG_8888.JPG",
+      "alt": "Opis",
+      "featured": false
+    },
+    {
+      "id": "p_6933",
+      "src": "../assets/img/portfolio/IMG_8840.JPG",
       "alt": "Opis",
       "featured": false
     },
@@ -106,15 +124,21 @@
       "featured": false
     },
     {
-      "id": "p06",
-      "src": "../assets/img/portfolio/mucha1.png",
-      "alt": "Alfons Mucha – Odpoczynek nocy",
+      "id": "p_2106",
+      "src": "../assets/img/portfolio/IMG_9139.JPG",
+      "alt": "Opis",
       "featured": false
     },
     {
       "id": "p08",
       "src": "../assets/img/portfolio/wiedzma.png",
       "alt": "Wiedźma",
+      "featured": false
+    },
+    {
+      "id": "p_7131",
+      "src": "../assets/img/portfolio/IMG_7302.JPG",
+      "alt": "Opis",
       "featured": false
     },
     {
@@ -150,12 +174,6 @@
     {
       "id": "p_5765",
       "src": "../assets/img/portfolio/F256D8E8-020E-478E-B5A5-149E5CD23910.JPG",
-      "alt": "Opis",
-      "featured": false
-    },
-    {
-      "id": "p_3112",
-      "src": "../assets/img/portfolio/IMG_0852.JPG",
       "alt": "Opis",
       "featured": false
     },
@@ -202,12 +220,6 @@
       "featured": false
     },
     {
-      "id": "p_7131",
-      "src": "../assets/img/portfolio/IMG_7302.JPG",
-      "alt": "Opis",
-      "featured": false
-    },
-    {
       "id": "p_2463",
       "src": "../assets/img/portfolio/IMG_7542.JPG",
       "alt": "Opis",
@@ -234,6 +246,12 @@
     {
       "id": "p_2460",
       "src": "../assets/img/portfolio/IMG_7812.JPG",
+      "alt": "Opis",
+      "featured": false
+    },
+    {
+      "id": "p_3112",
+      "src": "../assets/img/portfolio/IMG_0852.JPG",
       "alt": "Opis",
       "featured": false
     },
@@ -292,44 +310,8 @@
       "featured": false
     },
     {
-      "id": "p_6710",
-      "src": "../assets/img/portfolio/IMG_8784.JPG",
-      "alt": "Opis",
-      "featured": false
-    },
-    {
-      "id": "p_6933",
-      "src": "../assets/img/portfolio/IMG_8840.JPG",
-      "alt": "Opis",
-      "featured": false
-    },
-    {
-      "id": "p_6880",
-      "src": "../assets/img/portfolio/IMG_8888.JPG",
-      "alt": "Opis",
-      "featured": false
-    },
-    {
       "id": "p_3137",
       "src": "../assets/img/portfolio/IMG_9070.JPG",
-      "alt": "Opis",
-      "featured": false
-    },
-    {
-      "id": "p_1784",
-      "src": "../assets/img/portfolio/239.jpg",
-      "alt": "Kruk",
-      "featured": false
-    },
-    {
-      "id": "p_5319",
-      "src": "../assets/img/portfolio/269.jpg",
-      "alt": "Fotel – Lisek",
-      "featured": false
-    },
-    {
-      "id": "p_7345",
-      "src": "../assets/img/portfolio/69.jpg",
       "alt": "Opis",
       "featured": false
     },
@@ -352,6 +334,24 @@
       "featured": false
     },
     {
+      "id": "p_6165",
+      "src": "../assets/img/portfolio/314.jpg",
+      "alt": "Opis",
+      "featured": false
+    },
+    {
+      "id": "p_7345",
+      "src": "../assets/img/portfolio/69.jpg",
+      "alt": "Opis",
+      "featured": false
+    },
+    {
+      "id": "p01",
+      "src": "../assets/img/portfolio/dziolcha1.png",
+      "alt": "Jaskółka",
+      "featured": true
+    },
+    {
       "id": "p_6820",
       "src": "../assets/img/portfolio/229.jpg",
       "alt": "Narsil",
@@ -370,45 +370,21 @@
       "featured": false
     },
     {
-      "id": "p_6165",
-      "src": "../assets/img/portfolio/314.jpg",
+      "id": "p_5886",
+      "src": "../assets/img/portfolio/456.jpg",
       "alt": "Opis",
-      "featured": false
-    },
-    {
-      "id": "p_5846",
-      "src": "../assets/img/portfolio/283.jpg",
-      "alt": "Opis",
-      "featured": false
-    },
-    {
-      "id": "p_3944",
-      "src": "../assets/img/portfolio/107.jpg",
-      "alt": "Róża",
-      "featured": false
-    },
-    {
-      "id": "p_7595",
-      "src": "../assets/img/portfolio/325.jpg",
-      "alt": "Opis",
-      "featured": false
-    },
-    {
-      "id": "p01",
-      "src": "../assets/img/portfolio/dziolcha1.png",
-      "alt": "Jaskółka",
       "featured": true
     },
     {
-      "id": "p_4501",
-      "src": "../assets/img/portfolio/427.jpg",
+      "id": "p_4574",
+      "src": "../assets/img/portfolio/180.jpg",
       "alt": "Opis",
-      "featured": false
+      "featured": true
     },
     {
-      "id": "p_5800",
-      "src": "../assets/img/portfolio/223.jpg",
-      "alt": "Dziecięca wyobraźnia",
+      "id": "p_1784",
+      "src": "../assets/img/portfolio/239.jpg",
+      "alt": "Kruk",
       "featured": false
     },
     {
@@ -418,33 +394,75 @@
       "featured": true
     },
     {
+      "id": "p_5800",
+      "src": "../assets/img/portfolio/223.jpg",
+      "alt": "Dziecięca wyobraźnia",
+      "featured": false
+    },
+    {
+      "id": "p_9993",
+      "src": "../assets/img/portfolio/328.jpg",
+      "alt": "Opis",
+      "featured": true
+    },
+    {
       "id": "p_1782",
       "src": "../assets/img/portfolio/318.jpg",
       "alt": "Opis",
       "featured": false
     },
     {
-      "id": "p_4574",
-      "src": "../assets/img/portfolio/180.jpg",
+      "id": "p_3072",
+      "src": "../assets/img/portfolio/167.jpg",
       "alt": "Opis",
-      "featured": true
+      "featured": false
     },
     {
-      "id": "p_5687",
-      "src": "../assets/img/portfolio/62.jpg",
+      "id": "p_7595",
+      "src": "../assets/img/portfolio/325.jpg",
       "alt": "Opis",
-      "featured": true
+      "featured": false
     },
     {
-      "id": "p02",
-      "src": "../assets/img/portfolio/dziolcha2.png",
-      "alt": "Omen",
-      "featured": true
+      "id": "p_4501",
+      "src": "../assets/img/portfolio/427.jpg",
+      "alt": "Opis",
+      "featured": false
     },
     {
       "id": "p03",
       "src": "../assets/img/portfolio/geisha.png",
       "alt": "Geisha",
+      "featured": true
+    },
+    {
+      "id": "p_5319",
+      "src": "../assets/img/portfolio/269.jpg",
+      "alt": "Fotel – Lisek",
+      "featured": false
+    },
+    {
+      "id": "p_3944",
+      "src": "../assets/img/portfolio/107.jpg",
+      "alt": "Róża",
+      "featured": false
+    },
+    {
+      "id": "p_5846",
+      "src": "../assets/img/portfolio/283.jpg",
+      "alt": "Opis",
+      "featured": false
+    },
+    {
+      "id": "p_5687",
+      "src": "../assets/img/portfolio/62.jpg",
+      "alt": "Opis",
+      "featured": false
+    },
+    {
+      "id": "p02",
+      "src": "../assets/img/portfolio/dziolcha2.png",
+      "alt": "Omen",
       "featured": true
     },
     {
@@ -460,12 +478,6 @@
       "featured": false
     },
     {
-      "id": "p_5886",
-      "src": "../assets/img/portfolio/456.jpg",
-      "alt": "Opis",
-      "featured": false
-    },
-    {
       "id": "p05",
       "src": "../assets/img/portfolio/kwiaty_kolor.png",
       "alt": "Kwiaty",
@@ -476,18 +488,6 @@
       "src": "../assets/img/portfolio/mucha2.png",
       "alt": "Alfons Mucha – Księżyc",
       "featured": false
-    },
-    {
-      "id": "p_3072",
-      "src": "../assets/img/portfolio/167.jpg",
-      "alt": "Opis",
-      "featured": false
-    },
-    {
-      "id": "p_9993",
-      "src": "../assets/img/portfolio/328.jpg",
-      "alt": "Opis",
-      "featured": true
     }
   ]
 }
