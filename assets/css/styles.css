@@ -1748,6 +1748,7 @@ html.home main > section {
 
 @media (max-width: 600px) {
     .review-card__text {
+        min-height: 220px;
         font-size: 13px;
         line-height: 1.7;
         -webkit-line-clamp: 9;
