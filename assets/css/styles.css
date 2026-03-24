@@ -540,6 +540,9 @@ a:hover {
 }
 
 @media (prefers-color-scheme: light) {
+    .hero__logo {
+        background-color: color-mix(in srgb, var(--text) 80%, var(--muted));
+    }
     .hero__image {
         filter: contrast(0.7) sepia(1);
     }
