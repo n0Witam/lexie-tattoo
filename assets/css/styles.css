@@ -1745,6 +1745,10 @@ html.home main > section {
     .review-card__stars {
         justify-content: flex-start;
     }
+
+    .container-reviews {
+        width: min(100%, var(--container));
+    }
 }
 
 @media (max-width: 600px) {
