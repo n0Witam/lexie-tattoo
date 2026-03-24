@@ -42,6 +42,7 @@ function renderStars(rating = 5) {
    - click slide (desktop) to center
    - prev/next hit-areas (desktop via CSS)
    - CTA "Chcę ten wzór!" arms after 1s when a FREE slide is centered
+   - dots only for featured/image carousel
    ============================================================ */
 function setupCarousel(root) {
   const track = qs("[data-track]", root);
@@ -61,6 +62,8 @@ function setupCarousel(root) {
   });
 
   const slidesAll = () => Array.from(track.querySelectorAll("[data-slide]"));
+  const slidesOriginal = () =>
+    slidesAll().filter((el) => el.getAttribute("data-clone") !== "1");
 
   const getStep = () => {
     const slides = slidesAll();
@@ -101,6 +104,26 @@ function setupCarousel(root) {
     });
 
     return best;
+  };
+
+  const getOriginalCenteredIndex = () => {
+    const slides = slidesAll();
+    if (!slides.length) return 0;
+
+    const cx = getTrackCenterX();
+    let bestEl = slides[0];
+    let bestDist = Infinity;
+
+    slides.forEach((el) => {
+      const d = Math.abs(getSlideCenterX(el) - cx);
+      if (d < bestDist) {
+        bestDist = d;
+        bestEl = el;
+      }
+    });
+
+    const logicalIndex = Number(bestEl.dataset.logicalIndex);
+    return Number.isFinite(logicalIndex) ? logicalIndex : 0;
   };
 
   let programmaticUntil = 0;
@@ -181,6 +204,73 @@ function setupCarousel(root) {
     root.append(btnPrev, btnNext);
   }
 
+  const shouldRenderDots =
+    track.id === "featuredTrack" &&
+    !root.classList.contains("carousel--reviews");
+
+  let updateDots = null;
+
+  const setupDots = () => {
+    if (!shouldRenderDots) return;
+    if (root.querySelector(".carousel__dots")) return;
+
+    const originals = slidesOriginal();
+    if (!originals.length) return;
+
+    const dots = document.createElement("div");
+    dots.className = "carousel__dots";
+    dots.setAttribute("aria-label", "Wskaźnik slajdów");
+
+    const dotButtons = originals.map((_, index) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "carousel__dot";
+      btn.setAttribute("aria-label", `Przejdź do slajdu ${index + 1}`);
+      btn.setAttribute("aria-current", "false");
+
+      btn.addEventListener("click", () => {
+        const behavior = prefersReduced ? "auto" : "smooth";
+        const originalsNow = slidesOriginal();
+        const target = originalsNow[index];
+        if (!target) return;
+
+        const delta = getSlideCenterX(target) - getTrackCenterX();
+        markProgrammatic(300);
+        track.scrollBy({ left: delta, behavior });
+      });
+
+      dots.appendChild(btn);
+      return btn;
+    });
+
+    root.appendChild(dots);
+
+    let rafId = 0;
+
+    updateDots = () => {
+      const activeIndex = getOriginalCenteredIndex();
+
+      dotButtons.forEach((btn, index) => {
+        const isActive = index === activeIndex;
+        btn.classList.toggle("is-active", isActive);
+        btn.setAttribute("aria-current", isActive ? "true" : "false");
+      });
+    };
+
+    const scheduleDotsUpdate = () => {
+      if (!updateDots) return;
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(updateDots);
+    };
+
+    track.addEventListener("scroll", scheduleDotsUpdate, { passive: true });
+    window.addEventListener("resize", scheduleDotsUpdate);
+
+    requestAnimationFrame(() => {
+      if (updateDots) updateDots();
+    });
+  };
+
   const initLoop = () => {
     if (track.dataset.loopInit === "1") return;
 
@@ -190,15 +280,23 @@ function setupCarousel(root) {
     const originalsCount = slides.length;
     const cloneCount = Math.min(3, originalsCount);
 
-    const headClones = slides
-      .slice(0, cloneCount)
-      .map((el) => el.cloneNode(true));
-    const tailClones = slides
-      .slice(-cloneCount)
-      .map((el) => el.cloneNode(true));
+    slides.forEach((el, index) => {
+      el.dataset.logicalIndex = String(index);
+    });
 
-    headClones.forEach((c) => c.setAttribute("data-clone", "1"));
-    tailClones.forEach((c) => c.setAttribute("data-clone", "1"));
+    const headClones = slides.slice(0, cloneCount).map((el, index) => {
+      const clone = el.cloneNode(true);
+      clone.setAttribute("data-clone", "1");
+      clone.dataset.logicalIndex = String(index);
+      return clone;
+    });
+
+    const tailClones = slides.slice(-cloneCount).map((el, index) => {
+      const clone = el.cloneNode(true);
+      clone.setAttribute("data-clone", "1");
+      clone.dataset.logicalIndex = String(originalsCount - cloneCount + index);
+      return clone;
+    });
 
     tailClones.reverse().forEach((c) => track.prepend(c));
     headClones.forEach((c) => track.append(c));
@@ -208,7 +306,10 @@ function setupCarousel(root) {
     requestAnimationFrame(() => {
       const step = getStep();
       track.scrollLeft = cloneCount * step;
-      requestAnimationFrame(() => centerToIndex(getCenteredIndex(), "auto"));
+      requestAnimationFrame(() => {
+        centerToIndex(getCenteredIndex(), "auto");
+        if (updateDots) updateDots();
+      });
     });
 
     let lock = false;
@@ -230,12 +331,18 @@ function setupCarousel(root) {
         lock = true;
         markProgrammatic(350);
         track.scrollLeft = track.scrollLeft + originalsCount * step;
-        requestAnimationFrame(() => (lock = false));
+        requestAnimationFrame(() => {
+          lock = false;
+          if (updateDots) updateDots();
+        });
       } else if (track.scrollLeft > end + step * 0.25) {
         lock = true;
         markProgrammatic(350);
         track.scrollLeft = track.scrollLeft - originalsCount * step;
-        requestAnimationFrame(() => (lock = false));
+        requestAnimationFrame(() => {
+          lock = false;
+          if (updateDots) updateDots();
+        });
       }
     };
 
@@ -319,8 +426,12 @@ function setupCarousel(root) {
   track.addEventListener("scroll", scheduleArmCenteredCta, { passive: true });
 
   initLoop();
+  setupDots();
   start();
-  window.setTimeout(armCenteredCta, 900);
+  window.setTimeout(() => {
+    armCenteredCta();
+    if (updateDots) updateDots();
+  }, 900);
 }
 
 /* ============================================================
@@ -462,6 +573,7 @@ async function renderReviews() {
             <div class="review-card__top">
               <div class="review-card__identity">
                 <h3 class="review-card__name">${name}</h3>
+                ${year}
               </div>
               <div class="review-card__stars" aria-label="Ocena ${rating} na 5">
                 ${renderStars(rating)}

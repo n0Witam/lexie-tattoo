@@ -505,7 +505,7 @@ a:hover {
 .hero__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 14px;
+    gap: 26px;
     margin-top: 28px;
     align-self: center;
 }
@@ -626,7 +626,12 @@ a:hover {
 
     .hero__actions {
         grid-area: actions;
+        gap: 10px;
         justify-content: center;
+    }
+    .hero__actions a {
+        width: 130px;
+        font-size: 14px;
     }
 }
 
@@ -772,7 +777,7 @@ a:hover {
 .carousel {
     position: relative;
     /* sterowanie szerokością slajdu */
-    --slide-w: clamp(220px, 62vw, 550px);
+    --slide-w: clamp(220px, 62vw, 520px);
     --gap: 0px;
     margin: 25px 20px;
 }
@@ -1853,4 +1858,56 @@ html.home main > section {
 .section--reviews,
 #works {
     overflow-x: clip;
+}
+
+/* ====== Carousel dots ====== */
+
+.carousel__dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+    padding-inline: 16px;
+}
+
+.carousel__dot {
+    width: 10px;
+    height: 10px;
+    border: 0;
+    border-radius: 999px;
+    padding: 0;
+    background: color-mix(in srgb, var(--muted) 55%, transparent);
+    opacity: 0.55;
+    cursor: pointer;
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        background-color 0.2s ease;
+}
+
+.carousel__dot:hover {
+    opacity: 0.8;
+}
+
+.carousel__dot.is-active {
+    background: var(--accent);
+    opacity: 1;
+}
+
+.carousel__dot:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--focus);
+}
+
+@media (max-width: 600px) {
+    .carousel__dots {
+        margin-top: 12px;
+        gap: 7px;
+    }
+
+    .carousel__dot {
+        width: 7px;
+        height: 7px;
+    }
 }
