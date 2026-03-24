@@ -859,7 +859,7 @@ a:hover {
 
 @media (max-width: 600px) {
     .carousel {
-        --slide-w: 90vw; /* trochę większe slajdy */
+        --slide-w: 85vw; /* trochę większe slajdy */
         --gap: 0px; /* mniejsza przerwa */
 
         margin: 25px 0px;
