@@ -611,6 +611,7 @@ a:hover {
         grid-area: image;
         order: unset;
         min-height: 0;
+        margin-bottom: -40px;
     }
 
     .hero__imageWrap {
