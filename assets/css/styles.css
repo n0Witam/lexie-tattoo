@@ -859,7 +859,7 @@ a:hover {
 
 @media (max-width: 600px) {
     .carousel {
-        --slide-w: 85vw; /* trochę większe slajdy */
+        --slide-w: 90vw; /* trochę większe slajdy */
         --gap: 0px; /* mniejsza przerwa */
 
         margin: 25px 0px;
@@ -877,6 +877,9 @@ a:hover {
     .carousel__track {
         -webkit-mask-image: none;
         mask-image: none;
+    }
+    .slide {
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.24);
     }
 }
 
