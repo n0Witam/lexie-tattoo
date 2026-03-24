@@ -596,7 +596,7 @@ a:hover {
         margin-top: 5vh;
         grid-area: logo;
         width: clamp(260px, 90vw, 520px);
-        margin-inline: auto;
+        overflow: clip;
     }
 
     .hero__kicker {
