@@ -1795,7 +1795,7 @@ html.home main > section {
 .experience--contact .experience__step {
     position: relative;
     padding-left: 0;
-    padding-right: 72px;
+    padding-right: 70px;
 }
 
 .experience--contact .experience__dot {
@@ -1819,7 +1819,7 @@ html.home main > section {
 
 .experience--contact .experience__title {
     margin: 0 0 10px;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 700;
     line-height: 38px;
     letter-spacing: 0.01em;
