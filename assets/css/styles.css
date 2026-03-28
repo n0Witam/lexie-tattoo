@@ -1373,7 +1373,7 @@ uc-file-uploader-minimal {
 
 /* Kontakt: grid ma się rozciągać na wysokość najwyższej kolumny */
 .split--contact {
-    grid-template-columns: 0.8fr 1fr 0.8fr;
+    grid-template-columns: 0.9fr 1fr 0.7fr;
     align-items: start;
     margin-bottom: 3vh;
 }
@@ -1785,7 +1785,7 @@ html.home main > section {
     position: absolute;
     top: 0;
     bottom: 0;
-    right: 18px;
+    right: 24px;
     left: auto;
     width: 1px;
     background: var(--border);
@@ -1795,19 +1795,34 @@ html.home main > section {
 .experience--contact .experience__step {
     position: relative;
     padding-left: 0;
-    padding-right: 46px;
+    padding-right: 72px;
 }
 
 .experience--contact .experience__dot {
     position: absolute;
-    right: 18px;
-    left: auto;
-    top: 10px;
-    width: 8px;
-    height: 8px;
+    right: 24px;
+    top: 0;
+    width: 38px;
+    height: 38px;
     border-radius: 999px;
-    background: var(--accent);
+    border: 1px solid var(--accent);
+    background: var(--bg);
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
     transform: translateX(50%);
+}
+
+.experience--contact .experience__title {
+    margin: 0 0 10px;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 38px;
+    letter-spacing: 0.01em;
 }
 
 .experience--contact .experience__content {
@@ -1816,15 +1831,11 @@ html.home main > section {
     border: 0;
     box-shadow: none;
     text-align: right;
+    font-size: 14px;
 }
 
 .experience--contact .experience__eyebrow {
-    display: inline-block;
-    margin-bottom: 8px;
-    color: var(--muted);
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.24em;
+    display: none;
 }
 
 .experience--contact .experience__title {
@@ -1839,7 +1850,7 @@ html.home main > section {
     width: 100%;
     color: var(--muted);
     line-height: 1.75;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 .ig-card {
