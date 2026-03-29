@@ -9,6 +9,7 @@ function setupLightbox(items) {
   const lb = qs("#lightbox");
   const lbImg = qs("#lightboxImg");
   const lbCap = qs("#lightboxCaption");
+  const btnInquiry = qs("#lightboxInquiry");
   const btnClose = qs("#lightboxClose");
   const btnPrev = qs("#lightboxPrev");
   const btnNext = qs("#lightboxNext");
@@ -24,7 +25,23 @@ function setupLightbox(items) {
 
     lbImg.src = item._resolvedSrc;
     lbImg.alt = item.alt || "Tatuaż – praca Lexie";
-    if (lbCap) lbCap.textContent = item.alt || "";
+
+    if (lbCap) {
+      lbCap.textContent = item._showCaption ? item.alt || "" : "";
+    }
+
+    if (btnInquiry) {
+      if (item._showInquiry) {
+        btnInquiry.hidden = false;
+        btnInquiry.onclick = () => {
+          openFreePatternModal(item._resolvedSrc, item.alt || "Wolny wzór");
+        };
+      } else {
+        btnInquiry.hidden = true;
+        btnInquiry.onclick = null;
+      }
+    }
+
     lb.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
   };
@@ -67,9 +84,6 @@ function normalizeGroups(data, items) {
   const idsAll = items.map((x) => x.id).filter(Boolean);
   const idSet = new Set(idsAll);
 
-  // Wspieramy dwa formaty:
-  // 1) nowy: data.groups = [{id,name,items:[id...]}]
-  // 2) stary: brak data.groups -> wszystko wpada do "Wolne wzory"
   let groups = [];
   if (Array.isArray(data.groups) && data.groups.length) {
     groups = data.groups.map((g, idx) => ({
@@ -87,7 +101,6 @@ function normalizeGroups(data, items) {
     ];
   }
 
-  // Zapewnij, że istnieje grupa domyślna i jest na górze
   let def = groups.find(
     (g) => String(g.name).trim().toLowerCase() === DEFAULT_GROUP_KEY,
   );
@@ -99,7 +112,6 @@ function normalizeGroups(data, items) {
     groups = [def, ...groups.filter((g) => g !== def)];
   }
 
-  // Usuń duplikaty / nieistniejące ID, zachowując pierwsze przypisanie
   const assigned = new Set();
   for (const g of groups) {
     const cleaned = [];
@@ -112,7 +124,6 @@ function normalizeGroups(data, items) {
     g.items = cleaned;
   }
 
-  // Dopnij nieprzypisane elementy do "Wolne wzory"
   for (const id of idsAll) {
     if (!assigned.has(id)) {
       assigned.add(id);
@@ -143,7 +154,6 @@ async function renderPortfolio() {
     const updated = qs("[data-updated]");
     if (updated && data.updated) updated.textContent = data.updated;
 
-    // Kontener w HTML ma class="grid" — przy grupach robimy w środku osobne gridy
     root.classList.remove("grid");
     root.innerHTML = "";
 
@@ -191,7 +201,7 @@ async function renderPortfolio() {
 
     for (const group of groups) {
       const ids = (group.items || []).filter((id) => byId.has(id));
-      if (ids.length === 0) continue; // ✅ nie pokazuj pustych grup
+      if (ids.length === 0) continue;
 
       renderedAny = true;
 
@@ -206,8 +216,14 @@ async function renderPortfolio() {
         const item = byId.get(id);
         if (!item) continue;
 
+        const isFreePattern = freeSet.has(item.id);
+
         const idx = orderedForLightbox.length;
-        orderedForLightbox.push(item);
+        orderedForLightbox.push({
+          ...item,
+          _showCaption: false,
+          _showInquiry: view === "available" && isFreePattern,
+        });
 
         const img = document.createElement("img");
         img.src = item._resolvedSrc;
@@ -220,33 +236,31 @@ async function renderPortfolio() {
         tile.tabIndex = lightboxEnabled ? 0 : -1;
         tile.append(img);
 
-        const isFreePattern = freeSet.has(item.id);
         if (isFreePattern) {
           tile.dataset.freePattern = "1";
 
-          let badge = null;
           if (view !== "available") {
-            badge = document.createElement("div");
+            const badge = document.createElement("div");
             badge.className = "slide__badge";
             badge.textContent = "Wolny wzór!";
+
+            const ctaWrap = document.createElement("div");
+            ctaWrap.className = "slide__ctaWrap";
+
+            const ctaBtn = document.createElement("button");
+            ctaBtn.type = "button";
+            ctaBtn.className = "slide__ctaBtn btn btn--primary";
+            ctaBtn.textContent = "Chcę ten wzór!";
+            ctaBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              openFreePatternModal(item._resolvedSrc, item.alt || "Wolny wzór");
+            });
+            ctaBtn.addEventListener("keydown", (e) => e.stopPropagation());
+
+            ctaWrap.appendChild(ctaBtn);
+            tile.append(badge);
+            tile.append(ctaWrap);
           }
-
-          const ctaWrap = document.createElement("div");
-          ctaWrap.className = "slide__ctaWrap";
-
-          const ctaBtn = document.createElement("button");
-          ctaBtn.type = "button";
-          ctaBtn.className = "slide__ctaBtn btn btn--primary";
-          ctaBtn.textContent = "Chcę ten wzór!";
-          ctaBtn.addEventListener("click", (e) => {
-            e.stopPropagation();
-            openFreePatternModal(item._resolvedSrc, item.alt || "Wolny wzór");
-          });
-          ctaBtn.addEventListener("keydown", (e) => e.stopPropagation());
-
-          ctaWrap.appendChild(ctaBtn);
-          if (badge) tile.append(badge);
-          tile.append(ctaWrap);
         }
 
         if (lightboxEnabled && lb) {

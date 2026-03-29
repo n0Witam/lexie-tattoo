@@ -674,6 +674,7 @@ a:hover {
 .lightbox__actions {
     display: flex;
     gap: 10px;
+    margin-left: auto;
 }
 
 .form__status {
