@@ -45,6 +45,61 @@
             href="https://cdn.jsdelivr.net/npm/@uploadcare/file-uploader@v1/web/uc-file-uploader-minimal.min.css"
             rel="stylesheet"
         />
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@graph": [
+                    {
+                        "@type": "TattooParlor",
+                        "@id": "https://lexietattoo.pl/#tattoo-parlor",
+                        "name": "Lexie Tattoo",
+                        "url": "https://lexietattoo.pl/",
+                        "image": [
+                            "https://lexietattoo.pl/assets/img/hero_192.png",
+                            "https://lexietattoo.pl/assets/img/hero_48.png"
+                        ],
+                        "description": "Lexie Tattoo – tworzę subtelne, graficzne tatuaże inspirowane naturą i kobiecością, specjalizując się w stylach fine line i blackwork.",
+                        "priceRange": "$$",
+                        "address": {
+                            "@type": "PostalAddress",
+                            "streetAddress": "Puławska 41/26",
+                            "postalCode": "02-508",
+                            "addressLocality": "Warszawa",
+                            "addressCountry": "PL"
+                        },
+                        "openingHoursSpecification": [
+                            {
+                                "@type": "OpeningHoursSpecification",
+                                "dayOfWeek": [
+                                    "https://schema.org/Tuesday",
+                                    "https://schema.org/Wednesday",
+                                    "https://schema.org/Thursday",
+                                    "https://schema.org/Friday",
+                                    "https://schema.org/Saturday"
+                                ],
+                                "opens": "11:00",
+                                "closes": "18:00"
+                            }
+                        ],
+                        "sameAs": ["https://www.instagram.com/lexietattoo/"],
+                        "areaServed": {
+                            "@type": "City",
+                            "name": "Warszawa"
+                        }
+                    },
+                    {
+                        "@type": "WebSite",
+                        "@id": "https://lexietattoo.pl/#website",
+                        "url": "https://lexietattoo.pl/",
+                        "name": "Lexie Tattoo",
+                        "inLanguage": "pl-PL",
+                        "publisher": {
+                            "@id": "https://lexietattoo.pl/#tattoo-parlor"
+                        }
+                    }
+                ]
+            }
+        </script>
     </head>
     <body>
         <header class="site-header">
