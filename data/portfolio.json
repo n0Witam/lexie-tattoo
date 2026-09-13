@@ -4,7 +4,6 @@
   "featuredOrder": [
     "p_9857",
     "p01",
-    "p_9993",
     "p02",
     "p_4574",
     "p03",
@@ -13,7 +12,7 @@
     "p_5886",
     "490",
     "495",
-    "515"
+    "522"
   ],
   "groups": [
     {
@@ -340,13 +339,13 @@
       "id": "522",
       "src": "../assets/img/portfolio/522.jpeg",
       "alt": "Tatuaż ośmiornica, detaliczny motyw morski w stylu ilustracyjnym, motyw na przedramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
-      "featured": false
+      "featured": true
     },
     {
       "id": "515",
       "src": "../assets/img/portfolio/513.jpeg",
       "alt": "Tatuaż zając między między ostrzami, flash w stylu ilustracyjnym, motyw na ramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
-      "featured": true
+      "featured": false
     },
     {
       "id": "495",
@@ -490,7 +489,7 @@
       "id": "p_9993",
       "src": "../assets/img/portfolio/328.jpg",
       "alt": "Tatuaż ośmiornica, detaliczny motyw morski w stylu ilustracyjnym, realizacja Lexie Tattoo Warszawa Mokotów",
-      "featured": true
+      "featured": false
     },
     {
       "id": "p_1782",
