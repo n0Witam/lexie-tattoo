@@ -1,6 +1,6 @@
 {
   "version": 5,
-  "updated": "2026-04-07",
+  "updated": "2026-09-13",
   "featuredOrder": [
     "p_9857",
     "p01",
@@ -10,7 +10,10 @@
     "p03",
     "p_9025",
     "p_6820",
-    "p_5886"
+    "p_5886",
+    "490",
+    "495",
+    "515"
   ],
   "groups": [
     {
@@ -51,7 +54,6 @@
         "p_3679",
         "p_7974",
         "p_1085",
-        "p_7062",
         "p_9903",
         "p_3137"
       ]
@@ -60,7 +62,20 @@
       "id": "g_mldoad9l_77yf3y",
       "name": "Wykonane prace",
       "items": [
+        "528",
+        "525",
+        "522",
+        "515",
+        "495",
+        "508",
+        "497",
+        "490",
         "p_7711",
+        "505",
+        "503",
+        "501",
+        "475",
+        "443",
         "p_9857",
         "p_4487",
         "p_6165",
@@ -298,12 +313,6 @@
       "featured": false
     },
     {
-      "id": "p_7062",
-      "src": "../assets/img/portfolio/IMG_8314.JPG",
-      "alt": "Autorski projekt tatuażu flash, kobieca postać, linework i blackwork, wolny wzór Lexie Tattoo Warszawa Mokotów",
-      "featured": false
-    },
-    {
       "id": "p_9903",
       "src": "../assets/img/portfolio/IMG_8384.JPG",
       "alt": "Projekt tatuażu zając, ilustracyjny motyw zwierzęcy, wolny wzór Lexie Tattoo Warszawa Mokotów",
@@ -316,9 +325,87 @@
       "featured": false
     },
     {
+      "id": "528",
+      "src": "../assets/img/portfolio/528.jpeg",
+      "alt": "Tatuaż karuzela, wezsołe miasteczko,delikatny, motyw na ramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false
+    },
+    {
+      "id": "525",
+      "src": "../assets/img/portfolio/525.jpeg",
+      "alt": "Tatuaż kwiaty róży, w stylu Art Nouveau, motyw na udzie, realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false
+    },
+    {
+      "id": "522",
+      "src": "../assets/img/portfolio/522.jpeg",
+      "alt": "Tatuaż ośmiornica, detaliczny motyw morski w stylu ilustracyjnym, motyw na przedramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false
+    },
+    {
+      "id": "515",
+      "src": "../assets/img/portfolio/513.jpeg",
+      "alt": "Tatuaż zając między między ostrzami, flash w stylu ilustracyjnym, motyw na ramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": true
+    },
+    {
+      "id": "495",
+      "src": "../assets/img/portfolio/495.jpeg",
+      "alt": "Tatuaż dym, abstrakcja, motyw na ramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": true
+    },
+    {
+      "id": "508",
+      "src": "../assets/img/portfolio/508.jpeg",
+      "alt": "Tatuaż tajska kalatka na ptaki, motyw na tyle ramienia, realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false
+    },
+    {
+      "id": "497",
+      "src": "../assets/img/portfolio/497.jpeg",
+      "alt": "Tatuaż biblijnie poprawny serafin, delikatny, motyw na wewnętrznej stronie ramienia, realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false
+    },
+    {
+      "id": "490",
+      "src": "../assets/img/portfolio/490.jpeg",
+      "alt": "Tatuaż karta do tarota szkielet z wężem, mroczny flash w stylu ilustracyjnym, motyw na przedramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": true
+    },
+    {
       "id": "p_7711",
       "src": "../assets/img/portfolio/243.jpg",
       "alt": "Tatuaż Wiedźmin Leszy na przedramieniu, subtelny blackwork, realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false
+    },
+    {
+      "id": "505",
+      "src": "../assets/img/portfolio/505.jpeg",
+      "alt": "Tatuaż gitara-kostka rubika, abstrakcyjna forma, motyw na tyle ramienia, realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false
+    },
+    {
+      "id": "503",
+      "src": "../assets/img/portfolio/503.jpeg",
+      "alt": "Tatuaż wojowniczki, interpretacja rysunku, mroczny, motyw na przedramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false
+    },
+    {
+      "id": "501",
+      "src": "../assets/img/portfolio/501.jpeg",
+      "alt": "Tatuaż kobieta kwiaty, delikatny, motyw na przedramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false
+    },
+    {
+      "id": "475",
+      "src": "../assets/img/portfolio/475.jpeg",
+      "alt": "Tatuaż świeca, mroczny flash w stylu ilustracyjnym, motyw na przedramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false
+    },
+    {
+      "id": "443",
+      "src": "../assets/img/portfolio/443.jpeg",
+      "alt": "Tatuaż Lilia inspirowany Art Nouveau, motyw na ramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
       "featured": false
     },
     {
