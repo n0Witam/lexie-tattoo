@@ -1,64 +1,35 @@
-import { qs, qsa } from "./util.js";
-import { initSite } from "./site.js";
+document.addEventListener("DOMContentLoaded", () => {
+    const openHashTarget = () => {
+        const hash = window.location.hash;
 
+        if (!hash) return;
 
-function setupFAQ(root) {
-  const items = qsa("[data-faq-item]", root);
-  if (!items.length) return;
+        const target = document.querySelector(hash);
 
-  const closeItem = (item) => {
-    const btn = qs(".faq__q", item);
-    const panel = qs("[data-faq-panel]", item);
-    if (!btn || !panel) return;
+        if (!target) return;
 
-    btn.setAttribute("aria-expanded", "false");
-    item.classList.remove("is-open");
-    panel.style.maxHeight = "0px";
-  };
+        // Jeśli hash wskazuje bezpośrednio na <details>
+        if (target.tagName === "DETAILS") {
+            target.open = true;
+        }
 
-  const openItem = (item) => {
-    const btn = qs(".faq__q", item);
-    const panel = qs("[data-faq-panel]", item);
-    if (!btn || !panel) return;
+        // Jeśli hash wskazuje element znajdujący się wewnątrz <details>
+        const parentDetails = target.closest("details");
+        if (parentDetails) {
+            parentDetails.open = true;
+        }
 
-    btn.setAttribute("aria-expanded", "true");
-    item.classList.add("is-open");
-    panel.style.maxHeight = panel.scrollHeight + "px";
-  };
+        // przewinięcie po otwarciu
+        requestAnimationFrame(() => {
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        });
+    };
 
-  const closeAll = (except = null) => {
-    items.forEach((it) => {
-      if (except && it === except) return;
-      closeItem(it);
-    });
-  };
+    openHashTarget();
 
-  // Init: pierwszy otwarty
-  closeAll();
-  openItem(items[0]);
-
-  items.forEach((item) => {
-    const btn = qs(".faq__q", item);
-    if (!btn) return;
-
-    btn.addEventListener("click", () => {
-      if (item.classList.contains("is-open")) return; // zawsze 1 otwarty
-      closeAll(item);
-      openItem(item);
-    });
-  });
-
-  window.addEventListener("resize", () => {
-    const open = items.find((it) => it.classList.contains("is-open"));
-    if (!open) return;
-    const panel = qs("[data-faq-panel]", open);
-    if (!panel) return;
-    panel.style.maxHeight = panel.scrollHeight + "px";
-  });
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-  initSite();
-  const root = qs("[data-faq]");
-  if (root) setupFAQ(root);
+    // obsługa zmiany #hash bez przeładowania strony
+    window.addEventListener("hashchange", openHashTarget);
 });
