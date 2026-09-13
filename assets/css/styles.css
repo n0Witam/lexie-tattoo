@@ -135,7 +135,7 @@ body h1,body h2,body h3{
     text-wrap:balance
 }
 body h2{
-    font-size: clamp(32px,4.6vw,36px);
+    font-size: clamp(32px,4.6vw,48px);
     margin:0 0 24px
 }
 body h3{
@@ -2366,4 +2366,15 @@ html.home main > section {
     .answer-toggle {
         transition: none;
     }
+}
+
+.faq-answer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    margin-top: 28px;
+}
+
+.faq-answer__link:hover {
+    border-color: var(--text);
 }
