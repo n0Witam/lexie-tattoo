@@ -1,4 +1,8 @@
+import { initSite } from "./site.js";
+
 document.addEventListener("DOMContentLoaded", () => {
+    initSite();
+
     const openHashTarget = () => {
         const hash = window.location.hash;
 
