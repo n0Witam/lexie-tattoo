@@ -62,13 +62,7 @@
     box-sizing: border-box;
 }
 html {
-    /* Paint grain on the document canvas so it scrolls beneath Safari's bars.
-       A fixed pseudo-element is clipped to the viewport above those bars. */
     background-color: var(--bg);
-    background-image: var(--bg-texture);
-    background-repeat: repeat;
-    background-size: 420px 420px;
-    background-blend-mode: overlay;
     scroll-behavior: smooth;
     scroll-padding-top: calc(var(--header-h, 72px) + env(safe-area-inset-top, 0px));
 }
@@ -79,7 +73,7 @@ body {
     /* Extend the background to the screen edges, keeping content in the safe area. */
     padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px)
         env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
-    background: transparent;
+    background: var(--bg);
     color: var(--text);
     font-family:
         ui-sans-serif,
@@ -95,6 +89,21 @@ body {
     position: relative;
     isolation: isolate;
     overflow-x: clip;
+}
+
+/* Render the grain as document content, not as a canvas background or a
+   viewport-fixed layer. Its bounds follow the full body, including safe areas. */
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-color: var(--bg);
+    background-image: var(--bg-texture);
+    background-repeat: repeat;
+    background-size: 420px 420px;
+    background-blend-mode: overlay;
 }
 
 /* Keep the content stacking order for the header and overlays. */
