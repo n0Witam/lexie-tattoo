@@ -1012,7 +1012,7 @@ a:hover {
 .modal {
     position: fixed;
     inset: 0;
-    z-index: 80;
+    z-index: 300;
 
     display: flex; /* ✅ zawsze istnieje w layoucie */
     align-items: center;
@@ -1467,7 +1467,7 @@ uc-file-uploader-minimal {
     align-items: center;
     justify-content: center;
     padding: 24px;
-    z-index: 50;
+    z-index: 200;
 }
 
 .lightbox[aria-hidden="false"] {
@@ -1487,13 +1487,13 @@ uc-file-uploader-minimal {
 .lightbox__img {
     width: 100%;
     height: auto;
-/*    max-height: 78vh; */
     object-fit: contain;
     background: var(--bg);
 }
 
 .lightbox__bar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
@@ -1505,6 +1505,25 @@ uc-file-uploader-minimal {
 
 .lightbox__bar .btn {
     padding: 10px 12px;
+}
+
+@media (min-width: 721px) {
+    .lightbox__inner {
+        display: flex;
+        flex-direction: column;
+        max-height: calc(100vh - 48px);
+        max-height: calc(100dvh - 48px);
+        margin-top: 0;
+    }
+
+    .lightbox__img {
+        min-height: 0;
+        flex: 0 1 auto;
+    }
+
+    .lightbox__bar {
+        flex-shrink: 0;
+    }
 }
 
 /* Kontakt: grid ma się rozciągać na wysokość najwyższej kolumny */

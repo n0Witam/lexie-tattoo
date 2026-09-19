@@ -34,6 +34,7 @@ function setupLightbox(items) {
       if (item._showInquiry) {
         btnInquiry.hidden = false;
         btnInquiry.onclick = () => {
+          close();
           openFreePatternModal(item._resolvedSrc, item.alt || "Wolny wzór");
         };
       } else {

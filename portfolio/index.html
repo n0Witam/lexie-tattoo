@@ -30,7 +30,7 @@
             rel="apple-touch-icon"
             sizes="192x192"
         />
-        <link href="../assets/css/styles.css?v=20260914-gallery-style" rel="stylesheet" />
+        <link href="../assets/css/styles.css?v=20260919-lightbox" rel="stylesheet" />
         <script type="application/ld+json">
             {
                 "@context": "https://schema.org",
@@ -173,46 +173,47 @@
                     </div>
                 </div>
             </section>
-            <div
-                aria-hidden="true"
-                aria-label="Podgląd zdjęcia"
-                class="lightbox"
-                id="lightbox"
-                role="dialog"
-            >
-                <div class="lightbox__inner">
-                    <img alt="" class="lightbox__img" id="lightboxImg" />
-                    <div class="lightbox__bar">
-                        <div class="lightbox__actions">
-                            <button
-                                aria-label="Poprzednie"
-                                class="btn"
-                                id="lightboxPrev"
-                                type="button"
-                            >
-                                ←
-                            </button>
-                            <button
-                                aria-label="Następne"
-                                class="btn"
-                                id="lightboxNext"
-                                type="button"
-                            >
-                                →
-                            </button>
-                            <button
-                                aria-label="Zamknij"
-                                class="btn btn--primary"
-                                id="lightboxClose"
-                                type="button"
-                            >
-                                Zamknij
-                            </button>
-                        </div>
+        </main>
+        <div
+            aria-hidden="true"
+            aria-label="Podgląd zdjęcia"
+            class="lightbox"
+            id="lightbox"
+            role="dialog"
+            aria-modal="true"
+        >
+            <div class="lightbox__inner">
+                <img alt="" class="lightbox__img" id="lightboxImg" />
+                <div class="lightbox__bar">
+                    <div class="lightbox__actions">
+                        <button
+                            aria-label="Poprzednie"
+                            class="btn"
+                            id="lightboxPrev"
+                            type="button"
+                        >
+                            ←
+                        </button>
+                        <button
+                            aria-label="Następne"
+                            class="btn"
+                            id="lightboxNext"
+                            type="button"
+                        >
+                            →
+                        </button>
+                        <button
+                            aria-label="Zamknij"
+                            class="btn btn--primary"
+                            id="lightboxClose"
+                            type="button"
+                        >
+                            Zamknij
+                        </button>
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
         <footer class="footer">
             <div class="container">
                 <div class="footer__row">
@@ -223,6 +224,6 @@
                 </div>
             </div>
         </footer>
-        <script src="../assets/js/portfolio.js" type="module"></script>
+        <script src="../assets/js/portfolio.js?v=20260919-lightbox" type="module"></script>
     </body>
 </html>
