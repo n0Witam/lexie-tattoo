@@ -30,8 +30,8 @@
             rel="apple-touch-icon"
             sizes="192x192"
         />
-        <script src="../assets/js/theme.js?v=20260919-theme"></script>
-        <link href="../assets/css/styles.css?v=20260919-theme" rel="stylesheet" />
+        <script src="../assets/js/theme.js?v=20260919-theme-icon"></script>
+        <link href="../assets/css/styles.css?v=20260919-theme-icon" rel="stylesheet" />
         <script type="application/ld+json">
             {
                 "@context": "https://schema.org",
@@ -219,15 +219,14 @@
             <div class="container">
                 <div class="footer__row">
                     <div>© <span data-year=""></span> Lexie Tattoo</div>
-                    <div class="footer__theme" data-theme-controls hidden>
-                        <button class="btn theme-toggle" type="button" data-theme-toggle>
-                            <span aria-hidden="true" class="theme-toggle__icon">◐</span>
-                            <span data-theme-label>Zmień motyw</span>
+                    <div class="footer__actions">
+                        <a class="btn footer__terms" href="../terms_of_service/">Regulamin PRISM</a>
+                        <button class="btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Zmień motyw">
+                            <svg class="theme-toggle__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+                                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" />
+                                <path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor" />
+                            </svg>
                         </button>
-                        <button class="theme-reset" type="button" data-theme-reset hidden>Użyj motywu systemowego</button>
-                    </div>
-                    <div>
-                        <a href="../terms_of_service/">Regulamin PRISM</a>
                     </div>
                 </div>
             </div>

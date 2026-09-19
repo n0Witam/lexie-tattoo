@@ -16,20 +16,17 @@
     document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
       meta.content = theme === "light" ? "#ece2d5" : "#3d352c";
     });
-    document.querySelectorAll("[data-theme-controls]").forEach((controls) => {
-      controls.hidden = false;
-      const button = controls.querySelector("[data-theme-toggle]");
-      button.querySelector("[data-theme-label]").textContent =
-        theme === "light" ? "Włącz ciemny motyw" : "Włącz jasny motyw";
-      controls.querySelector("[data-theme-reset]").hidden = preference === null;
+    document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+      button.hidden = false;
+      button.setAttribute("aria-label",
+        theme === "light" ? "Włącz ciemny motyw" : "Włącz jasny motyw");
     });
   };
 
   const chooseTheme = (theme) => {
     preference = theme;
     try {
-      if (theme) localStorage.setItem(storageKey, theme);
-      else localStorage.removeItem(storageKey);
+      localStorage.setItem(storageKey, theme);
     } catch {
       // Keep the choice for this page even if it cannot be persisted.
     }
@@ -51,12 +48,6 @@
     document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
       button.addEventListener("click", () => {
         chooseTheme(document.documentElement.dataset.theme === "light" ? "dark" : "light");
-      });
-    });
-    document.querySelectorAll("[data-theme-reset]").forEach((button) => {
-      button.addEventListener("click", () => {
-        chooseTheme(null);
-        button.parentElement.querySelector("[data-theme-toggle]").focus();
       });
     });
   });
