@@ -1373,17 +1373,20 @@ uc-file-uploader-minimal {
     opacity: 1;
 }
 
-/* ====== Portfolio pages — shared typography and spacing ====== */
+/* ====== Portfolio and about pages — shared typography and spacing ====== */
 
-.portfolio .section--page {
+.portfolio .section--page,
+.about-page .section--page {
     padding-top: clamp(28px, 5vw, 64px);
 }
 
-.portfolio .section--page > .container {
+.portfolio .section--page > .container,
+.about-page .section--page > .container {
     max-width: 1050px;
 }
 
-.portfolio .page-title {
+.portfolio .page-title,
+.about-page .page-title {
     padding: 0;
     font-family: Cormorant, Georgia, serif;
     font-size: clamp(42px, 6vw, 64px);
@@ -1431,7 +1434,8 @@ uc-file-uploader-minimal {
 }
 
 @media (max-width: 600px) {
-    .portfolio .section--page {
+    .portfolio .section--page,
+    .about-page .section--page {
         padding-top: 24px;
     }
 
@@ -2060,9 +2064,10 @@ html.home main > section {
 
 .about__grid {
     display: grid;
-    grid-template-columns: 1.2fr 0.6fr;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
     gap: clamp(24px, 4vw, 48px);
-    align-items: center;
+    align-items: start;
+    margin-top: clamp(34px, 5vw, 56px);
 }
 
 .about__text {
@@ -2070,7 +2075,40 @@ html.home main > section {
     color: var(--muted);
     font-size: 16px;
     line-height: 1.85;
-    text-align: justify;
+    text-align: start;
+}
+
+.about__text p {
+    margin: 0;
+}
+
+.about__text p + p {
+    margin-top: 16px;
+}
+
+.about__portrait {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg-2);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14);
+}
+
+.about__portrait img {
+    width: 100%;
+    height: auto;
+}
+
+.about__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.about__actions .btn {
+    min-width: min(150px, 100%);
 }
 
 @media (max-width: 900px) {
@@ -2079,11 +2117,14 @@ html.home main > section {
         gap: 24px;
     }
 
-    .about__text {
-        margin-bottom: 3vh;
-    }
 }
 
+@media (max-width: 600px) {
+    .about__text {
+        font-size: 15px;
+        line-height: 1.7;
+    }
+}
 
 /* ==========================================================
    FAQ — layout tematyczny (dodaj na końcu styles.css)
