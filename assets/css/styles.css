@@ -1403,7 +1403,8 @@ uc-file-uploader-minimal {
 }
 
 .portfolio .page-title,
-.about-page .page-title {
+.about-page .page-title,
+.terms-page .page-title {
     padding: 0;
     font-family: Cormorant, Georgia, serif;
     font-size: clamp(42px, 6vw, 64px);
@@ -2390,6 +2391,10 @@ html.home main > section {
 .faq-answers {
     min-width: 0;
     border-top: 1px solid var(--border);
+}
+
+.terms-answers {
+    margin-top: clamp(38px, 6vw, 70px);
 }
 
 .faq-answer {
