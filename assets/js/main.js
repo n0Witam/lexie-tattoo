@@ -1,6 +1,6 @@
 import { fetchJSON, qs, qsa } from "./util.js";
 import { initSite, openFreePatternModal, setupContactForm } from "./site.js";
-import { setupAnchorNavigation } from "./anchors.js";
+import { setupAnchorNavigation } from "./anchors.js?v=20260919-section-start";
 
 const DATA_URL = "./data/portfolio.json";
 const REVIEWS_URL = "./data/reviews.json";
