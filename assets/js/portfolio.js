@@ -16,6 +16,17 @@ function setupLightbox(items) {
 
   if (!lb || !lbImg) return;
 
+  // Reserve the actual controls height, including wrapped buttons and text zoom.
+  const inner = qs(".lightbox__inner", lb);
+  const bar = qs(".lightbox__bar", lb);
+  if (inner && bar) {
+    const controlsObserver = new ResizeObserver(() => {
+      const height = bar.getBoundingClientRect().height;
+      if (height > 0) inner.style.setProperty("--lightbox-bar-h", `${height}px`);
+    });
+    controlsObserver.observe(bar);
+  }
+
   let index = 0;
 
   const open = (i) => {

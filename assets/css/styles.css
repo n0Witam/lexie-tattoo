@@ -1509,20 +1509,22 @@ uc-file-uploader-minimal {
 
 @media (min-width: 721px) {
     .lightbox__inner {
-        display: flex;
-        flex-direction: column;
+        width: fit-content;
         max-height: calc(100vh - 48px);
         max-height: calc(100dvh - 48px);
         margin-top: 0;
     }
 
     .lightbox__img {
-        min-height: 0;
-        flex: 0 1 auto;
+        width: auto;
+        max-width: min(918px, calc(100vw - 50px));
+        max-height: calc(100vh - 50px - var(--lightbox-bar-h, 76px));
+        max-height: calc(100dvh - 50px - var(--lightbox-bar-h, 76px));
     }
 
     .lightbox__bar {
-        flex-shrink: 0;
+        /* Let the image determine the dialog width; controls wrap below it. */
+        contain: inline-size;
     }
 }
 
