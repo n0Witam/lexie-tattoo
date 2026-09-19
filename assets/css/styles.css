@@ -3,6 +3,13 @@
    ========================================================== */
 
 :root {
+    color-scheme: dark;
+    --hero-logo-filter: contrast(0.7) invert() sepia(0.3);
+    --hero-image-filter: contrast(0.5) invert() sepia(0.3);
+    --uploader-background: var(--muted);
+    --uploader-foreground: var(--border);
+    --uploader-accent: var(--border);
+    --uploader-accent-foreground: var(--border);
     --bg: #3d352c;
     --bg-texture: url("../img/grain-dark.svg");
     --bg-2: #101114;
@@ -23,7 +30,14 @@
 }
 
 @media (prefers-color-scheme: light) {
-    :root {
+    :root:not([data-theme]) {
+        color-scheme: light;
+        --hero-logo-filter: contrast(0.7) sepia(1);
+        --hero-image-filter: contrast(0.7) sepia(1);
+        --uploader-background: rgba(255, 255, 255, 0.7);
+        --uploader-foreground: #171717;
+        --uploader-accent: #171717;
+        --uploader-accent-foreground: #fef8f0;
         --bg: #ece2d5;
         --bg-texture: url("../img/grain-light.svg");
         --bg-2: #f5f6f8;
@@ -35,6 +49,26 @@
         --shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
         --focus: rgba(52, 42, 35, 0.55);
     }
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+    --hero-logo-filter: contrast(0.7) sepia(1);
+    --hero-image-filter: contrast(0.7) sepia(1);
+    --uploader-background: rgba(255, 255, 255, 0.7);
+    --uploader-foreground: #171717;
+    --uploader-accent: #171717;
+    --uploader-accent-foreground: #fef8f0;
+    --bg: #ece2d5;
+    --bg-texture: url("../img/grain-light.svg");
+    --bg-2: #f5f6f8;
+    --bg-3: #e7e0d6;
+    --text: #342a23;
+    --muted: rgba(52, 42, 35, 0.65);
+    --border: rgba(52, 42, 35, 0.15);
+    --accent: #2e2119;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    --focus: rgba(52, 42, 35, 0.55);
 }
 
 @font-face {
@@ -510,7 +544,7 @@ a:hover {
     -webkit-mask: url("../img/logotyp.svg") center center / contain no-repeat;
     mask: url("../img/logotyp.svg") center center / contain no-repeat;
     margin-bottom: -35px;
-    filter: contrast(0.7) invert() sepia(0.3);
+    filter: var(--hero-logo-filter);
 }
 
 .hero__grid {
@@ -579,17 +613,9 @@ a:hover {
     height: auto;
     object-fit: contain;
     object-position: bottom center;
-    filter: contrast(0.5) invert() sepia(0.3);
+    filter: var(--hero-image-filter);
 }
 
-@media (prefers-color-scheme: light) {
-    .hero__logo {
-        filter: contrast(0.7) sepia(1);
-    }
-    .hero__image {
-        filter: contrast(0.7) sepia(1);
-    }
-}
 
 @media (max-width: 1100px) {
     .hero {
@@ -1292,22 +1318,13 @@ uc-copyright * {
 
 uc-file-uploader-minimal {
     --uc-border-radius: 14px;
-    --uc-background: var(--muted);
-    --uc-foreground: var(--border);
-    --uc-accent: var(--border);
-    --uc-accent-foreground: var(--border);
+    --uc-background: var(--uploader-background);
+    --uc-foreground: var(--uploader-foreground);
+    --uc-accent: var(--uploader-accent);
+    --uc-accent-foreground: var(--uploader-accent-foreground);
     --uc-muted: rgba(0, 0, 0, 0.55);
 }
 
-@media (prefers-color-scheme: light) {
-    uc-file-uploader-minimal {
-        --uc-background: rgba(255, 255, 255, 0.7);
-        --uc-foreground: #171717;
-        --uc-accent: #171717;
-        --uc-accent-foreground: #fef8f0;
-        --uc-muted: rgba(0, 0, 0, 0.55);
-    }
-}
 
 /* ====== Portfolio grid ====== */
 
@@ -1621,9 +1638,39 @@ uc-file-uploader-minimal {
 
 .footer__row {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     gap: 12px;
     flex-wrap: wrap;
+}
+
+.footer__theme:not([hidden]) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+}
+
+.theme-toggle {
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.theme-toggle__icon {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.theme-reset {
+    border: 0;
+    padding: 8px 0;
+    background: none;
+    color: var(--muted);
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
 }
 
 .kbd {
