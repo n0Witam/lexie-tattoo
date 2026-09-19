@@ -1,5 +1,6 @@
 import { fetchJSON, qs, qsa } from "./util.js";
 import { initSite, openFreePatternModal, setupContactForm } from "./site.js";
+import { setupAnchorNavigation } from "./anchors.js";
 
 const DATA_URL = "./data/portfolio.json";
 const REVIEWS_URL = "./data/reviews.json";
@@ -596,8 +597,11 @@ async function renderReviews() {
 window.addEventListener("DOMContentLoaded", async () => {
   initSite();
 
-  await Promise.all([renderFeatured(), renderReviews()]);
-  qsa("[data-carousel]").forEach(setupCarousel);
+  const contentReady = Promise.all([renderFeatured(), renderReviews()]).then(() => {
+    qsa("[data-carousel]").forEach(setupCarousel);
+  });
+  setupAnchorNavigation(contentReady);
 
+  await contentReady;
   await setupContactForm();
 });

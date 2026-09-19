@@ -743,28 +743,6 @@
                 </div>
             </div>
         </footer>
-        <script src="./assets/js/main.js" type="module"></script>
-        <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const scrollToHash = () => {
-                if (!window.location.hash) return;
-
-                const target = document.querySelector(window.location.hash);
-
-                if (!target) return;
-
-                requestAnimationFrame(() => {
-                    target.scrollIntoView({
-                        behavior: "smooth",
-                        block: "start"
-                    });
-                });
-            };
-
-            scrollToHash();
-
-            window.addEventListener("hashchange", scrollToHash);
-        });
-        </script>
+        <script src="./assets/js/main.js?v=20260919-anchors" type="module"></script>
     </body>
 </html>
