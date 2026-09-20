@@ -50,7 +50,7 @@
             sizes="192x192"
         />
         <script src="./assets/js/theme.js?v=20260919-theme-icon"></script>
-        <link href="./assets/css/styles.css?v=20260920-uploader" rel="stylesheet" />
+        <link href="./assets/css/styles.css?v=20260920-form-feedback" rel="stylesheet" />
 
         <script type="application/ld+json">
             {
@@ -397,14 +397,17 @@
                                         Do 7 zdjęć · maks. 4,5 MB na zdjęcie
                                     </small>
                                 </div>
-                                <button class="btn btn--primary" type="submit">
-                                    Wyślij
-                                </button>
-                                <p
-                                    aria-live="polite"
-                                    class="form__status"
-                                    role="status"
-                                ></p>
+                                <div class="form__submit" aria-live="polite" aria-atomic="true">
+                                    <button class="btn btn--primary form__send" type="submit">
+                                        <span data-submit-label>Wyślij</span>
+                                    </button>
+                                    <div class="form__confirmation" data-submit-confirmation hidden tabindex="-1">
+                                        <svg class="form__confirmation-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                            <path d="m5 12 4 4L19 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        <span><strong>Dziękuję za wiadomość!</strong><br>Odezwę się wkrótce.</span>
+                                    </div>
+                                </div>
                             </form>
                             <iframe
                                 id="gformIframe"
@@ -754,6 +757,6 @@
                 </div>
             </div>
         </footer>
-        <script src="./assets/js/main.js?v=20260920-uploader" type="module"></script>
+        <script src="./assets/js/main.js?v=20260920-form-feedback" type="module"></script>
     </body>
 </html>

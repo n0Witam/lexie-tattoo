@@ -411,11 +411,13 @@ export async function setupContactForm() {
   const nameEl = qs("#name", form);
   const emailEl = qs("#email", form);
   const msgEl = qs("#msg", form);
-  const statusEl = qs(".form__status", form);
-  const iframe = qs("#gformIframe");
+  const submitButton = qs(".form__send", form);
+  const submitLabel = qs("[data-submit-label]", form);
+  const confirmation = qs("[data-submit-confirmation]", form);
+  let iframe = qs("#gformIframe");
   const uploadUrlsEl = qs("#uploadUrls", form);
 
-  if (!nameEl || !emailEl || !msgEl) return;
+  if (!nameEl || !emailEl || !msgEl || !submitButton || !submitLabel || !confirmation || !iframe) return;
 
   const ctxEl = qs("#lexieUploadCtx");
   let collector = null;
@@ -437,56 +439,120 @@ export async function setupContactForm() {
 
   bindLiveValidation({ nameEl, emailEl, msgEl });
 
-  const setStatus = (text) => {
-    if (!statusEl) return;
-    statusEl.textContent = text;
+  let state = "idle";
+  let activeAttempt = 0;
+  let responseTimer;
+  let restoreMessage = () => {};
+
+  const setState = (next) => {
+    state = next;
+    form.dataset.submitState = next;
+    submitButton.hidden = next === "success";
+    submitButton.disabled = next === "sending";
+    submitButton.setAttribute("aria-busy", String(next === "sending"));
+    submitLabel.textContent = next === "sending" ? "Wysyłanie…"
+      : next === "unconfirmed" ? "Brak potwierdzenia — spróbuj ponownie"
+      : next === "offline" ? "Brak internetu — spróbuj ponownie"
+      : "Wyślij";
+    confirmation.hidden = next !== "success";
   };
 
-  // Iframe-based success detection (Google Forms redirects into iframe).
-  if (iframe && statusEl) {
-    iframe.addEventListener("load", () => {
-      if (!/Wysyłanie/i.test(statusEl.textContent || "")) return;
-      setStatus("Dziękuję! Odezwę się wkrótce 💌");
-      form.reset();
-      collector?.sync?.();
-    });
-  }
+  form.addEventListener("input", () => {
+    if (state !== "sending") setState("idle");
+  });
 
   form.addEventListener("submit", (e) => {
-    setStatus("");
-
-    const ok = validateAll({ nameEl, emailEl, msgEl });
-    if (!ok) {
+    if (state === "sending" || state === "success") {
       e.preventDefault();
       return;
     }
+    if (!validateAll({ nameEl, emailEl, msgEl })) {
+      e.preventDefault();
+      return;
+    }
+    if (!navigator.onLine) {
+      e.preventDefault();
+      setState("offline");
+      return;
+    }
 
-    setStatus("Wysyłanie…");
+    restoreMessage();
+    const attempt = ++activeAttempt;
+    setState("sending");
 
-    collector?.sync?.();
+    // A fresh frame prevents a late response from a previous attempt completing a retry.
+    const nextFrame = iframe.cloneNode(false);
+    iframe.replaceWith(nextFrame);
+    iframe = nextFrame;
+    iframe.addEventListener("load", () => {
+      if (state !== "sending" || attempt !== activeAttempt) return;
+      try {
+        // Ignore the initial empty frame. Google Forms' response is cross-origin.
+        if (nextFrame.contentDocument?.URL === "about:blank") return;
+      } catch {
+        // Cross-origin responses cannot be inspected; use the existing load signal.
+      }
+      window.clearTimeout(responseTimer);
+      restoreMessage();
+      const restoreFocus = document.activeElement === submitButton || document.activeElement === document.body;
+      setState("success");
+      form.reset();
+      ctxEl?.getAPI?.()?.removeAllFiles?.();
+      collector?.sync();
+      if (restoreFocus) confirmation.focus({ preventScroll: true });
+      void celebrateContact(confirmation);
+    });
+
+    collector?.sync();
     const urls = collector?.getUrls ? collector.getUrls() : [];
     if (uploadUrlsEl) uploadUrlsEl.value = urls.join("\n");
 
     const trimmed = String(msgEl.value || "").trim();
-    const hiddenMessage =
-      urls.length > 0
-        ? `${trimmed}\n\n---\nZdjęcia:${urls.map((u) => `\n${u}`).join("")}`
-        : trimmed;
-
+    const hiddenMessage = urls.length > 0
+      ? `${trimmed}\n\n---\nZdjęcia:${urls.map((u) => `\n${u}`).join("")}`
+      : trimmed;
     const restore = setHiddenMessageField(form, msgEl, hiddenMessage);
+    let restored = false;
+    restoreMessage = () => {
+      if (restored) return;
+      restored = true;
+      restore();
+    };
+    window.setTimeout(restoreMessage, 1500);
 
-    // Restore input name shortly after the submission is dispatched.
-    window.setTimeout(restore, 1500);
-
-    // Fallback success message in case iframe load doesn't fire.
-    window.setTimeout(() => {
-      if (/Wysyłanie/i.test(statusEl?.textContent || "")) {
-        setStatus("Dziękuję! Odezwę się wkrótce 💌");
-        form.reset();
-        collector?.sync();
-      }
-    }, 1800);
+    responseTimer = window.setTimeout(() => {
+      if (state !== "sending" || attempt !== activeAttempt) return;
+      restoreMessage();
+      setState("unconfirmed");
+    }, 20000);
   });
+}
+
+async function celebrateContact(confirmation) {
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (reducedMotion.matches) return;
+  try {
+    const { default: confetti } = await import("./vendor/canvas-confetti-1.9.4.mjs");
+    if (confirmation.hidden || !confirmation.isConnected || reducedMotion.matches) return;
+    const rect = confirmation.getBoundingClientRect();
+    const dark = document.documentElement.dataset.theme === "dark";
+    await confetti({
+      particleCount: 65,
+      spread: 70,
+      startVelocity: 28,
+      ticks: 150,
+      scalar: 0.85,
+      colors: dark ? ["#f5f2ec", "#d8c3a5", "#b89973"] : ["#594536", "#96734f", "#c2a47d"],
+      origin: {
+        x: Math.max(0, Math.min(1, (rect.left + rect.width / 2) / innerWidth)),
+        y: Math.max(0.1, Math.min(0.9, (rect.top + rect.height / 2) / innerHeight)),
+      },
+      zIndex: 400,
+      disableForReducedMotion: true,
+    });
+  } catch {
+    // An optional animation must never affect the submission confirmation.
+  }
 }
 
 // -----------------------------

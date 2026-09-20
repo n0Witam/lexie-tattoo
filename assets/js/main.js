@@ -1,5 +1,5 @@
 import { fetchJSON, qs, qsa } from "./util.js";
-import { initSite, openFreePatternModal, setupContactForm } from "./site.js?v=20260920-uploader";
+import { initSite, openFreePatternModal, setupContactForm } from "./site.js?v=20260920-form-feedback";
 import { setupAnchorNavigation } from "./anchors.js?v=20260919-section-start";
 
 const DATA_URL = "./data/portfolio.json";

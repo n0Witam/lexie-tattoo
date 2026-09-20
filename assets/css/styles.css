@@ -1311,6 +1311,70 @@ a:hover {
     font-size: 13px;
 }
 
+.form__send {
+    width: 100%;
+    min-height: 48px;
+    white-space: normal;
+}
+
+.form__send[hidden],
+.form__confirmation[hidden] {
+    display: none;
+}
+
+.form__send:disabled {
+    cursor: wait;
+    opacity: .75;
+    transform: none;
+}
+
+.form__send[aria-busy="true"]::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: form-sending .8s linear infinite;
+}
+
+.form__confirmation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+    padding: 8px 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.form__confirmation strong {
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.form__confirmation-icon {
+    width: 36px;
+    height: 36px;
+    padding: 7px;
+    flex-shrink: 0;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+}
+
+@keyframes form-sending {
+    to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .form__send[aria-busy="true"]::before { animation: none; }
+}
+
 .form__hint {
     font-style: italic;
     color: var(--muted);
