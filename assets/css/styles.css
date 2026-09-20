@@ -1446,17 +1446,15 @@ uc-file-uploader-minimal {
 }
 
 #lexieUploader > uc-start-from uc-drop-area > span::before {
-    content: "+";
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    content: "";
     width: 30px;
     height: 30px;
+    flex-shrink: 0;
     border: 1px solid var(--border);
     border-radius: 50%;
-    color: var(--muted);
-    font-size: 22px;
-    font-weight: 400;
+    background:
+        linear-gradient(var(--muted), var(--muted)) center / 12px 1px no-repeat,
+        linear-gradient(var(--muted), var(--muted)) center / 1px 12px no-repeat;
 }
 
 #lexieUploader uc-upload-list {

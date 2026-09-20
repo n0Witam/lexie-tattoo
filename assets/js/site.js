@@ -461,7 +461,19 @@ export async function setupContactForm() {
     if (state !== "sending") setState("idle");
   });
 
+  // Visual preview only: never submit, reset fields, or alter uploaded files.
+  form.addEventListener("contact:preview-success", () => {
+    if (state === "sending") {
+      console.warn("Poczekaj na zakończenie wysyłki przed uruchomieniem podglądu.");
+      return;
+    }
+    setState("success");
+    confirmation.scrollIntoView({ block: "center", behavior: "instant" });
+    void celebrateContact(confirmation);
+  });
+
   form.addEventListener("submit", (e) => {
+    if (e.defaultPrevented) return;
     if (state === "sending" || state === "success") {
       e.preventDefault();
       return;
@@ -532,7 +544,7 @@ async function celebrateContact(confirmation) {
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   if (reducedMotion.matches) return;
   try {
-    const { default: confetti } = await import("./vendor/canvas-confetti-1.9.4.mjs");
+    const { default: confetti } = await import("./vendor/canvas-confetti-1.9.4.js");
     if (confirmation.hidden || !confirmation.isConnected || reducedMotion.matches) return;
     const rect = confirmation.getBoundingClientRect();
     const dark = document.documentElement.dataset.theme === "dark";
@@ -550,8 +562,9 @@ async function celebrateContact(confirmation) {
       zIndex: 400,
       disableForReducedMotion: true,
     });
-  } catch {
+  } catch (error) {
     // An optional animation must never affect the submission confirmation.
+    console.warn("Nie udało się uruchomić confetti:", error);
   }
 }
 
