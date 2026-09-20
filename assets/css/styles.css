@@ -2383,17 +2383,8 @@ html.home main > section {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 28px;
+    gap: 12px;
     padding-top: 8px;
-}
-
-.about__location {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    padding: 7px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 14px;
 }
 
 @media (max-width: 700px) {
@@ -2442,7 +2433,6 @@ html.home main > section {
     }
 
     .about__actions {
-        gap: 24px;
         padding-top: 0;
     }
 }
