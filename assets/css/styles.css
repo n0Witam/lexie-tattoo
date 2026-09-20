@@ -1310,6 +1310,14 @@ a:hover {
     outline: none;
 }
 
+/* Keep text fields readable without iPhone's automatic focus zoom. */
+@media (max-width: 720px), (any-pointer: coarse) {
+    .field input,
+    .field textarea {
+        font-size: max(16px, 1em);
+    }
+}
+
 .field textarea {
     min-height: 100px;
     resize: vertical;
