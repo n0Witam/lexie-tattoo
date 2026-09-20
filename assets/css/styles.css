@@ -407,6 +407,25 @@ a:hover {
 }
 
 @media (max-width: 720px) {
+    .site-header {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        background: transparent;
+    }
+
+    /* Keep header blur on a separate layer so it does not limit the menu's backdrop. */
+    .site-header::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        border-radius: inherit;
+        background: color-mix(in srgb, var(--bg) 76%, transparent);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        pointer-events: none;
+    }
+
     .nav {
         position: relative;
     }
@@ -428,9 +447,10 @@ a:hover {
 
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        /* More transparency so blur is actually visible */
         background: rgba(23, 23, 23, 0.35);
-        background: color-mix(in srgb, var(--bg) 95%, transparent);
+        background: color-mix(in srgb, var(--bg) 76%, transparent);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
         box-shadow: 0 14px 28px rgba(0, 0, 0, 0.95);
 
         opacity: 0;
