@@ -255,6 +255,16 @@ async function ensureUploadcareComponents() {
       await ensureUploadcareStyles();
       const UC =
         await import("https://cdn.jsdelivr.net/npm/@uploadcare/file-uploader@v1/web/file-uploader.min.js");
+      const { default: polish } =
+        await import("https://cdn.jsdelivr.net/npm/@uploadcare/file-uploader@v1/locales/file-uploader/pl.js");
+      UC.defineLocale("pl", {
+        ...polish,
+        "choose-file": "Dodaj zdjęcie",
+        "choose-files": "Dodaj zdjęcia",
+        "drop-file-here": "Upuść zdjęcie tutaj",
+        "drop-files-here": "Upuść zdjęcia tutaj",
+        "add-more": "Dodaj kolejne zdjęcia",
+      });
       UC.defineComponents(UC);
       await customElements.whenDefined("uc-upload-ctx-provider");
       return true;

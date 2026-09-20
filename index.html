@@ -50,7 +50,7 @@
             sizes="192x192"
         />
         <script src="./assets/js/theme.js?v=20260919-theme-icon"></script>
-        <link href="./assets/css/styles.css?v=20260920-nav-blur" rel="stylesheet" />
+        <link href="./assets/css/styles.css?v=20260920-uploader" rel="stylesheet" />
 
         <script type="application/ld+json">
             {
@@ -369,11 +369,12 @@
 ✧ Rozmiar (cm): </textarea
                                     >
                                 </div>
-                                <div class="field">
-                                    <label for="files">Inspiracje</label>
+                                <div class="field field--uploads">
+                                    <span class="field__label" id="inspirationsLabel">Inspiracje</span>
                                     <uc-config
                                         accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif"
                                         ctx-name="lexie-upload"
+                                        locale-name="pl"
                                         max-local-file-size-bytes="4500000"
                                         multiple="true"
                                         multiple-max="7"
@@ -387,10 +388,13 @@
                                     <uc-file-uploader-minimal
                                         ctx-name="lexie-upload"
                                         id="lexieUploader"
+                                        role="group"
+                                        aria-labelledby="inspirationsLabel"
+                                        aria-describedby="inspirationsHint"
                                     ></uc-file-uploader-minimal>
-                                    <small class="form__hint">
-                                        Załącz zdjęcia (jpg / jpeg / png / webp
-                                        / heic) • max 4.5 MB / plik • do 7 plików
+                                    <small class="form__hint" id="inspirationsHint">
+                                        JPG, JPEG, PNG, WEBP, HEIC lub HEIF<br>
+                                        Do 7 zdjęć · maks. 4,5 MB na zdjęcie
                                     </small>
                                 </div>
                                 <button class="btn btn--primary" type="submit">
@@ -750,6 +754,6 @@
                 </div>
             </div>
         </footer>
-        <script src="./assets/js/main.js?v=20260919-section-start" type="module"></script>
+        <script src="./assets/js/main.js?v=20260920-uploader" type="module"></script>
     </body>
 </html>

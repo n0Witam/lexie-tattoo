@@ -5,11 +5,8 @@
 :root {
     color-scheme: dark;
     --hero-logo-filter: contrast(0.7) invert() sepia(0.3);
+    --uploader-error: #f3b5a8;
     --hero-image-filter: contrast(0.5) invert() sepia(0.3);
-    --uploader-background: var(--muted);
-    --uploader-foreground: var(--border);
-    --uploader-accent: var(--border);
-    --uploader-accent-foreground: var(--border);
     --bg: #3d352c;
     --bg-texture: url("../img/grain-dark.svg");
     --bg-2: #101114;
@@ -33,11 +30,8 @@
     :root:not([data-theme]) {
         color-scheme: light;
         --hero-logo-filter: contrast(0.7) sepia(1);
+        --uploader-error: #973e30;
         --hero-image-filter: contrast(0.7) sepia(1);
-        --uploader-background: rgba(255, 255, 255, 0.7);
-        --uploader-foreground: #171717;
-        --uploader-accent: #171717;
-        --uploader-accent-foreground: #fef8f0;
         --bg: #ece2d5;
         --bg-texture: url("../img/grain-light.svg");
         --bg-2: #f5f6f8;
@@ -54,11 +48,8 @@
 :root[data-theme="light"] {
     color-scheme: light;
     --hero-logo-filter: contrast(0.7) sepia(1);
+    --uploader-error: #973e30;
     --hero-image-filter: contrast(0.7) sepia(1);
-    --uploader-background: rgba(255, 255, 255, 0.7);
-    --uploader-foreground: #171717;
-    --uploader-accent: #171717;
-    --uploader-accent-foreground: #fef8f0;
     --bg: #ece2d5;
     --bg-texture: url("../img/grain-light.svg");
     --bg-2: #f5f6f8;
@@ -1283,7 +1274,8 @@ a:hover {
     gap: 12px;
 }
 
-.field label {
+.field label,
+.field__label {
     display: block;
     font-size: 13px;
     color: var(--muted);
@@ -1336,14 +1328,90 @@ uc-copyright * {
     user-select: none !important;
 }
 
-uc-file-uploader-minimal {
-    --uc-border-radius: 14px;
-    --uc-background: var(--uploader-background);
-    --uc-foreground: var(--uploader-foreground);
-    --uc-accent: var(--uploader-accent);
-    --uc-accent-foreground: var(--uploader-accent-foreground);
-    --uc-muted: rgba(0, 0, 0, 0.55);
+#lexieUploader uc-copyright {
+    display: none !important;
 }
+
+/* Use the site's active palette so manual theme changes also update the uploader. */
+uc-file-uploader-minimal {
+    --uc-font-family: inherit;
+    --uc-font-size: 14px;
+    --uc-radius: 8px;
+    --uc-button-size: 40px;
+    --uc-background: var(--bg);
+    --uc-foreground: var(--text);
+    --uc-muted: color-mix(in srgb, var(--accent) 4%, var(--bg));
+    --uc-muted-foreground: var(--muted);
+    --uc-border: var(--border);
+    --uc-primary: var(--accent);
+    --uc-primary-hover: color-mix(in srgb, var(--accent) 90%, var(--bg));
+    --uc-primary-transparent: color-mix(in srgb, var(--accent) 8%, transparent);
+    --uc-primary-foreground: var(--bg);
+    --uc-secondary: color-mix(in srgb, var(--accent) 5%, var(--bg));
+    --uc-secondary-hover: color-mix(in srgb, var(--accent) 10%, var(--bg));
+    --uc-secondary-foreground: var(--text);
+    --uc-destructive: color-mix(in srgb, var(--uploader-error) 10%, var(--bg));
+    --uc-destructive-foreground: var(--uploader-error);
+    --uc-dialog-shadow: var(--shadow);
+}
+
+/* The vendor's minimal layout uses four-ID specificity; keep overrides local. */
+#lexieUploader > uc-start-from uc-drop-area {
+    min-height: 88px !important;
+    border-style: solid !important;
+    border-radius: 14px !important;
+    transition: background .2s ease, border-color .2s ease;
+}
+
+#lexieUploader > uc-start-from uc-drop-area:is(:hover, :focus-visible, [drag-state="over"]) {
+    background: var(--uc-secondary-hover) !important;
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--border)) !important;
+}
+
+#lexieUploader > uc-start-from uc-drop-area:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+}
+
+#lexieUploader > uc-start-from uc-drop-area > span {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text) !important;
+    font-weight: 500;
+}
+
+#lexieUploader > uc-start-from uc-drop-area > span::before {
+    content: "+";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    color: var(--muted);
+    font-size: 22px;
+    font-weight: 400;
+}
+
+#lexieUploader uc-upload-list {
+    border-style: solid !important;
+    border-radius: 14px !important;
+}
+
+#lexieUploader .uc-add-more-btn > span {
+    display: inline !important;
+}
+
+.field--uploads .form__hint {
+    margin-top: 10px;
+    font-style: normal;
+    font-size: 11px;
+    line-height: 1.65;
+    opacity: 1;
+}
+
 
 
 /* ====== Portfolio grid ====== */
