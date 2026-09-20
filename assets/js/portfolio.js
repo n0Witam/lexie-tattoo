@@ -19,11 +19,21 @@ function setupLightbox(items) {
   // Reserve the actual controls height, including wrapped buttons and text zoom.
   const inner = qs(".lightbox__inner", lb);
   const bar = qs(".lightbox__bar", lb);
+  const syncControlsHeight = () => {
+    if (!inner || !bar) return;
+    const height = bar.getBoundingClientRect().height;
+    if (height > 0) inner.style.setProperty("--lightbox-bar-h", `${height}px`);
+  };
+  const syncImageDimensions = () => {
+    if (!inner || !lbImg.complete || !lbImg.naturalWidth || !lbImg.naturalHeight) return;
+    inner.style.setProperty("--lightbox-image-width", `${lbImg.naturalWidth}px`);
+    inner.style.setProperty("--lightbox-image-ratio", lbImg.naturalWidth / lbImg.naturalHeight);
+    syncControlsHeight();
+  };
+  lbImg.addEventListener("load", syncImageDimensions);
+
   if (inner && bar) {
-    const controlsObserver = new ResizeObserver(() => {
-      const height = bar.getBoundingClientRect().height;
-      if (height > 0) inner.style.setProperty("--lightbox-bar-h", `${height}px`);
-    });
+    const controlsObserver = new ResizeObserver(syncControlsHeight);
     controlsObserver.observe(bar);
   }
 
@@ -36,6 +46,8 @@ function setupLightbox(items) {
 
     lbImg.src = item._resolvedSrc;
     lbImg.alt = item.alt || "Tatuaż – praca Lexie";
+    // Cached images may already be complete before the load event is handled.
+    syncImageDimensions();
 
     if (lbCap) {
       lbCap.textContent = item._showCaption ? item.alt || "" : "";
@@ -55,6 +67,7 @@ function setupLightbox(items) {
     }
 
     lb.setAttribute("aria-hidden", "false");
+    syncControlsHeight();
     document.body.style.overflow = "hidden";
   };
 
