@@ -1,5 +1,5 @@
 import { fetchJSON, qs, qsa } from "./util.js";
-import { initSite, openFreePatternModal, setupContactForm } from "./site.js?v=20260920-form-preview";
+import { initSite, openFreePatternModal, setupContactForm } from "./site.js?v=20260920-confetti-scroll";
 import { setupAnchorNavigation } from "./anchors.js?v=20260919-section-start";
 
 const DATA_URL = "./data/portfolio.json";

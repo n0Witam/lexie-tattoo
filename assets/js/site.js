@@ -468,7 +468,6 @@ export async function setupContactForm() {
       return;
     }
     setState("success");
-    confirmation.scrollIntoView({ block: "center", behavior: "instant" });
     void celebrateContact(confirmation);
   });
 
