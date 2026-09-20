@@ -16,25 +16,42 @@ function setupLightbox(items) {
 
   if (!lb || !lbImg) return;
 
-  // Reserve the actual controls height, including wrapped buttons and text zoom.
   const inner = qs(".lightbox__inner", lb);
   const bar = qs(".lightbox__bar", lb);
-  const syncControlsHeight = () => {
-    if (!inner || !bar) return;
-    const height = bar.getBoundingClientRect().height;
-    if (height > 0) inner.style.setProperty("--lightbox-bar-h", `${height}px`);
+  const desktop = window.matchMedia("(min-width: 721px)");
+  let imageRatio = 0.8;
+  let imageRequest = 0;
+  let layoutFrame = 0;
+
+  const syncLayout = () => {
+    if (!inner || !bar || !desktop.matches || lb.getAttribute("aria-hidden") !== "false") return;
+    // Size from the viewport, not the decoded image's intrinsic width. Write a
+    // pixel value so a cached image cannot leave Safari's CSS calculation stale.
+    const overlayStyle = getComputedStyle(lb);
+    const availableWidth = lb.clientWidth - parseFloat(overlayStyle.paddingLeft) - parseFloat(overlayStyle.paddingRight) - 2;
+    const availableHeight = lb.clientHeight - parseFloat(overlayStyle.paddingTop) - parseFloat(overlayStyle.paddingBottom) - 2;
+    const imageHeight = Math.max(1, availableHeight - bar.getBoundingClientRect().height);
+    const width = `${2 + Math.max(1, Math.min(918, availableWidth, imageHeight * imageRatio))}px`;
+    if (inner.style.getPropertyValue("--lightbox-width") !== width) {
+      inner.style.setProperty("--lightbox-width", width);
+    }
+  };
+  const scheduleLayout = () => {
+    cancelAnimationFrame(layoutFrame);
+    layoutFrame = requestAnimationFrame(syncLayout);
   };
   const syncImageDimensions = () => {
-    if (!inner || !lbImg.complete || !lbImg.naturalWidth || !lbImg.naturalHeight) return;
-    inner.style.setProperty("--lightbox-image-width", `${lbImg.naturalWidth}px`);
-    inner.style.setProperty("--lightbox-image-ratio", lbImg.naturalWidth / lbImg.naturalHeight);
-    syncControlsHeight();
+    if (!lbImg.complete || lbImg.currentSrc !== lbImg.src || !lbImg.naturalWidth || !lbImg.naturalHeight) return;
+    imageRatio = lbImg.naturalWidth / lbImg.naturalHeight;
+    syncLayout();
   };
   lbImg.addEventListener("load", syncImageDimensions);
+  window.addEventListener("resize", scheduleLayout);
 
   if (inner && bar) {
-    const controlsObserver = new ResizeObserver(syncControlsHeight);
+    const controlsObserver = new ResizeObserver(scheduleLayout);
     controlsObserver.observe(bar);
+    controlsObserver.observe(lb);
   }
 
   let index = 0;
@@ -44,10 +61,15 @@ function setupLightbox(items) {
     const item = items[index];
     if (!item) return;
 
+    const request = ++imageRequest;
+    imageRatio = 0.8;
     lbImg.src = item._resolvedSrc;
     lbImg.alt = item.alt || "Tatuaż – praca Lexie";
     // Cached images may already be complete before the load event is handled.
     syncImageDimensions();
+    lbImg.decode().then(() => {
+      if (request === imageRequest) syncImageDimensions();
+    }).catch(() => {}); // A fast next/previous click can cancel the old decode.
 
     if (lbCap) {
       lbCap.textContent = item._showCaption ? item.alt || "" : "";
@@ -67,7 +89,7 @@ function setupLightbox(items) {
     }
 
     lb.setAttribute("aria-hidden", "false");
-    syncControlsHeight();
+    syncLayout();
     document.body.style.overflow = "hidden";
   };
 

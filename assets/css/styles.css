@@ -1702,19 +1702,8 @@ uc-file-uploader-minimal {
 
 @media (min-width: 721px) {
     .lightbox__inner {
-        /* Explicit sizing avoids cached intrinsic layout sizes when the image changes. */
-        width: calc(2px + min(
-            var(--lightbox-image-width, 918px),
-            918px,
-            calc(100vw - 50px),
-            calc((100vh - 50px - var(--lightbox-bar-h, 76px)) * var(--lightbox-image-ratio, 0.8))
-        ));
-        width: calc(2px + min(
-            var(--lightbox-image-width, 918px),
-            918px,
-            calc(100vw - 50px),
-            calc((100dvh - 50px - var(--lightbox-bar-h, 76px)) * var(--lightbox-image-ratio, 0.8))
-        ));
+        /* The gallery measures the viewport and controls after every image change. */
+        width: var(--lightbox-width, min(920px, 100%));
         flex-shrink: 0;
         max-height: calc(100vh - 48px);
         max-height: calc(100dvh - 48px);
