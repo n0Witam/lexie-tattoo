@@ -45,7 +45,7 @@
             sizes="192x192"
         />
         <script src="../assets/js/theme.js?v=20260919-theme-icon"></script>
-        <link href="../assets/css/styles.css?v=20260920-lightbox-viewport" rel="stylesheet" />
+        <link href="../assets/css/styles.css?v=20260920-about-editorial" rel="stylesheet" />
 
         <script type="application/ld+json">
             {
@@ -143,63 +143,17 @@
             </div>
         </header>
         <main>
-            <section class="about section section--page">
+            <section class="about section section--page" aria-labelledby="aboutTitle">
                 <div class="container">
-                    <h1 class="page-title">O mnie</h1>
-                    <div class="about__grid">
-                        <div class="about__text reveal">
-                            <p>Cześć, jestem Lexie!</p>
-                            <p>
-                                W moich pracach inspiruję się twórczością
-                                Alfonsa Muchy i estetyką secesji. W moich
-                                pracach często pojawiają się kobiece motywy -
-                                wiedźmy, boginie, uwodzicielki, wojowniczki czy
-                                syreny - a także kwiaty w różnych formach.
-                                Najlepiej odnajduję się w delikatnych,
-                                precyzyjnych liniach, ornamentach i graficznych
-                                kompozycjach. Lubię projekty subtelne, pełne
-                                detalu i harmonii, które podkreślają naturalne
-                                linie ciała.
-                            </p>
-                            <p>
-                                Rysuję od zawsze - zaczęłam, zanim jeszcze
-                                zaczęłam mówić. Tatuowaniem zajmuję się od 2017
-                                roku i z czasem stało się ono jedną z
-                                najważniejszych rzeczy w moim życiu. Dla tej
-                                drogi porzuciłam nawet inną wielką pasję -
-                                architekturę, którą studiowałam na Politechnice
-                                Warszawskiej, gdzie ukończyłam studia z tytułem
-                                inżyniera.
-                            </p>
-                            <p>
-                                Poza tatuowaniem uwielbiam podróżować -
-                                nieważne, czy to drugi koniec świata, czy
-                                spontaniczna wycieczka za miasto. Tym bardziej
-                                doceniam swój zawód, który pozwala mi pracować w
-                                różnych miejscach w Polsce i poza jej granicami.
-                                Jestem też wielką fanką fantastyki i horrorów -
-                                uwielbiam książki Sapkowskiego i filmy z serii
-                                „Władca Pierścieni”. W wolnym czasie ćwiczę,
-                                biegam, zbieram piórka, głaszczę koty i gram w
-                                gry.
-                            </p>
-                            <div class="about__actions">
-                                <a
-                                    class="btn btn--ghost"
-                                    href="../available_designs/"
-                                    >Wolne wzory</a
-                                >
-                                <a
-                                    class="btn btn--ghost"
-                                    href="../#where_to_find_me"
-                                    >Lokalizacja</a
-                                >
-                            </div>
+                    <div class="about__hero">
+                        <div class="about__heading">
+                            <p class="about__eyebrow">O mnie</p>
+                            <h1 class="page-title" id="aboutTitle">Cześć,<br>jestem Lexie!</h1>
                         </div>
-                        <div class="about__portrait">
+                        <figure class="about__portrait">
                             <picture
                                 ><source
-                                    sizes="(max-width: 1100px) 100vw, 45vw"
+                                    sizes="(max-width: 700px) min(430px, calc(100vw - 40px)), (max-width: 1090px) 43vw, 450px"
                                     srcset="
                                         ../assets/img/lexie-600.webp   600w,
                                         ../assets/img/lexie-1000.webp 1000w
@@ -209,11 +163,63 @@
                                     alt="Lexie"
                                     decoding="async"
                                     height="2500"
-                                    loading="lazy"
+                                    fetchpriority="high"
                                     src="../assets/img/lexie.jpg"
                                     width="2000"
                             /></picture>
+                        </figure>
+                        <div class="about__intro">
+                            <p>
+                                W moich pracach inspiruję się twórczością
+                                Alfonsa Muchy i estetyką secesji. W moich
+                                pracach często pojawiają się kobiece motywy -
+                                wiedźmy, boginie, uwodzicielki, wojowniczki
+                                czy syreny - a także kwiaty w różnych formach.
+                                Najlepiej odnajduję się w delikatnych,
+                                precyzyjnych liniach, ornamentach i
+                                graficznych kompozycjach. Lubię projekty
+                                subtelne, pełne detalu i harmonii, które
+                                podkreślają naturalne linie ciała.
+                            </p>
                         </div>
+                    </div>
+                    <div class="about__story">
+                        <section aria-labelledby="aboutCareer">
+                            <h2 id="aboutCareer">Moja kariera</h2>
+                            <p>
+                                Rysuję od zawsze - zaczęłam, zanim jeszcze
+                                zaczęłam mówić. Tatuowaniem zajmuję się od
+                                2017 roku i z czasem stało się ono jedną z
+                                najważniejszych rzeczy w moim życiu. Dla tej
+                                drogi porzuciłam nawet inną wielką pasję -
+                                architekturę, którą studiowałam na
+                                Politechnice Warszawskiej, gdzie ukończyłam
+                                studia z tytułem inżyniera.
+                            </p>
+                        </section>
+                        <section aria-labelledby="aboutBeyond">
+                            <h2 id="aboutBeyond">Poza tatuowaniem</h2>
+                            <p>
+                                Poza tatuowaniem uwielbiam podróżować -
+                                nieważne, czy to drugi koniec świata, czy
+                                spontaniczna wycieczka za miasto. Tym bardziej
+                                doceniam swój zawód, który pozwala mi pracować
+                                w różnych miejscach w Polsce i poza jej
+                                granicami. Jestem też wielką fanką fantastyki
+                                i horrorów - uwielbiam książki Sapkowskiego i
+                                filmy z serii „Władca Pierścieni”. W wolnym
+                                czasie ćwiczę, biegam, zbieram piórka,
+                                głaszczę koty i gram w gry.
+                            </p>
+                        </section>
+                    </div>
+                    <div class="about__actions">
+                        <a class="btn btn--primary" href="../available_designs/">
+                            Wolne wzory <span aria-hidden="true">↗</span>
+                        </a>
+                        <a class="about__location" href="../#where_to_find_me">
+                            Lokalizacja <span aria-hidden="true">→</span>
+                        </a>
                     </div>
                 </div>
             </section>
