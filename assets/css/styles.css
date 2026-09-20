@@ -116,6 +116,22 @@ body {
     overflow-x: clip;
 }
 
+/* On short pages, let the main content fill the space above a compact footer. */
+body:has(> .footer) {
+    display: flex;
+    flex-direction: column;
+}
+
+body:has(> .footer) > main {
+    flex: 1 0 auto;
+    min-width: 0;
+}
+
+body:has(> .footer) > .site-header,
+body > .footer {
+    flex-shrink: 0;
+}
+
 /* Render the grain as document content, not as a canvas background or a
    viewport-fixed layer. Its bounds follow the full body, including safe areas. */
 body::before {
