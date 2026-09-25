@@ -7,6 +7,7 @@
     --hero-logo-filter: contrast(0.7) invert() sepia(0.3);
     --uploader-error: #f3b5a8;
     --hero-image-filter: contrast(0.5) invert() sepia(0.3);
+    --about-portrait-filter: brightness(0.9) saturate(0.8);
     --bg: #3d352c;
     --bg-texture: url("../img/grain-dark.svg");
     --bg-2: #101114;
@@ -34,6 +35,7 @@
         --hero-logo-filter: contrast(0.7) sepia(1);
         --uploader-error: #973e30;
         --hero-image-filter: contrast(0.7) sepia(1);
+        --about-portrait-filter: none;
         --bg: #ece2d5;
         --bg-texture: url("../img/grain-light.svg");
         --bg-2: #f5f6f8;
@@ -52,6 +54,7 @@
     --hero-logo-filter: contrast(0.7) sepia(1);
     --uploader-error: #973e30;
     --hero-image-filter: contrast(0.7) sepia(1);
+    --about-portrait-filter: none;
     --bg: #ece2d5;
     --bg-texture: url("../img/grain-light.svg");
     --bg-2: #f5f6f8;
@@ -2423,6 +2426,7 @@ html.home main > section {
     height: auto;
     aspect-ratio: 4 / 5;
     object-fit: cover;
+    filter: var(--about-portrait-filter);
 }
 
 .about__intro {
