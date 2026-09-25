@@ -132,6 +132,7 @@ function setupCarousel(root) {
     programmaticUntil = performance.now() + ms;
   };
   const isProgrammatic = () => performance.now() < programmaticUntil;
+  let updateSlideDepth = null;
 
   const centerToIndex = (idx, behavior = "smooth") => {
     const slides = slidesAll();
@@ -142,7 +143,8 @@ function setupCarousel(root) {
 
     const delta = getSlideCenterX(el) - getTrackCenterX();
     markProgrammatic(300);
-    track.scrollBy({ left: delta, behavior });
+    track.scrollTo({ left: track.scrollLeft + delta, behavior });
+    if (behavior === "auto") updateSlideDepth?.();
   };
 
   const next = () => {
@@ -235,9 +237,7 @@ function setupCarousel(root) {
         const target = originalsNow[index];
         if (!target) return;
 
-        const delta = getSlideCenterX(target) - getTrackCenterX();
-        markProgrammatic(300);
-        track.scrollBy({ left: delta, behavior });
+        centerToIndex(slidesAll().indexOf(target), behavior);
       });
 
       dots.appendChild(btn);
@@ -270,6 +270,43 @@ function setupCarousel(root) {
     requestAnimationFrame(() => {
       if (updateDots) updateDots();
     });
+  };
+
+  const setupSlideDepth = () => {
+    if (track.id !== "featuredTrack") return;
+
+    let frame = 0;
+    updateSlideDepth = () => {
+      const center = getTrackCenterX();
+      const step = getStep();
+      if (step <= 0) return;
+
+      // Read stable slide positions before scaling their visual contents.
+      // Snap targets and infinite-loop offsets keep their original geometry.
+      const positions = slidesAll().map((slide) => ({
+        slide,
+        distance: Math.abs(getSlideCenterX(slide) - center) / step,
+      }));
+      for (const { slide, distance } of positions) {
+        const depth = Math.min(prefersReduced ? Math.round(distance) : distance, 2);
+        const near = Math.min(depth, 1);
+        const far = Math.max(0, depth - 1);
+        slide.style.setProperty("--slide-scale", (1 - 0.16 * near - 0.08 * far).toFixed(4));
+        slide.style.setProperty("--slide-opacity", (1 - 0.28 * near - 0.14 * far).toFixed(4));
+        slide.style.zIndex = String(Math.max(0, 10 - Math.round(distance * 2)));
+      }
+      track.classList.add("has-slide-depth");
+    };
+    const schedule = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        updateSlideDepth();
+      });
+    };
+    track.addEventListener("scroll", schedule, { passive: true });
+    new ResizeObserver(schedule).observe(track);
+    updateSlideDepth();
   };
 
   const initLoop = () => {
@@ -332,6 +369,7 @@ function setupCarousel(root) {
         lock = true;
         markProgrammatic(350);
         track.scrollLeft = track.scrollLeft + originalsCount * step;
+        updateSlideDepth?.();
         requestAnimationFrame(() => {
           lock = false;
           if (updateDots) updateDots();
@@ -340,6 +378,7 @@ function setupCarousel(root) {
         lock = true;
         markProgrammatic(350);
         track.scrollLeft = track.scrollLeft - originalsCount * step;
+        updateSlideDepth?.();
         requestAnimationFrame(() => {
           lock = false;
           if (updateDots) updateDots();
@@ -428,6 +467,7 @@ function setupCarousel(root) {
 
   initLoop();
   setupDots();
+  setupSlideDepth();
   start();
   window.setTimeout(() => {
     armCenteredCta();
@@ -507,6 +547,9 @@ async function renderFeatured() {
       const fig = document.createElement("figure");
       fig.className = "slide";
       fig.dataset.slide = "1";
+      const surface = document.createElement("div");
+      surface.className = "slide__surface";
+      fig.append(surface);
 
       if (freeSet.has(item.id)) {
         fig.dataset.freePattern = "1";
@@ -516,7 +559,7 @@ async function renderFeatured() {
         const badge = document.createElement("div");
         badge.className = "slide__badge";
         badge.textContent = "Wolny wzór!";
-        fig.append(badge);
+        surface.append(badge);
 
         const ctaWrap = document.createElement("div");
         ctaWrap.className = "slide__ctaWrap";
@@ -527,10 +570,10 @@ async function renderFeatured() {
         btn.textContent = "Chcę ten wzór!";
 
         ctaWrap.append(btn);
-        fig.append(ctaWrap);
+        surface.append(ctaWrap);
       }
 
-      fig.append(img);
+      surface.append(img);
       carouselTrack.append(fig);
     }
   } catch (err) {

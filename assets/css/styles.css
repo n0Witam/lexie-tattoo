@@ -961,12 +961,39 @@ a:hover {
     object-fit: cover;
 }
 
+/* Scale artwork around its snap center without changing the scroll geometry. */
+#featuredTrack .slide {
+    margin: 16px 0;
+    overflow: visible;
+    background: transparent;
+    box-shadow: none;
+}
+
+#featuredTrack .slide__surface {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    background: var(--bg-2);
+    box-shadow: var(--shadow);
+    transform-origin: center;
+}
+
+#featuredTrack.has-slide-depth .slide__surface {
+    transform: scale(var(--slide-scale, 1));
+    opacity: var(--slide-opacity, 1);
+}
+
 @media (max-width: 600px) {
     .carousel {
         --slide-w: 90vw; /* trochę większe slajdy */
         --gap: 0px; /* mniejsza przerwa */
 
         margin: 25px 0px;
+    }
+
+    #works .carousel {
+        --slide-w: 76vw;
     }
 
     .carousel__nav {
