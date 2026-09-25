@@ -1980,6 +1980,14 @@ html.home main > section {
     box-shadow: var(--focus);
 }
 
+/* Draw the plus geometrically, as in the photo uploader, independent of font metrics. */
+.faq__icon,
+.answer-toggle {
+    background:
+        linear-gradient(currentColor, currentColor) center / 12px 1px no-repeat,
+        linear-gradient(currentColor, currentColor) center / 1px 12px no-repeat;
+}
+
 .faq__icon {
     width: 28px;
     height: 28px;
@@ -2727,8 +2735,6 @@ html.home main > section {
     border: 1px solid var(--border);
     border-radius: 999px;
     color: var(--muted);
-    font-size: 20px;
-    line-height: 1;
     transition: transform .2s ease, color .2s ease, border-color .2s ease;
 }
 
