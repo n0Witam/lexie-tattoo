@@ -19,7 +19,9 @@
     --radius: 18px;
     --header-h: 72px;
     --radius-sm: 12px;
-    --container: 1250px;
+    --container: clamp(1250px, 80vw, 1500px);
+    --page-container: clamp(1050px, 70vw, 1250px);
+    --faq-container: clamp(1120px, 72vw, 1320px);
     --gap: 18px;
     --gap-lg: 42px;
     --focus: rgba(218, 210, 198, 0.25);
@@ -1624,7 +1626,7 @@ uc-file-uploader-minimal {
 
 .portfolio .section--page > .container,
 .about-page .section--page > .container {
-    max-width: 1050px;
+    max-width: var(--page-container);
 }
 
 .portfolio .page-title,
@@ -2540,7 +2542,7 @@ html.home main > section {
 
 /* ===== FAQ hub / wybór kategorii ===== */
 .faq-hub .container {
-    max-width: 1050px;
+    max-width: var(--page-container);
 }
 
 .topic-grid {
@@ -2619,7 +2621,7 @@ html.home main > section {
 
 /* ===== strony kategorii ===== */
 .faq-topic .container {
-    max-width: 1120px;
+    max-width: var(--faq-container);
 }
 
 .breadcrumbs {
