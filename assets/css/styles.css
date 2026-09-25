@@ -1980,12 +1980,15 @@ html.home main > section {
     box-shadow: var(--focus);
 }
 
-/* Draw the plus geometrically, as in the photo uploader, independent of font metrics. */
-.faq__icon,
-.answer-toggle {
-    background:
-        linear-gradient(currentColor, currentColor) center / 12px 1px no-repeat,
-        linear-gradient(currentColor, currentColor) center / 1px 12px no-repeat;
+/* Keep the circular outline still and rotate only the centered, rounded strokes. */
+.faq__icon svg,
+.answer-toggle svg {
+    display: block;
+    width: 14px;
+    height: 14px;
+    flex: 0 0 auto;
+    transform-origin: center;
+    transition: transform .2s ease;
 }
 
 .faq__icon {
@@ -1998,10 +2001,9 @@ html.home main > section {
     justify-content: center;
     color: var(--muted);
     flex: 0 0 auto;
-    transition: transform 0.22s ease;
 }
 
-.faq__item.is-open .faq__icon {
+.faq__item.is-open .faq__icon svg {
     transform: rotate(45deg);
 }
 
@@ -2032,7 +2034,7 @@ html.home main > section {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .faq__icon,
+    .faq__icon svg,
     .faq__a {
         transition: none;
     }
@@ -2735,13 +2737,16 @@ html.home main > section {
     border: 1px solid var(--border);
     border-radius: 999px;
     color: var(--muted);
-    transition: transform .2s ease, color .2s ease, border-color .2s ease;
+    transition: color .2s ease, border-color .2s ease;
 }
 
 .faq-answer[open] .answer-toggle {
-    transform: rotate(45deg);
     color: var(--text);
     border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
+}
+
+.faq-answer[open] .answer-toggle svg {
+    transform: rotate(45deg);
 }
 
 .answer-body {
@@ -2855,7 +2860,8 @@ html.home main > section {
 
 @media (prefers-reduced-motion: reduce) {
     .topic-card,
-    .answer-toggle {
+    .answer-toggle,
+    .answer-toggle svg {
         transition: none;
     }
 }
