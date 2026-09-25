@@ -7,7 +7,7 @@
     --hero-logo-filter: contrast(0.7) invert() sepia(0.3);
     --uploader-error: #f3b5a8;
     --hero-image-filter: contrast(0.5) invert() sepia(0.3);
-    --about-portrait-filter: brightness(0.9) saturate(0.8);
+    --about-portrait-filter: brightness(0.95) saturate(0.95);
     --bg: #3d352c;
     --bg-texture: url("../img/grain-dark.svg");
     --bg-2: #101114;
