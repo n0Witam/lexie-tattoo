@@ -68,7 +68,10 @@ function setupCarousel(root) {
 
   const getStep = () => {
     const slides = slidesAll();
-    if (slides.length >= 2) return slides[1].offsetLeft - slides[0].offsetLeft;
+    if (slides.length >= 2) {
+      // Preserve fractional pixels when the responsive slide width is not an integer.
+      return slides[1].getBoundingClientRect().left - slides[0].getBoundingClientRect().left;
+    }
     const first = slides[0];
     return first ? first.getBoundingClientRect().width : 320;
   };
@@ -275,11 +278,17 @@ function setupCarousel(root) {
   const setupSlideDepth = () => {
     if (track.id !== "featuredTrack") return;
 
+    const desktopDepth = window.matchMedia(
+      "(min-width: 901px) and (hover: hover) and (pointer: fine)",
+    );
     let frame = 0;
     updateSlideDepth = () => {
       const center = getTrackCenterX();
       const step = getStep();
       if (step <= 0) return;
+      const nearFade = desktopDepth.matches ? 0.14 : 0.28;
+      const farFade = desktopDepth.matches ? 0.20 : 0.14;
+      const visibleDistance = track.clientWidth / (2 * step) + 0.5;
 
       // Read stable slide positions before scaling their visual contents.
       // Snap targets and infinite-loop offsets keep their original geometry.
@@ -292,8 +301,9 @@ function setupCarousel(root) {
         const near = Math.min(depth, 1);
         const far = Math.max(0, depth - 1);
         slide.style.setProperty("--slide-scale", (1 - 0.16 * near - 0.08 * far).toFixed(4));
-        slide.style.setProperty("--slide-opacity", (1 - 0.28 * near - 0.14 * far).toFixed(4));
+        slide.style.setProperty("--slide-opacity", (1 - nearFade * near - farFade * far).toFixed(4));
         slide.style.zIndex = String(Math.max(0, 10 - Math.round(distance * 2)));
+        slide.classList.toggle("is-in-view", distance < visibleDistance);
       }
       track.classList.add("has-slide-depth");
     };
@@ -305,6 +315,7 @@ function setupCarousel(root) {
       });
     };
     track.addEventListener("scroll", schedule, { passive: true });
+    desktopDepth.addEventListener("change", schedule);
     new ResizeObserver(schedule).observe(track);
     updateSlideDepth();
   };

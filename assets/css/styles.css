@@ -984,6 +984,29 @@ a:hover {
     opacity: var(--slide-opacity, 1);
 }
 
+@media (min-width: 901px) and (hover: hover) and (pointer: fine) {
+    #works .carousel {
+        --slide-w: clamp(520px, min(42vw, 64svh), 920px);
+    }
+
+    #featuredTrack {
+        /* Reserve a stable vertical box, including slide margins and track padding. */
+        height: calc(var(--slide-w) * 1.25 + 58px);
+        overflow-y: hidden;
+    }
+
+    #featuredTrack .slide {
+        height: calc(var(--slide-w) * 1.25);
+        align-self: center;
+        scroll-snap-align: none center;
+    }
+
+    #featuredTrack .slide.is-in-view .slide__surface {
+        /* Keep visible artwork on the same layer while horizontal scrolling settles. */
+        will-change: transform, opacity;
+    }
+}
+
 @media (max-width: 600px) {
     .carousel {
         --slide-w: 90vw; /* trochę większe slajdy */
