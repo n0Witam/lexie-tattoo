@@ -980,7 +980,7 @@ a:hover {
 }
 
 #featuredTrack.has-slide-depth .slide__surface {
-    transform: scale(var(--slide-scale, 1));
+    transform: translateX(var(--slide-shift, 0px)) scale(var(--slide-scale, 1));
     opacity: var(--slide-opacity, 1);
 }
 

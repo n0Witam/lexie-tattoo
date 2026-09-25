@@ -294,16 +294,24 @@ function setupCarousel(root) {
       // Snap targets and infinite-loop offsets keep their original geometry.
       const positions = slidesAll().map((slide) => ({
         slide,
-        distance: Math.abs(getSlideCenterX(slide) - center) / step,
+        offset: (getSlideCenterX(slide) - center) / step,
       }));
-      for (const { slide, distance } of positions) {
+      for (const { slide, offset } of positions) {
+        const distance = Math.abs(offset);
         const depth = Math.min(prefersReduced ? Math.round(distance) : distance, 2);
         const near = Math.min(depth, 1);
         const far = Math.max(0, depth - 1);
+        // Pull outer artwork inward to match the gap beside the central image.
+        // Move only the surface, keeping scroll snapping and loop positions stable.
+        const extraGap = desktopDepth.matches
+          ? 0.12 * Math.min(Math.max(distance - 1, 0), 1) + 0.16 * Math.max(distance - 2, 0)
+          : 0;
+        const shift = -Math.sign(offset) * extraGap * step;
+        slide.style.setProperty("--slide-shift", `${shift.toFixed(3)}px`);
         slide.style.setProperty("--slide-scale", (1 - 0.16 * near - 0.08 * far).toFixed(4));
         slide.style.setProperty("--slide-opacity", (1 - nearFade * near - farFade * far).toFixed(4));
         slide.style.zIndex = String(Math.max(0, 10 - Math.round(distance * 2)));
-        slide.classList.toggle("is-in-view", distance < visibleDistance);
+        slide.classList.toggle("is-in-view", distance - extraGap < visibleDistance);
       }
       track.classList.add("has-slide-depth");
     };
