@@ -1,12 +1,14 @@
-name: Sync fork on push
+name: Sync fork after Pages deployment
 
 on:
-  push:
-    branches:
-      - main # or whatever you care about
+  workflow_run:
+    workflows: ["Deploy static content to Pages"]
+    types: [completed]
+    branches: [main]
 
 jobs:
   sync_fork:
+    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: write

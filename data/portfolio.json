@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "updated": "2026-09-13",
   "featuredOrder": [
     "p_9857",
@@ -15,6 +15,11 @@
     "522"
   ],
   "groups": [
+    {
+      "id": "nowe",
+      "name": "Nowe",
+      "items": []
+    },
     {
       "id": "wolne-wzory",
       "name": "Wolne wzory",
@@ -34,7 +39,6 @@
         "p_5827",
         "p_5765",
         "p_5784",
-        "p_9742",
         "p_4874",
         "p_6285",
         "p_3476",
@@ -58,7 +62,7 @@
       ]
     },
     {
-      "id": "g_mldoad9l_77yf3y",
+      "id": "wykonane-prace",
       "name": "Wykonane prace",
       "items": [
         "528",
@@ -103,7 +107,8 @@
         "p_5799",
         "p05",
         "p07"
-      ]
+      ],
+      "categories": []
     }
   ],
   "items": [

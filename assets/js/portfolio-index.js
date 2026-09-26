@@ -1,32 +1,7 @@
-// Shared by the browser editor and the local Node indexer. No filesystem access here.
-export const PORTFOLIO_BASE = 'https://portfolio.local/data/portfolio.json';
+// Shared by the browser-compatible schema and the local Node indexer.
+import { imagePath, validatePortfolio } from './portfolio-data.js';
+export { imagePath, validatePortfolio } from './portfolio-data.js';
 const IMAGE_EXTENSION = /\.(?:jpe?g|png|webp|avif|gif)$/i;
-
-export function imagePath(src) {
-  const url = new URL(src, PORTFOLIO_BASE);
-  if (!['http:', 'https:'].includes(url.protocol)) throw new Error('Nieprawidłowy adres zdjęcia.');
-  return url.origin === new URL(PORTFOLIO_BASE).origin ? decodeURIComponent(url.pathname) : url.href;
-}
-
-export function validatePortfolio(data) {
-  if (!data || !Array.isArray(data.items)) throw new Error('Plik musi zawierać tablicę „items”.');
-  const ids = new Set();
-  for (const item of data.items) {
-    if (!item || typeof item.id !== 'string' || !item.id.trim() || ids.has(item.id)) {
-      throw new Error('Każda praca musi mieć niepowtarzalne tekstowe ID.');
-    }
-    if (typeof item.src !== 'string' || !item.src.trim()) throw new Error(`Brak adresu zdjęcia: ${item.id}`);
-    imagePath(item.src);
-    if (item.alt != null && typeof item.alt !== 'string') throw new Error(`Nieprawidłowy opis: ${item.id}`);
-    ids.add(item.id);
-  }
-  if (data.groups != null && (!Array.isArray(data.groups) || data.groups.some(g =>
-    !g || typeof g.id !== 'string' || typeof g.name !== 'string' || !Array.isArray(g.items ?? g.ids) ||
-    (g.items ?? g.ids).some(id => typeof id !== 'string')))) throw new Error('Nieprawidłowe grupy w pliku.');
-  if (new Set((data.groups || []).map(g => g.id)).size !== (data.groups || []).length) throw new Error('Grupy muszą mieć niepowtarzalne ID.');
-  if (data.featuredOrder != null && (!Array.isArray(data.featuredOrder) || data.featuredOrder.some(id => typeof id !== 'string'))) throw new Error('Nieprawidłowa kolejność karuzeli.');
-  return data;
-}
 
 export function scanPortfolio(paths, data) {
   validatePortfolio(data);

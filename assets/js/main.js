@@ -1,3 +1,4 @@
+import { normalizePortfolio } from "./portfolio-data.js";
 import { fetchJSON, qs, qsa } from "./util.js";
 import { initSite, openFreePatternModal, setupContactForm } from "./site.js?v=20260920-confetti-scroll";
 import { setupAnchorNavigation } from "./anchors.js?v=20260919-section-start";
@@ -504,10 +505,11 @@ async function renderFeatured() {
   try {
     const { data, url } = await fetchJSON(DATA_URL);
 
-    const items = Array.isArray(data.items) ? data.items : [];
+    const normalized = normalizePortfolio(data);
+    const items = normalized.items;
     const byId = new Map(items.map((x) => [x.id, x]));
 
-    const groups = Array.isArray(data.groups) ? data.groups : [];
+    const groups = normalized.groups;
     const freeGroup = groups.find(
       (g) =>
         String(g?.name || "")
@@ -529,7 +531,7 @@ async function renderFeatured() {
       featuredIds.push(id);
     };
 
-    const order = Array.isArray(data.featuredOrder) ? data.featuredOrder : [];
+    const order = normalized.featuredOrder;
     order.forEach(pushIfFeatured);
     items.forEach((it) => {
       if (it && it.featured) pushIfFeatured(it.id);

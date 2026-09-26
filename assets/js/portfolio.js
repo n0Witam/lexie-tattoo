@@ -1,9 +1,8 @@
 import { fetchJSON, resolveUrl, qs } from "./util.js";
 import { initSite, openFreePatternModal } from "./site.js";
+import { galleryGroups, GROUP_IDS } from "./portfolio-data.js";
 
 const DATA_URL = "../data/portfolio.json";
-const DEFAULT_GROUP_NAME = "Wolne wzory";
-const DEFAULT_GROUP_KEY = DEFAULT_GROUP_NAME.trim().toLowerCase();
 
 function setupLightbox(items) {
   const lb = qs("#lightbox");
@@ -127,60 +126,6 @@ function setupLightbox(items) {
   return { open, close };
 }
 
-function normalizeGroups(data, items) {
-  const idsAll = items.map((x) => x.id).filter(Boolean);
-  const idSet = new Set(idsAll);
-
-  let groups = [];
-  if (Array.isArray(data.groups) && data.groups.length) {
-    groups = data.groups.map((g, idx) => ({
-      id: String(g?.id || `g${idx}`),
-      name: String(g?.name || ""),
-      items: Array.isArray(g?.items)
-        ? g.items
-        : Array.isArray(g?.ids)
-          ? g.ids
-          : [],
-    }));
-  } else {
-    groups = [
-      { id: "wolne-wzory", name: DEFAULT_GROUP_NAME, items: idsAll.slice() },
-    ];
-  }
-
-  let def = groups.find(
-    (g) => String(g.name).trim().toLowerCase() === DEFAULT_GROUP_KEY,
-  );
-  if (!def) {
-    def = { id: "wolne-wzory", name: DEFAULT_GROUP_NAME, items: [] };
-    groups.unshift(def);
-  } else {
-    def.name = DEFAULT_GROUP_NAME;
-    groups = [def, ...groups.filter((g) => g !== def)];
-  }
-
-  const assigned = new Set();
-  for (const g of groups) {
-    const cleaned = [];
-    for (const id of g.items || []) {
-      if (!idSet.has(id)) continue;
-      if (assigned.has(id)) continue;
-      assigned.add(id);
-      cleaned.push(id);
-    }
-    g.items = cleaned;
-  }
-
-  for (const id of idsAll) {
-    if (!assigned.has(id)) {
-      assigned.add(id);
-      def.items.push(id);
-    }
-  }
-
-  return groups;
-}
-
 async function renderPortfolio() {
   const root = qs("#portfolioGrid");
   const view = (
@@ -208,43 +153,9 @@ async function renderPortfolio() {
     const orderedForLightbox = [];
     const lb = lightboxEnabled ? setupLightbox(orderedForLightbox) : null;
 
-    const groupsAll = normalizeGroups(data, items);
-
-    const freeGroup = groupsAll.find(
-      (g) =>
-        String(g?.name || "")
-          .trim()
-          .toLowerCase() === DEFAULT_GROUP_KEY ||
-        String(g?.id || "")
-          .toLowerCase()
-          .includes("wolne"),
-    );
-
-    const freeIds = Array.isArray(data.freePatternIds)
-      ? data.freePatternIds
-      : null;
-    const freeSet = new Set(
-      freeIds && freeIds.length ? freeIds : freeGroup?.items || [],
-    );
-
+    const groups = galleryGroups(data, view);
+    const freeSet = new Set(galleryGroups(data, "available")[0].items);
     let renderedAny = false;
-
-    const isFreeGroup = (g) => {
-      const name = String(g?.name || "")
-        .trim()
-        .toLowerCase();
-      const id = String(g?.id || "")
-        .trim()
-        .toLowerCase();
-      return name === DEFAULT_GROUP_KEY || id.includes("wolne");
-    };
-
-    const groups =
-      view === "available"
-        ? freeGroup
-          ? [freeGroup]
-          : []
-        : groupsAll.filter((g) => !isFreeGroup(g));
 
     for (const group of groups) {
       const ids = (group.items || []).filter((id) => byId.has(id));
@@ -254,6 +165,7 @@ async function renderPortfolio() {
 
       const section = document.createElement("section");
       section.className = "portfolio-group";
+      if (view !== "available" && group.id !== GROUP_IDS.DONE) section.dataset.categoryId = group.id;
 
       const grid = document.createElement("div");
       grid.className = "grid";

@@ -9,7 +9,7 @@
     <link rel="preload" href="../assets/fonts/cormorant-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
     <script src="../assets/js/theme.js?v=20260919-theme-icon"></script>
     <link rel="stylesheet" href="../assets/css/styles.css?v=20260925-muted-portrait">
-    <link rel="stylesheet" href="../assets/css/admin.css?v=20260926">
+    <link rel="stylesheet" href="../assets/css/admin.css?v=20260926-groups-v6">
 </head>
 <body class="admin-page no-justify">
     <header class="admin-header">
@@ -38,24 +38,21 @@
             <p class="admin-description">Przeciągnij karty w lewo lub w prawo. Możesz też użyć strzałek pod zdjęciem. Kolejność w galerii pozostanie taka sama.</p>
             <div id="featuredList" class="admin-carousel" tabindex="0" aria-label="Kolejność prac w karuzeli"></div>
         </section>
-        <section class="admin-section admin-index" aria-labelledby="indexTitle">
-            <div class="admin-section-head"><div><p class="admin-eyebrow">02 / Nowe zdjęcia</p><h2 id="indexTitle">Indeksuj katalog</h2></div><button class="btn btn--ghost" id="btnScan" disabled>Wybierz katalog portfolio</button><input type="file" id="folderInput" webkitdirectory multiple hidden></div>
-            <p class="admin-description">Wybierz lokalny katalog <code>assets/img/portfolio</code>. Znajdziemy zdjęcia, których nie ma jeszcze w danych. Pliki pozostają na Twoim komputerze.</p>
-            <p id="scanStatus" role="status" aria-live="polite"></p>
-            <div id="scanPanel" hidden>
-                <div class="admin-index-toolbar"><label class="admin-check"><input type="checkbox" id="selectAll" checked> Zaznacz wszystkie</label><label class="admin-target">Dodaj do grupy <select id="importGroup"></select></label><button class="btn btn--primary" id="btnImport">Dodaj wybrane zdjęcia</button></div>
-                <div id="scanList" class="admin-scan-grid"></div>
-            </div>
-        </section>
+        <aside class="admin-section admin-index" aria-labelledby="indexTitle">
+            <p class="admin-eyebrow">02 / Automatyczna biblioteka</p>
+            <h2 id="indexTitle">Nowe zdjęcia trafiają tutaj same</h2>
+            <p class="admin-description">Dodaj zdjęcia do <code>assets/img/portfolio</code> i wypchnij zmiany do repozytorium. Runner zindeksuje je do grupy „Nowe”. Po zakończeniu wdrożenia odśwież panel, uzupełnij opisy i przenieś prace do właściwej galerii.</p>
+            <p class="admin-description">Grupa „Nowe” jest widoczna tylko w panelu — nie publikuje zdjęć w galeriach ani w karuzeli.</p>
+        </aside>
         <section class="admin-section" aria-labelledby="libraryTitle">
-            <div class="admin-section-head"><div><p class="admin-eyebrow">03 / Galerie</p><h2 id="libraryTitle">Biblioteka prac</h2></div><button class="btn" id="btnAddGroup" disabled>+ Nowa grupa</button></div>
-            <div class="admin-library-toolbar"><label class="admin-search"><span>Szukaj pracy</span><input id="search" type="search" placeholder="Nazwa pliku, opis lub ID…"></label><p>„Wolne wzory” to galeria dostępnych projektów. Pozostałe grupy tworzą Portfolio.</p></div>
-            <p class="admin-description">Przeciągaj prace między grupami. Przyciski ↑ ↓ zmieniają kolejność, a pole „Grupa” przenosi pracę także na telefonie.</p>
+            <div class="admin-section-head"><div><p class="admin-eyebrow">03 / Galerie</p><h2 id="libraryTitle">Biblioteka prac</h2></div></div>
+            <div class="admin-library-toolbar"><label class="admin-search"><span>Szukaj pracy</span><input id="search" type="search" placeholder="Nazwa pliku, opis lub ID…"></label><p>Trzy stałe grupy: Nowe, Wolne wzory i Wykonane prace. Kategorie utworzysz wewnątrz Wykonanych prac.</p></div>
+            <p class="admin-description">Przeciągaj prace między grupami. Przyciski ↑ ↓ zmieniają kolejność, a pole „Grupa” przenosi pracę także na telefonie, również do kategorii.</p>
             <div id="groupsList" class="admin-groups"></div>
             <p id="noResults" hidden>Brak prac pasujących do wyszukiwania.</p>
         </section>
         <footer class="admin-footer"><strong>Gotowe do publikacji?</strong><p>Pobierz plik, podmień <code>data/portfolio.json</code> w repozytorium i opublikuj zmiany razem z nowymi zdjęciami. Kopia robocza w tej przeglądarce nie zmienia strony.</p><a class="btn btn--ghost" href="https://github.com/n0Witam/lexie-tattoo/edit/main/data/portfolio.json" target="_blank" rel="noopener noreferrer">Otwórz plik na GitHubie ↗</a></footer>
     </main>
-    <script type="module" src="../assets/js/reorder.js?v=20260926"></script>
+    <script type="module" src="../assets/js/reorder.js?v=20260926-groups-v6"></script>
 </body>
 </html>

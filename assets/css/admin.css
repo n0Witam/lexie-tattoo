@@ -42,12 +42,6 @@
 .admin-page .drop-target { outline: 2px dashed var(--muted); outline-offset: -3px; }
 .admin-index { padding: 28px; border: 1px solid var(--border); border-radius: 20px; background: var(--admin-surface); }
 .admin #scanStatus:not(:empty) { margin-top: 16px; }
-.admin-index-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin: 24px 0 16px; }
-.admin-target { display: flex; align-items: center; gap: 10px; margin-left: auto; }
-.admin-scan-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(140px,1fr)); gap: 12px; max-height: 460px; overflow: auto; padding: 4px; }
-.admin-candidate { display: grid; gap: 8px; border: 1px solid var(--border); padding: 10px; border-radius: 12px; cursor: pointer; min-width: 0; }
-.admin-candidate img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 6px; }
-.admin-candidate span { overflow-wrap: anywhere; font-size: 12px; }
 .admin-library-toolbar { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-top: 24px; }
 .admin-library-toolbar p { max-width: 52ch; font-size: 12px; line-height: 1.6; }
 .admin-search { display: grid; gap: 8px; width: min(100%, 420px); font-size: 12px; }
@@ -71,7 +65,7 @@
 .admin-item-meta input { width: 100%; }
 .admin-item-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .admin-item-controls .admin-check { flex: 1; }
-.admin-item-controls .admin-target { margin: 0; width: 100%; font-size: 11px; }
+.admin-item-controls .admin-target { display: flex; align-items: center; gap: 10px; margin: 0; width: 100%; font-size: 11px; }
 .admin-item-controls select { flex: 1; width: 0; }
 .admin-footer { border-top: 1px solid var(--border); margin-top: 48px; padding-top: 28px; }
 .admin-footer p { max-width: 80ch; line-height: 1.7; margin: 12px 0 20px; }
@@ -97,4 +91,14 @@
  .admin-header { gap: 10px; }
  .admin-header .btn { font-size: 12px; padding: 10px; }
  .admin-stats span { font-size: 11px; }
+}
+
+.admin-group-name { flex: 1; margin: 0; font-size: 26px; }
+.admin-categories { display: grid; gap: 16px; padding: 0 16px 16px; }
+.admin-categories:empty { display: none; }
+.admin-category { border-left: 3px solid var(--border); }
+.admin-category-label { padding: 12px 16px; font-size: 12px; border-top: 1px solid var(--border); }
+@media(max-width: 800px) {
+ .admin-group-name { font-size: 24px; }
+ .admin-categories { padding: 0 8px 8px; gap: 10px; }
 }

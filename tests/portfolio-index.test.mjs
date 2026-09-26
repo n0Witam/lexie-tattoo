@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { scanPortfolio, validatePortfolio } from '../assets/js/portfolio-index.js';
+import { GROUP_IDS, normalizePortfolio, assignmentGroups, galleryGroups } from '../assets/js/portfolio-data.js';
 
 const source = {
   version: 5,
@@ -56,18 +57,68 @@ test('CLI dry run and output preserve source files and metadata', async () => {
     const run = (...args) => spawnSync(process.execPath, ['scripts/index-portfolio.mjs', '--dir', directory, '--data', input, ...args], { encoding: 'utf8' });
     assert.equal(run().status, 0);
     assert.equal(await readFile(input, 'utf8'), original);
-    assert.equal(run('--output', output, '--group', 'work').status, 0);
+    assert.equal(run('--output', output).status, 0);
     const result = JSON.parse(await readFile(output, 'utf8'));
     assert.deepEqual(result.items[0], source.items[0]);
     assert.deepEqual(result.featuredOrder, source.featuredOrder);
     assert.deepEqual(result.customMetadata, source.customMetadata);
-    assert.equal(result.groups[0].items.length, 2);
-    assert.equal(run('--output', output, '--group', 'work').status, 1);
-    assert.equal(run('--output', input, '--group', 'work').status, 1);
+    assert.equal(result.groups[0].id, GROUP_IDS.NEW);
+    assert.equal(result.groups[0].items.length, 1);
+    assert.deepEqual(result.groups[2].items, source.groups[0].items);
+    assert.equal(result.items[1].featured, false);
+    assert.equal(run('--output', output).status, 1);
+    assert.equal(run('--output', input).status, 1);
     assert.equal(await readFile(input, 'utf8'), original);
     const secondOutput = join(temp, 'output-again.json');
-    const repeat = spawnSync(process.execPath, ['scripts/index-portfolio.mjs', '--dir', directory, '--data', output, '--output', secondOutput, '--group', 'work'], { encoding: 'utf8' });
+    const repeat = spawnSync(process.execPath, ['scripts/index-portfolio.mjs', '--dir', directory, '--data', output, '--output', secondOutput], { encoding: 'utf8' });
     assert.equal(repeat.status, 0, repeat.stderr || String(repeat.error));
     assert.deepEqual(JSON.parse(await readFile(secondOutput, 'utf8')).items, result.items);
+    assert.equal(run('--write').status, 0);
+    const written = await readFile(input, 'utf8');
+    assert.equal(run('--write').status, 0);
+    assert.equal(await readFile(input, 'utf8'), written);
+    assert.equal(run('--write', '--output', output).status, 1);
   } finally { await rm(temp, { recursive: true, force: true }); }
+});
+
+
+test('migration creates exactly three immutable roots and retains legacy categories and metadata', () => {
+  const legacy = {
+    ...source,
+    items: [...source.items, { id: 'free', src: '../assets/img/portfolio/free.jpg', alt: 'Projekt', featured: true }, { id: 'other', src: '../assets/img/portfolio/other.jpg' }, { id: 'orphan', src: '../assets/img/portfolio/orphan.jpg', featured: true }],
+    groups: [
+      { id: 'old-free', name: 'Wolne wzory', items: ['free'] },
+      source.groups[0],
+      { id: 'flowers', name: 'Kwiaty', items: ['other'], custom: 'retained' },
+    ],
+    featuredOrder: ['free', 'original', 'orphan'],
+  };
+  const migrated = normalizePortfolio(legacy);
+  assert.deepEqual(migrated.groups.map(g => [g.id, g.name]), [['nowe', 'Nowe'], ['wolne-wzory', 'Wolne wzory'], ['wykonane-prace', 'Wykonane prace']]);
+  assert.deepEqual(migrated.groups[2].categories[0], { id: 'flowers', name: 'Kwiaty', items: ['other'], custom: 'retained' });
+  assert.deepEqual(migrated.groups[0].items, ['orphan']);
+  assert.deepEqual(migrated.featuredOrder, ['free', 'original']);
+  assert.deepEqual(migrated.items.find(item => item.id === 'original'), source.items[0]);
+  assert.deepEqual(normalizePortfolio(migrated), migrated);
+  assert.deepEqual(galleryGroups(migrated).flatMap(g => g.items), ['original', 'other']);
+  assert.deepEqual(galleryGroups(migrated, 'available').flatMap(g => g.items), ['free']);
+});
+
+test('nested categories are retained across normalization, and pending items cannot be public or featured', () => {
+  const data = normalizePortfolio(source);
+  data.items.push({ id: 'pending', src: '../assets/img/portfolio/pending.jpg', featured: true });
+  data.groups[0].items.push('pending');
+  data.featuredOrder.unshift('pending');
+  data.groups[2].items = [];
+  data.groups[2].categories.push({ id: 'fine-line', name: 'Fine line', items: ['original'], custom: 10 });
+  const normalized = normalizePortfolio(data);
+  assert.equal(normalized.items.find(item => item.id === 'pending').featured, false);
+  assert.deepEqual(normalized.featuredOrder, ['original']);
+  assert.deepEqual(galleryGroups(data).flatMap(g => g.items), ['original']);
+  assert.deepEqual(galleryGroups(data, 'available').flatMap(g => g.items), []);
+  assert.equal(normalized.groups[2].categories[0].custom, 10);
+  assert.equal(assignmentGroups(normalized).flatMap(g => g.items).length, data.items.length);
+  const broken = structuredClone(data);
+  broken.groups[2].categories[0].categories = [];
+  assert.throws(() => validatePortfolio(broken), /jeden poziom/);
 });

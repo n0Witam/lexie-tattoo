@@ -1,18 +1,20 @@
 #!/usr/bin/env node
-import { readdir, readFile, writeFile } from 'node:fs/promises';
+import { readdir, readFile, writeFile, rename } from 'node:fs/promises';
 import { resolve, relative, dirname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { scanPortfolio, validatePortfolio } from '../assets/js/portfolio-index.js';
+import { scanPortfolio } from '../assets/js/portfolio-index.js';
+import { normalizePortfolio, GROUP_IDS } from '../assets/js/portfolio-data.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const options = {};
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--help') {
-    console.log('node scripts/index-portfolio.mjs [--output /tmp/portfolio.json --group "Wykonane prace"]\nBez --output: tylko raport. Oryginalny data/portfolio.json pozostaje bez zmian.\nOpcjonalnie: --dir katalog-zdjec --data plik-wejsciowy.json');
+    console.log('node scripts/index-portfolio.mjs [--write | --output /tmp/portfolio.json]\nBez opcji: tylko raport. Nowe zdjęcia zawsze trafiają do grupy Nowe.\n--write: uaktualnij wejściowy JSON (runner).\nOpcjonalnie: --dir katalog-zdjec --data plik-wejsciowy.json');
     process.exit(0);
   }
-  if (!['--output', '--group', '--dir', '--data'].includes(args[i]) || !args[i + 1] || args[i + 1].startsWith('--')) {
+  if (args[i] === '--write') { options.write = true; continue; }
+  if (!['--output', '--dir', '--data'].includes(args[i]) || !args[i + 1] || args[i + 1].startsWith('--')) {
     console.error(`Nieprawidłowy argument: ${args[i]}. Użyj --help.`); process.exit(1);
   }
   options[args[i].slice(2)] = args[++i];
@@ -30,26 +32,30 @@ async function walk(directory, base = directory) {
 }
 
 try {
+  if (options.write && options.output) throw new Error('Wybierz --write albo --output.');
   const dataPath = resolve(options.data || resolve(root, 'data/portfolio.json'));
   const directory = resolve(options.dir || resolve(root, 'assets/img/portfolio'));
-  const data = validatePortfolio(JSON.parse(await readFile(dataPath, 'utf8')));
+  const original = JSON.parse(await readFile(dataPath, 'utf8'));
+  const data = normalizePortfolio(original);
   const result = scanPortfolio(await walk(directory), data);
   console.log(`Nowe zdjęcia: ${result.added.length}; już w danych: ${result.existing}; pominięte: ${result.skipped}; brakujące: ${result.missing.length}.`);
   result.added.forEach(item => console.log(`+ ${item.src}`));
   result.missing.forEach(src => console.log(`? ${src} (wpis zachowany)`));
-  if (options.output) {
+  data.groups.find(group => group.id === GROUP_IDS.NEW).items.push(...result.added.map(item => item.id));
+  data.items.push(...result.added);
+  const changed = JSON.stringify(data) !== JSON.stringify(original);
+  if (changed) data.updated = new Date().toISOString().slice(0, 10);
+  if (options.write && changed) {
+    const temporary = `${dataPath}.${process.pid}.tmp`;
+    await writeFile(temporary, JSON.stringify(data, null, 2) + '\n', { flag: 'wx' });
+    await rename(temporary, dataPath);
+    console.log(`Uaktualniono ${dataPath}. Nowe zdjęcia czekają na przypisanie do galerii.`);
+  } else if (options.output) {
     const output = resolve(options.output);
-    if (output === dataPath || output === resolve(root, 'data/portfolio.json')) throw new Error('Wybierz osobny plik wyjściowy — oryginał nie będzie nadpisany.');
-    if (!options.group) throw new Error('Podaj --group z nazwą lub ID istniejącej grupy.');
-    const group = data.groups?.find(group => group.id === options.group || group.name === options.group);
-    if (!group) throw new Error('Nie znaleziono grupy. Dostępne: ' + (data.groups || []).map(group => group.name).join(', '));
-    group.items = [...(group.items || group.ids || []), ...result.added.map(item => item.id)];
-    delete group.ids;
-    data.items.push(...result.added);
-    data.updated = new Date().toISOString().slice(0, 10);
+    if (output === dataPath || output === resolve(root, 'data/portfolio.json')) throw new Error('Do aktualizacji wejściowego pliku użyj --write.');
     await writeFile(output, JSON.stringify(data, null, 2) + '\n', { flag: 'wx' });
-    console.log(`Zapisano ${output}. Uzupełnij opisy nowych zdjęć w panelu przed publikacją.`);
-  } else console.log('Tylko raport. Dodaj --output i --group, aby wygenerować nowy plik.');
+    console.log(`Zapisano ${output}.`);
+  } else console.log(options.write ? 'Bez zmian — JSON nie wymaga zapisu.' : 'Tylko raport. Runner używa --write, aby uaktualnić dane.');
 } catch (error) {
   console.error(error.message); process.exitCode = 1;
 }

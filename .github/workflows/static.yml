@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -17,6 +17,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: github.ref == 'refs/heads/main'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -25,21 +26,36 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: main
 
-      # (optional) Ensure Node toolchain exists on self-hosted runners
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
 
-      - name: Tooling check
+      - name: Test portfolio schema and indexing
+        run: node --test tests/portfolio-index.test.mjs
+
+      - name: Index portfolio photos into Nowe
+        run: node scripts/index-portfolio.mjs --write
+
+      - name: Commit updated portfolio index
+        shell: bash
         run: |
-          echo "Runner: $(uname -a)"
-          echo "Node: $(node -v)"
-          echo "npm:  $(npm -v)"
-          echo "npx:  $(npx -v)"
-          echo "git:  $(git --version)"
+          if git diff --quiet -- data/portfolio.json; then
+            echo "Portfolio index is up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- data/portfolio.json
+          git commit -m "chore: index new portfolio photos"
+          # A normal push fails safely if main advanced; never overwrite newer edits.
+          git push origin HEAD:main
 
+      # The bot push does not trigger another run. Deploy this indexed checkout
+      # in the same workflow so the site and the repository use the same JSON.
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
