@@ -1,679 +1,399 @@
-import { fetchJSON, resolveUrl, qs } from "./util.js";
+import { fetchJSON, qs, el } from './util.js';
+import { validatePortfolio, scanPortfolio, imagePath } from './portfolio-index.js';
 
-const DATA_URL = "../data/portfolio.json";
+const DATA_URL = new URL('../../data/portfolio.json', import.meta.url);
+const DRAFT_KEY = 'lexie-portfolio-draft-v1';
+const FREE_ID = 'wolne-wzory';
+const clone = value => structuredClone(value);
+const uid = () => `g_${crypto.randomUUID()}`;
+const fileName = item => decodeURIComponent(new URL(item.src, DATA_URL).pathname.split('/').pop());
+let state, published, draft, history = [], drag = null, candidates = [], search = '';
+const localImages = new Map();
+const collapsed = new Set();
+const status = qs('#status');
 
-const DEFAULT_GROUP_NAME = "Wolne wzory";
-const DEFAULT_GROUP_KEY = DEFAULT_GROUP_NAME.trim().toLowerCase();
-const DEFAULT_GROUP_ID = "wolne-wzory";
-
-function downloadText(filename, text) {
-  const blob = new Blob([text], { type: "application/json;charset=utf-8" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = filename;
-  document.body.append(a);
-  a.click();
-  a.remove();
-  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+function normalize(input) {
+  const data = clone(validatePortfolio(input));
+  data.groups = data.groups || [];
+  let free = data.groups.find(g => g.name.trim().toLowerCase() === 'wolne wzory');
+  if (!free) {
+    let id = FREE_ID;
+    while (data.groups.some(g => g.id === id)) id += '-new';
+    free = { id, name: 'Wolne wzory', items: [] };
+  }
+  data.groups = [free, ...data.groups.filter(g => g !== free)];
+  const all = new Set(data.items.map(item => item.id)), assigned = new Set();
+  for (const group of data.groups) {
+    group.items = (group.items || group.ids || []).filter(id => {
+      if (!all.has(id) || assigned.has(id)) return false;
+      assigned.add(id); return true;
+    });
+    delete group.ids;
+  }
+  const unassigned = [...all].filter(id => !assigned.has(id));
+  if (unassigned.length) data.groups.push({ id: uid(), name: 'Do uporządkowania', items: unassigned });
+  const featured = new Set(data.items.filter(item => item.featured).map(item => item.id));
+  data.featuredOrder = [...new Set([...(data.featuredOrder || []), ...featured])].filter(id => featured.has(id));
+  return data;
 }
 
-function nowISODate() {
-  const d = new Date();
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd}`;
+function output() {
+  const byId = new Map(state.items.map(item => [item.id, item]));
+  return { ...state, version: Math.max(Number(state.version) || 1, 2), updated: new Date().toISOString().slice(0, 10),
+    items: state.groups.flatMap(group => group.items.map(id => byId.get(id))) };
 }
 
-function uid(prefix = "g") {
-  return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+function saveDraft(message) {
+  // Keep an older draft available until the user explicitly restores/discards it.
+  if (draft) { status.textContent = `${message} Pobierz JSON; starsza kopia robocza czeka na decyzję powyżej.`; return; }
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({ data: state, savedAt: Date.now() }));
+    status.textContent = `${message} Kopia robocza zapisana w tej przeglądarce.`;
+  } catch { status.textContent = `${message} Kopia lokalna niedostępna — pobierz JSON, aby zachować zmiany.`; }
 }
 
-function getDragAfterElement(container, y, selector) {
-  const els = Array.from(container.querySelectorAll(selector));
-  return els.reduce(
-    (closest, child) => {
-      const box = child.getBoundingClientRect();
-      const offset = y - box.top - box.height / 2;
-      if (offset < 0 && offset > closest.offset) {
-        return { offset, element: child };
+function change(mutator, message, { render = true } = {}) {
+  history.push(clone(state));
+  if (history.length > 30) history.shift();
+  mutator();
+  if (render) renderAll(); else refreshStats();
+  saveDraft(message);
+}
+
+function button(text, label, action, disabled = false) {
+  return el('button', { type: 'button', class: 'btn icon-button', 'aria-label': label, title: label, disabled: disabled ? '' : null, onclick: action }, text);
+}
+function itemById(id) { return state.items.find(item => item.id === id); }
+function groupOf(id) { return state.groups.find(group => group.items.includes(id)); }
+function preview(item) { return localImages.get(imagePath(item.src)) || new URL(item.src, DATA_URL).href; }
+function image(item) {
+  return el('img', { src: preview(item), alt: item.alt || fileName(item), loading: 'lazy', draggable: 'false' });
+}
+function swap(array, id, direction) {
+  const from = array.indexOf(id), to = from + direction;
+  if (from < 0 || to < 0 || to >= array.length) return;
+  [array[from], array[to]] = [array[to], array[from]];
+}
+function preserveFocus(action, selector) {
+  action();
+  qs(selector)?.focus({ preventScroll: true });
+}
+function moveFeatured(id, direction) {
+  preserveFocus(() => change(() => swap(state.featuredOrder, id, direction), 'Zmieniono kolejność karuzeli.'), `[data-featured-id="${CSS.escape(id)}"]`);
+}
+function toggleFeatured(id) {
+  change(() => {
+    const item = itemById(id);
+    item.featured = !item.featured;
+    state.featuredOrder = state.featuredOrder.filter(value => value !== id);
+    if (item.featured) state.featuredOrder.push(id);
+  }, 'Zmieniono skład karuzeli.');
+}
+
+function refreshStats() {
+  qs('#itemCount').textContent = state.items.length;
+  qs('#featuredCount').textContent = state.featuredOrder.length;
+  qs('#altCount').textContent = state.items.filter(item => !item.alt?.trim()).length;
+  qs('#btnUndo').disabled = !history.length;
+  ['#btnDownload', '#btnCopy', '#btnScan', '#btnAddGroup'].forEach(selector => qs(selector).disabled = false);
+}
+
+function renderCarousel() {
+  const root = qs('#featuredList'), scroll = root.scrollLeft;
+  root.replaceChildren();
+  state.featuredOrder.forEach((id, index) => {
+    const item = itemById(id);
+    const card = el('article', { class: 'admin-featured', tabindex: '0', draggable: 'true', dataset: { featuredId: id }, 'aria-label': `Pozycja ${index + 1}: ${fileName(item)}` },
+      image(item), el('div', { class: 'admin-featured-meta' },
+        el('div', { class: 'admin-featured-title' }, el('span', { class: 'admin-position' }, String(index + 1).padStart(2, '0')), el('span', { class: 'admin-filename', title: fileName(item) }, fileName(item))),
+        el('small', {}, groupOf(id)?.name),
+        el('div', { class: 'admin-card-actions' },
+          button('←', 'Przesuń w lewo', () => moveFeatured(id, -1), index === 0),
+          button('→', 'Przesuń w prawo', () => moveFeatured(id, 1), index === state.featuredOrder.length - 1),
+          button('×', 'Usuń z karuzeli', () => toggleFeatured(id)))));
+    card.addEventListener('keydown', event => {
+      if (event.altKey && ['ArrowLeft', 'ArrowRight'].includes(event.key)) {
+        event.preventDefault(); moveFeatured(id, event.key === 'ArrowLeft' ? -1 : 1);
       }
-      return closest;
-    },
-    { offset: Number.NEGATIVE_INFINITY, element: null },
-  ).element;
-}
-
-function normalizeGroups(data, items) {
-  const idsAll = items.map((x) => x.id).filter(Boolean);
-  const idSet = new Set(idsAll);
-
-  let groups = [];
-  if (Array.isArray(data.groups) && data.groups.length) {
-    groups = data.groups.map((g, idx) => ({
-      id: String(g?.id || `g${idx}`),
-      name: String(g?.name || ""),
-      items: Array.isArray(g?.items)
-        ? g.items
-        : Array.isArray(g?.ids)
-          ? g.ids
-          : [],
-    }));
-  } else {
-    groups = [
-      { id: DEFAULT_GROUP_ID, name: DEFAULT_GROUP_NAME, items: idsAll.slice() },
-    ];
-  }
-
-  // ensure default group exists + pinned on top
-  let def = groups.find(
-    (g) => String(g.name).trim().toLowerCase() === DEFAULT_GROUP_KEY,
-  );
-  if (!def) {
-    def = { id: DEFAULT_GROUP_ID, name: DEFAULT_GROUP_NAME, items: [] };
-    groups.unshift(def);
-  } else {
-    def.id = def.id || DEFAULT_GROUP_ID;
-    def.name = DEFAULT_GROUP_NAME;
-    groups = [def, ...groups.filter((g) => g !== def)];
-  }
-
-  // de-dup assignments and drop unknown ids
-  const assigned = new Set();
-  for (const g of groups) {
-    const cleaned = [];
-    for (const id of g.items || []) {
-      if (!idSet.has(id)) continue;
-      if (assigned.has(id)) continue;
-      assigned.add(id);
-      cleaned.push(id);
-    }
-    g.items = cleaned;
-  }
-
-  // add unassigned items to default group
-  for (const id of idsAll) {
-    if (!assigned.has(id)) {
-      assigned.add(id);
-      def.items.push(id);
-    }
-  }
-
-  return groups;
-}
-
-function normalizeFeaturedOrder(data, items) {
-  const byId = new Map(items.map((x) => [x.id, x]));
-  const out = [];
-  const seen = new Set();
-
-  const pushIfOk = (id) => {
-    if (!id || seen.has(id)) return;
-    const it = byId.get(id);
-    if (!it || !it.featured) return;
-    seen.add(id);
-    out.push(id);
-  };
-
-  const order = Array.isArray(data.featuredOrder) ? data.featuredOrder : [];
-  order.forEach(pushIfOk);
-
-  // add missing featured items (fallback: current items order)
-  items.forEach((it) => {
-    if (it && it.featured) pushIfOk(it.id);
+    });
+    draggable(card, { type: 'featured', id });
+    root.append(card);
   });
-
-  return out;
+  if (!state.featuredOrder.length) root.append(el('p', { class: 'admin-empty' }, 'Karuzela jest pusta. Zaznacz „W karuzeli” przy wybranych pracach poniżej.'));
+  root.scrollLeft = scroll;
 }
 
-function buildFeaturedRow(item, getGroupNameById) {
-  const row = document.createElement("div");
-  row.className = "row row--featured";
-  row.draggable = true;
-  row.dataset.id = item.id;
-
-  const handle = document.createElement("div");
-  handle.className = "handle";
-  handle.textContent = "⋮⋮";
-
-  const thumb = document.createElement("img");
-  thumb.className = "thumb";
-  thumb.src = item._resolvedSrc;
-  thumb.alt = item.alt || item.id;
-
-  const meta = document.createElement("div");
-  meta.className = "meta";
-
-  const title = document.createElement("div");
-  title.className = "title";
-  title.textContent = item.id;
-
-  const subtitle = document.createElement("div");
-  subtitle.className = "subtitle";
-  subtitle.dataset.role = "group";
-  subtitle.textContent = getGroupNameById(item.id);
-
-  meta.append(title, subtitle);
-
-  row.append(handle, thumb, meta);
-
+function groupSelect(value, action) {
+  const select = el('select', { 'aria-label': 'Grupa pracy', onchange: event => action(event.target.value) });
+  for (const group of state.groups) select.append(el('option', { value: group.id }, group.name));
+  select.value = value;
+  return select;
+}
+function moveItem(id, targetGroup) {
+  change(() => {
+    const source = groupOf(id);
+    source.items = source.items.filter(value => value !== id);
+    state.groups.find(group => group.id === targetGroup).items.push(id);
+    collapsed.delete(targetGroup);
+  }, 'Przeniesiono pracę do grupy.');
+}
+function moveWithinGroup(id, direction) {
+  preserveFocus(() => change(() => swap(groupOf(id).items, id, direction), 'Zmieniono kolejność prac.'), `[data-item-id="${CSS.escape(id)}"]`);
+}
+function renderItem(id, group) {
+  const item = itemById(id), index = group.items.indexOf(id);
+  const input = el('input', { type: 'text', value: item.alt || '', placeholder: 'Opisz to, co widać na zdjęciu…', onchange: event => {
+    const alt = event.target.value;
+    change(() => item.alt = alt, 'Zapisano opis zdjęcia.', { render: false });
+  } });
+  const row = el('article', { class: 'admin-item', tabindex: '0', draggable: search ? 'false' : 'true', dataset: { itemId: id } },
+    image(item), el('div', { class: 'admin-item-meta' }, el('div', { class: 'admin-filename', title: `${fileName(item)} · ${id}` }, fileName(item)), el('label', {}, 'Opis zdjęcia (alt)', input)),
+    el('div', { class: 'admin-item-controls' },
+      el('label', { class: 'admin-check' }, el('input', { type: 'checkbox', checked: item.featured ? '' : null, onchange: () => toggleFeatured(id) }), 'W karuzeli'),
+      button('↑', 'Przesuń pracę wyżej', () => moveWithinGroup(id, -1), index === 0 || !!search),
+      button('↓', 'Przesuń pracę niżej', () => moveWithinGroup(id, 1), index === group.items.length - 1 || !!search),
+      el('label', { class: 'admin-target' }, 'Grupa', groupSelect(group.id, target => moveItem(id, target)))));
+  draggable(row, { type: 'item', id });
+  row.addEventListener('keydown', event => {
+    if (!search && event.altKey && ['ArrowUp', 'ArrowDown'].includes(event.key)) {
+      event.preventDefault(); moveWithinGroup(id, event.key === 'ArrowUp' ? -1 : 1);
+    }
+  });
   return row;
 }
 
-function buildItemRow(item, { onFeaturedChange, statusEl }) {
-  const row = document.createElement("div");
-  row.className = "row row--item";
-  row.draggable = true;
-  row.dataset.id = item.id;
-
-  const handle = document.createElement("div");
-  handle.className = "handle";
-  handle.textContent = "⋮⋮";
-
-  const thumb = document.createElement("img");
-  thumb.className = "thumb";
-  thumb.src = item._resolvedSrc;
-  thumb.alt = item.alt || item.id;
-
-  const meta = document.createElement("div");
-  meta.className = "meta";
-
-  const title = document.createElement("div");
-  title.className = "title";
-  title.textContent = item.id;
-
-  const alt = document.createElement("input");
-  alt.className = "alt";
-  alt.type = "text";
-  alt.value = item.alt || "";
-  alt.placeholder = "Opis PRISM Warszawa Mokotów (alt)";
-
-  alt.addEventListener("input", () => {
-    item.alt = alt.value;
+function renderGroups() {
+  const root = qs('#groupsList');
+  root.replaceChildren();
+  let found = 0;
+  state.groups.forEach((group, index) => {
+    const visible = group.items.filter(id => {
+      const item = itemById(id);
+      return `${id} ${fileName(item)} ${item.alt || ''}`.toLocaleLowerCase('pl').includes(search);
+    });
+    found += visible.length;
+    if (search && !visible.length) return;
+    const isCollapsed = collapsed.has(group.id) && !search;
+    const name = el('input', { type: 'text', value: group.name, 'aria-label': 'Nazwa grupy', readonly: index === 0 ? '' : null, onchange: event => {
+      const value = event.target.value.trim();
+      if (!value || state.groups.some(g => g !== group && g.name.toLowerCase() === value.toLowerCase())) {
+        event.target.value = group.name; status.textContent = 'Podaj niepustą, niepowtarzalną nazwę grupy.'; return;
+      }
+      change(() => group.name = value, 'Zmieniono nazwę grupy.');
+    } });
+    const controls = el('div', { class: 'admin-group-controls' });
+    if (index > 0) {
+      const moveGroup = direction => change(() => {
+        [state.groups[index], state.groups[index + direction]] = [state.groups[index + direction], state.groups[index]];
+      }, 'Zmieniono kolejność grup.');
+      controls.append(button('↑', 'Przesuń grupę wyżej', () => moveGroup(-1), index === 1 || !!search), button('↓', 'Przesuń grupę niżej', () => moveGroup(1), index === state.groups.length - 1 || !!search));
+      if (!group.items.length) controls.append(button('×', 'Usuń pustą grupę', () => change(() => state.groups.splice(index, 1), 'Usunięto pustą grupę.')));
+    }
+    const toggle = button(isCollapsed ? '+' : '−', isCollapsed ? 'Rozwiń grupę' : 'Zwiń grupę', () => {
+      if (collapsed.has(group.id)) collapsed.delete(group.id); else collapsed.add(group.id);
+      renderGroups();
+    }, !!search);
+    toggle.setAttribute('aria-expanded', String(!isCollapsed));
+    controls.append(toggle);
+    const list = el('div', { class: 'admin-group-list', hidden: isCollapsed ? '' : null }, ...visible.map(id => renderItem(id, group)));
+    if (!group.items.length) list.append(el('p', { class: 'admin-empty' }, 'Pusta grupa — przeciągnij tutaj pracę lub wybierz tę grupę przy zdjęciu.'));
+    const section = el('section', { class: 'admin-group', dataset: { groupId: group.id }, 'aria-label': group.name },
+      el('div', { class: 'admin-group-head' }, name, el('span', { class: 'admin-group-count' }, `${group.items.length} prac`), controls), list);
+    section.addEventListener('dragover', event => {
+      if (drag?.type !== 'item' || search) return;
+      event.preventDefault(); section.classList.add('drop-target');
+    });
+    section.addEventListener('dragleave', event => { if (!section.contains(event.relatedTarget)) section.classList.remove('drop-target'); });
+    section.addEventListener('drop', event => {
+      if (drag?.type !== 'item' || search) return;
+      event.preventDefault();
+      const id = drag.id;
+      const after = [...list.querySelectorAll('.admin-item')].find(row => row.dataset.itemId !== id && event.clientY < row.getBoundingClientRect().top + row.offsetHeight / 2)?.dataset.itemId;
+      change(() => {
+        const source = groupOf(id);
+        source.items = source.items.filter(value => value !== id);
+        group.items.splice(after ? group.items.indexOf(after) : group.items.length, 0, id);
+        collapsed.delete(group.id);
+      }, 'Zmieniono układ prac.');
+      finishDrag();
+    });
+    root.append(section);
   });
-
-  meta.append(title, alt);
-
-  const right = document.createElement("div");
-  right.className = "right";
-
-  const label = document.createElement("label");
-  label.className = "check";
-
-  const chk = document.createElement("input");
-  chk.type = "checkbox";
-  chk.checked = !!item.featured;
-
-  chk.addEventListener("change", () => {
-    item.featured = chk.checked;
-    onFeaturedChange(item);
-    if (statusEl)
-      statusEl.textContent =
-        "Zmieniono ustawienia karuzeli (pamiętaj pobrać JSON).";
-  });
-
-  label.append(chk, document.createTextNode(" str. główna"));
-  right.append(label);
-
-  row.append(handle, thumb, meta, right);
-
-  // keyboard: Alt+ArrowUp/Down moves within current group
-  row.addEventListener("keydown", (e) => {
-    if (!e.altKey) return;
-    if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
-    e.preventDefault();
-
-    const list = row.parentElement;
-    if (!list) return;
-
-    const rows = Array.from(list.querySelectorAll(".row--item"));
-    const idx = rows.indexOf(row);
-    if (idx < 0) return;
-
-    const dir = e.key === "ArrowUp" ? -1 : 1;
-    const targetIdx = idx + dir;
-    if (targetIdx < 0 || targetIdx >= rows.length) return;
-
-    const target = rows[targetIdx];
-    if (dir < 0) list.insertBefore(row, target);
-    else list.insertBefore(target, row); // swap
-
-    if (statusEl)
-      statusEl.textContent = "Zmieniono kolejność (pamiętaj pobrać JSON).";
-  });
-
-  row.tabIndex = 0;
-  return row;
+  qs('#noResults').hidden = !search || found > 0;
 }
+function renderAll() {
+  // Rendering after an edit must not strand keyboard users at the page start.
+  const active = document.activeElement;
+  const owner = active?.closest('[data-item-id], [data-featured-id], [data-group-id]');
+  let focusTarget;
+  if (owner && active !== owner) {
+    const attribute = ['data-item-id', 'data-featured-id', 'data-group-id'].find(name => owner.hasAttribute(name));
+    const controls = [...owner.querySelectorAll('button, input, select')];
+    focusTarget = { selector: `[${attribute}="${CSS.escape(owner.getAttribute(attribute))}"]`, index: controls.indexOf(active) };
+  }
+  renderCarousel(); renderGroups(); refreshStats(); refreshImportGroups();
+  if (focusTarget) qs(focusTarget.selector)?.querySelectorAll('button, input, select')[focusTarget.index]?.focus({ preventScroll: true });
+}
+
+function draggable(element, value) {
+  element.addEventListener('dragstart', event => {
+    if (event.target.closest('input, select, button') || (value.type === 'item' && search)) { event.preventDefault(); return; }
+    drag = value;
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', value.id);
+    element.classList.add('dragging');
+  });
+  element.addEventListener('dragend', finishDrag);
+}
+function finishDrag() {
+  drag = null;
+  document.querySelectorAll('.dragging, .drop-target').forEach(node => node.classList.remove('dragging', 'drop-target'));
+}
+const carousel = qs('#featuredList');
+carousel.addEventListener('dragover', event => {
+  if (drag?.type !== 'featured') return;
+  event.preventDefault();
+  const rect = carousel.getBoundingClientRect();
+  if (event.clientX < rect.left + 55) carousel.scrollLeft -= 24;
+  if (event.clientX > rect.right - 55) carousel.scrollLeft += 24;
+  carousel.classList.add('drop-target');
+});
+carousel.addEventListener('drop', event => {
+  if (drag?.type !== 'featured') return;
+  event.preventDefault();
+  const id = drag.id;
+  const after = [...carousel.children].find(card => card.dataset.featuredId !== id && event.clientX < card.getBoundingClientRect().left + card.offsetWidth / 2)?.dataset.featuredId;
+  change(() => {
+    state.featuredOrder = state.featuredOrder.filter(value => value !== id);
+    state.featuredOrder.splice(after ? state.featuredOrder.indexOf(after) : state.featuredOrder.length, 0, id);
+  }, 'Zmieniono kolejność karuzeli.');
+  finishDrag();
+});
+for (const [selector, direction] of [['#carouselPrev', -1], ['#carouselNext', 1]]) {
+  qs(selector).addEventListener('click', () => carousel.scrollBy({ left: direction * carousel.clientWidth * .75, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' }));
+}
+
+function refreshImportGroups() {
+  const select = qs('#importGroup'), previous = select.value;
+  select.replaceChildren(...state.groups.map(group => el('option', { value: group.id }, group.name)));
+  select.value = state.groups.some(group => group.id === previous) ? previous : (state.groups[1] || state.groups[0]).id;
+}
+function renderCandidates() {
+  qs('#scanPanel').hidden = !candidates.length;
+  qs('#scanList').replaceChildren(...candidates.map(candidate => el('label', { class: 'admin-candidate' },
+    el('input', { type: 'checkbox', checked: candidate.selected ? '' : null, onchange: event => { candidate.selected = event.target.checked; refreshSelection(); } }), image(candidate.item), el('span', {}, fileName(candidate.item)))));
+  refreshSelection();
+}
+function refreshSelection() {
+  const count = candidates.filter(candidate => candidate.selected).length;
+  qs('#btnImport').textContent = `Dodaj wybrane zdjęcia (${count})`;
+  qs('#btnImport').disabled = !count;
+  qs('#selectAll').checked = !!count && count === candidates.length;
+  qs('#selectAll').indeterminate = !!count && count < candidates.length;
+}
+qs('#btnScan').addEventListener('click', () => qs('#folderInput').click());
+qs('#folderInput').addEventListener('change', event => {
+  const files = [...event.target.files];
+  if (!files.length) return;
+  const root = files[0].webkitRelativePath.split('/')[0];
+  if (root !== 'portfolio') { qs('#scanStatus').textContent = 'Wybierz katalog o nazwie „portfolio” z assets/img, aby zachować poprawne ścieżki.'; event.target.value = ''; return; }
+  const paths = files.map(file => file.webkitRelativePath.split('/').slice(1).join('/'));
+  const result = scanPortfolio(paths, state);
+  const filesByPath = new Map(files.map((file, i) => [paths[i], file]));
+  for (const item of [...state.items, ...result.added]) {
+    const path = imagePath(item.src), file = filesByPath.get(path.slice('/assets/img/portfolio/'.length));
+    if (!file) continue;
+    if (localImages.has(path)) URL.revokeObjectURL(localImages.get(path));
+    localImages.set(path, URL.createObjectURL(file));
+  }
+  renderAll();
+  candidates = result.added.map(item => ({ item, selected: true }));
+  qs('#scanStatus').textContent = `Nowe: ${result.added.length}. Już w bibliotece: ${result.existing}. Pominięte pliki: ${result.skipped}.` + (result.missing.length ? ` Brakujące w wybranym katalogu: ${result.missing.length} — istniejące wpisy pozostają bez zmian.` : '');
+  renderCandidates();
+  event.target.value = '';
+});
+qs('#selectAll').addEventListener('change', event => { candidates.forEach(candidate => candidate.selected = event.target.checked); renderCandidates(); });
+qs('#btnImport').addEventListener('click', () => {
+  const selected = candidates.filter(candidate => candidate.selected);
+  const target = state.groups.find(group => group.id === qs('#importGroup').value);
+  if (!selected.length || !target) return;
+  change(() => {
+    // Rescan against current state so a restored draft cannot introduce duplicate IDs/paths.
+    const paths = selected.map(candidate => imagePath(candidate.item.src).slice('/assets/img/portfolio/'.length));
+    const fresh = scanPortfolio(paths, state).added;
+    state.items.push(...fresh);
+    target.items.push(...fresh.map(item => item.id));
+    collapsed.delete(target.id);
+  }, 'Dodano zdjęcia. Uzupełnij ich opisy przed publikacją.');
+  candidates = candidates.filter(candidate => !candidate.selected);
+  renderCandidates();
+  qs('#scanStatus').textContent = 'Wybrane zdjęcia dodane do biblioteki. Pliki zdjęć także muszą trafić do assets/img/portfolio w repozytorium.';
+});
+
+qs('#search').addEventListener('input', event => { search = event.target.value.trim().toLocaleLowerCase('pl'); renderGroups(); });
+qs('#btnAddGroup').addEventListener('click', () => {
+  const id = uid();
+  let name = 'Nowa grupa', count = 2;
+  while (state.groups.some(group => group.name === name)) name = `Nowa grupa ${count++}`;
+  search = ''; qs('#search').value = '';
+  change(() => state.groups.push({ id, name, items: [] }), 'Dodano pustą grupę.');
+  const input = qs(`[data-group-id="${CSS.escape(id)}"] input`);
+  input?.focus(); input?.select();
+});
+qs('#btnUndo').addEventListener('click', () => {
+  if (!history.length) return;
+  state = history.pop(); renderAll(); saveDraft('Cofnięto ostatnią zmianę.');
+});
+qs('#btnDownload').addEventListener('click', () => {
+  const url = URL.createObjectURL(new Blob([JSON.stringify(output(), null, 2) + '\n'], { type: 'application/json' }));
+  const link = el('a', { href: url, download: 'portfolio.json' });
+  document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  status.textContent = 'Pobrano JSON. Podmień data/portfolio.json w repozytorium, aby opublikować zmiany.';
+});
+qs('#btnCopy').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText(JSON.stringify(output(), null, 2)); status.textContent = 'Skopiowano JSON do schowka.'; }
+  catch { status.textContent = 'Schowek jest niedostępny. Użyj „Pobierz portfolio.json”.'; }
+});
+qs('#btnLoad').addEventListener('click', () => qs('#jsonInput').click());
+qs('#jsonInput').addEventListener('change', async event => {
+  const file = event.target.files[0];
+  if (!file) return;
+  try {
+    const loaded = normalize(JSON.parse(await file.text()));
+    if (state) change(() => { state = loaded; }, 'Wczytano plik JSON.');
+    else { state = loaded; renderAll(); saveDraft('Wczytano plik JSON.'); }
+    candidates = []; renderCandidates();
+  } catch (error) { status.textContent = `Nie udało się wczytać pliku: ${error.message}`; }
+  event.target.value = '';
+});
+qs('#btnRestore').addEventListener('click', () => {
+  if (!draft) return;
+  const restored = draft; draft = null; qs('#draftNotice').hidden = true;
+  if (state) change(() => { state = restored; }, 'Przywrócono kopię roboczą.');
+  else { state = restored; renderAll(); saveDraft('Przywrócono kopię roboczą.'); }
+  candidates = []; renderCandidates();
+});
+qs('#btnDiscard').addEventListener('click', () => {
+  draft = null; qs('#draftNotice').hidden = true;
+  try { localStorage.removeItem(DRAFT_KEY); } catch { /* Storage may be unavailable. */ }
+  status.textContent = 'Odrzucono poprzednią kopię roboczą.';
+  if (history.length) saveDraft('Zachowano bieżące zmiany.');
+});
 
 async function init() {
-  const status = qs("#status");
-  const btnDownload = qs("#btnDownload");
-  const btnCopy = qs("#btnCopy");
-
-  const btnAddGroup = qs("#btnAddGroup");
-  const groupsRoot = qs("#groupsList");
-  const featuredRoot = qs("#featuredList");
-
-  if (!status || !groupsRoot || !featuredRoot) return;
-
-  status.textContent = "Wczytuję…";
-
-  let data, url;
   try {
-    ({ data, url } = await fetchJSON(DATA_URL, { cache: "no-store" }));
-  } catch (err) {
-    console.error(err);
-    status.textContent =
-      "Nie udało się wczytać JSON (sprawdź ścieżkę ../data/portfolio.json).";
-    return;
-  }
-
-  const items = (data.items || []).map((x) => ({
-    ...x,
-    _resolvedSrc: resolveUrl(x.src, url),
-  }));
-
-  const byId = new Map(items.map((x) => [x.id, x]));
-
-  const groups = normalizeGroups(data, items);
-  const featuredOrder = normalizeFeaturedOrder(data, items);
-
-  // ====== DOM maps ======
-  const itemRowById = new Map();
-  const featuredRowById = new Map();
-
-  // ====== Drag state ======
-  let draggingItemRow = null;
-  let draggingFeaturedRow = null;
-  let draggingGroupEl = null;
-
-  const refreshGroupCounts = () => {
-    const groupEls = Array.from(groupsRoot.querySelectorAll(".group"));
-    for (const gEl of groupEls) {
-      const countEl = gEl.querySelector("[data-role='count']");
-      const listEl = gEl.querySelector("[data-role='list']");
-      if (!countEl || !listEl) continue;
-      const n = listEl.querySelectorAll(".row--item").length;
-      countEl.textContent = `${n} szt.`;
-    }
-  };
-
-  const getGroupNameByItemId = (id) => {
-    const groupEls = Array.from(groupsRoot.querySelectorAll(".group"));
-    for (const gEl of groupEls) {
-      const listEl = gEl.querySelector("[data-role='list']");
-      if (!listEl) continue;
-
-      const has = Array.from(
-        listEl.querySelectorAll(".row--item[data-id]"),
-      ).some((el) => el.dataset.id === id);
-      if (!has) continue;
-
-      const nameEl = gEl.querySelector("[data-role='name']");
-      const v = (nameEl?.value ?? nameEl?.textContent ?? "").trim();
-      return v || "";
-    }
-    return "";
-  };
-
-  const refreshFeaturedSubtitles = () => {
-    for (const [id, row] of featuredRowById.entries()) {
-      const sub = row.querySelector("[data-role='group']");
-      if (sub) sub.textContent = getGroupNameByItemId(id);
-    }
-  };
-
-  const ensureFeaturedRow = (item, { appendToEnd = true } = {}) => {
-    if (featuredRowById.has(item.id)) return;
-
-    const row = buildFeaturedRow(item, getGroupNameByItemId);
-    featuredRowById.set(item.id, row);
-
-    // featured row drag handlers
-    row.addEventListener("dragstart", (e) => {
-      draggingFeaturedRow = row;
-      row.classList.add("dragging");
-      e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("text/plain", `featured:${item.id}`);
-    });
-    row.addEventListener("dragend", () => {
-      row.classList.remove("dragging");
-      draggingFeaturedRow = null;
-      status.textContent =
-        "Zmieniono kolejność karuzeli (pamiętaj pobrać JSON).";
-    });
-
-    if (appendToEnd) featuredRoot.append(row);
-  };
-
-  const removeFeaturedRow = (id) => {
-    const row = featuredRowById.get(id);
-    if (!row) return;
-    row.remove();
-    featuredRowById.delete(id);
-  };
-
-  const onFeaturedChange = (item) => {
-    if (item.featured) {
-      // jeśli była informacja „Brak prac…”, usuń ją przy pierwszym dodaniu
-      if (!featuredRoot.querySelector(".row--featured")) {
-        featuredRoot.innerHTML = "";
-      }
-
-      ensureFeaturedRow(item, { appendToEnd: true });
-      refreshFeaturedSubtitles();
-    } else {
-      removeFeaturedRow(item.id);
-    }
-
-    // Komunikat w UI gdy nic nie ma
-    const any = featuredRoot.querySelectorAll(".row--featured").length;
-    if (!any) {
-      featuredRoot.innerHTML = "";
-      featuredRoot.append(
-        "Brak prac w karuzeli — zaznacz „str. główna” w portfolio.",
-      );
-    }
-  };
-
-  // ====== Render featured list (carousel order) ======
-  featuredRoot.innerHTML = "";
-  if (featuredOrder.length === 0) {
-    featuredRoot.append(
-      "Brak prac w karuzeli — zaznacz „str. główna” w portfolio.",
-    );
-  } else {
-    for (const id of featuredOrder) {
-      const item = byId.get(id);
-      if (!item) continue;
-      ensureFeaturedRow(item, { appendToEnd: true });
-    }
-  }
-
-  // DnD sort inside featuredRoot
-  featuredRoot.addEventListener("dragover", (e) => {
-    if (!draggingFeaturedRow) return;
-    e.preventDefault();
-    const afterEl = getDragAfterElement(
-      featuredRoot,
-      e.clientY,
-      ".row--featured:not(.dragging)",
-    );
-    if (afterEl == null) featuredRoot.append(draggingFeaturedRow);
-    else featuredRoot.insertBefore(draggingFeaturedRow, afterEl);
-  });
-
-  // ====== Create item rows once ======
-  for (const item of items) {
-    const row = buildItemRow(item, { onFeaturedChange, statusEl: status });
-
-    // item row drag handlers
-    row.addEventListener("dragstart", (e) => {
-      draggingItemRow = row;
-      row.classList.add("dragging");
-      e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("text/plain", `item:${item.id}`);
-    });
-    row.addEventListener("dragend", () => {
-      row.classList.remove("dragging");
-      draggingItemRow = null;
-      refreshGroupCounts();
-      refreshFeaturedSubtitles();
-      status.textContent = "Zmieniono układ w grupach (pamiętaj pobrać JSON).";
-    });
-
-    itemRowById.set(item.id, row);
-  }
-
-  // ====== Render groups ======
-  const renderGroup = (group) => {
-    const isPinned =
-      String(group.name).trim().toLowerCase() === DEFAULT_GROUP_KEY;
-
-    const groupEl = document.createElement("div");
-    groupEl.className = "group" + (isPinned ? " group--pinned" : "");
-    groupEl.dataset.groupId = group.id || uid("g");
-
-    const head = document.createElement("div");
-    head.className = "group__head";
-    // Uwaga: przeciąganie grupy jest przypięte do uchwytu (żeby nie kolidowało z edycją nazwy)
-    head.draggable = false;
-
-    const handle = document.createElement("div");
-    handle.className = "group__handle";
-    handle.textContent = "⋮⋮";
-    handle.draggable = !isPinned;
-
-    const name = document.createElement("input");
-    name.className = "group__name";
-    name.dataset.role = "name";
-
-    if (isPinned) {
-      name.value = DEFAULT_GROUP_NAME;
-      name.readOnly = true;
-    } else {
-      name.value = group.name || "";
-      name.placeholder = "Nazwa grupy (np. fine line)";
-    }
-
-    name.addEventListener("input", () => {
-      status.textContent = "Zmieniono nazwy grup (pamiętaj pobrać JSON).";
-      refreshFeaturedSubtitles();
-    });
-
-    const count = document.createElement("div");
-    count.className = "group__count";
-    count.dataset.role = "count";
-    count.textContent = "0 szt.";
-
-    head.append(handle, name, count);
-
-    const list = document.createElement("div");
-    list.className = "group__list";
-    list.dataset.role = "list";
-
-    // Drop handler for item rows (allow drop on whole group box)
-    const onDragOverItems = (e) => {
-      if (!draggingItemRow) return;
-      e.preventDefault();
-      const afterEl = getDragAfterElement(
-        list,
-        e.clientY,
-        ".row--item:not(.dragging)",
-      );
-      if (afterEl == null) list.append(draggingItemRow);
-      else list.insertBefore(draggingItemRow, afterEl);
-    };
-
-    groupEl.addEventListener("dragover", onDragOverItems);
-    list.addEventListener("dragover", onDragOverItems);
-
-    // Group reordering (drag header)
-    handle.addEventListener("dragstart", (e) => {
-      if (isPinned) return;
-      draggingGroupEl = groupEl;
-      groupEl.classList.add("dragging");
-      e.dataTransfer.effectAllowed = "move";
-      e.dataTransfer.setData("text/plain", `group:${groupEl.dataset.groupId}`);
-    });
-
-    handle.addEventListener("dragend", () => {
-      if (!draggingGroupEl) return;
-      groupEl.classList.remove("dragging");
-      draggingGroupEl = null;
-      status.textContent = "Zmieniono kolejność grup (pamiętaj pobrać JSON).";
-    });
-
-    groupEl.append(head, list);
-
-    // append initial items
-    for (const id of group.items || []) {
-      const row = itemRowById.get(id);
-      if (row) list.append(row);
-    }
-
-    return groupEl;
-  };
-
-  groupsRoot.innerHTML = "";
-  for (const group of groups) {
-    groupsRoot.append(renderGroup(group));
-  }
-  refreshGroupCounts();
-  refreshFeaturedSubtitles();
-
-  // DnD reorder groups within groupsRoot
-  groupsRoot.addEventListener("dragover", (e) => {
-    if (!draggingGroupEl) return;
-    e.preventDefault();
-
-    const afterEl = getDragAfterElement(
-      groupsRoot,
-      e.clientY,
-      ".group:not(.dragging)",
-    );
-
-    // pinned group must stay first
-    const pinned = groupsRoot.querySelector(".group--pinned");
-    if (afterEl === pinned) {
-      // drop would insert before pinned -> force after pinned
-      const next = pinned?.nextElementSibling;
-      if (next) groupsRoot.insertBefore(draggingGroupEl, next);
-      else groupsRoot.append(draggingGroupEl);
-      return;
-    }
-
-    if (afterEl == null) groupsRoot.append(draggingGroupEl);
-    else groupsRoot.insertBefore(draggingGroupEl, afterEl);
-
-    // keep pinned group at top no matter what
-    if (pinned && pinned !== groupsRoot.firstElementChild) {
-      groupsRoot.prepend(pinned);
-    }
-  });
-
-  // ====== Add group button ======
-  btnAddGroup?.addEventListener("click", () => {
-    const g = {
-      id: uid("g"),
-      name: "",
-      items: [],
-    };
-
-    const groupEl = renderGroup(g);
-
-    // insert after pinned group (always at top)
-    const pinned = groupsRoot.querySelector(".group--pinned");
-    if (pinned && pinned.nextElementSibling) {
-      groupsRoot.insertBefore(groupEl, pinned.nextElementSibling);
-    } else {
-      groupsRoot.append(groupEl);
-    }
-
-    // focus input
-    const nameInput = groupEl.querySelector(".group__name:not([readonly])");
-    nameInput?.focus();
-
-    status.textContent = "Dodano grupę (pamiętaj pobrać JSON).";
-    refreshGroupCounts();
-    refreshFeaturedSubtitles();
-  });
-
-  // ====== Build output JSON ======
-  const buildOutput = () => {
-    const groupEls = Array.from(groupsRoot.querySelectorAll(".group"));
-    const groupsOut = groupEls.map((gEl) => {
-      const id = gEl.dataset.groupId || uid("g");
-      const nameEl = gEl.querySelector("[data-role='name']");
-      const listEl = gEl.querySelector("[data-role='list']");
-      const name = (nameEl?.value ?? nameEl?.textContent ?? "").trim();
-
-      const itemIds = listEl
-        ? Array.from(listEl.querySelectorAll(".row--item[data-id]")).map(
-            (el) => el.dataset.id,
-          )
-        : [];
-
-      return {
-        id,
-        name:
-          String(name).trim().toLowerCase() === DEFAULT_GROUP_KEY
-            ? DEFAULT_GROUP_NAME
-            : name,
-        items: itemIds,
-      };
-    });
-
-    // featured order from DOM
-    let featuredOut = Array.from(
-      featuredRoot.querySelectorAll(".row--featured[data-id]"),
-    )
-      .map((el) => el.dataset.id)
-      .filter((id) => {
-        const it = byId.get(id);
-        return !!(it && it.featured);
-      });
-
-    // ensure all featured are included (append missing)
-    const seen = new Set(featuredOut);
-    for (const it of items) {
-      if (it && it.featured && !seen.has(it.id)) {
-        seen.add(it.id);
-        featuredOut.push(it.id);
+    const { data } = await fetchJSON(DATA_URL.href, { cache: 'no-store' });
+    state = normalize(data); published = clone(state); renderAll();
+    status.textContent = 'Wczytano dane ze strony. Zmiany publikujesz dopiero po podmianie pliku JSON.';
+  } catch (error) { status.textContent = `Nie udało się wczytać portfolio. Możesz użyć „Wczytaj JSON”. ${error.message}`; }
+  try {
+    const stored = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null');
+    if (stored?.data) {
+      const saved = normalize(stored.data);
+      if (JSON.stringify(saved) !== JSON.stringify(published)) {
+        draft = saved; qs('#draftNotice').hidden = false;
       }
     }
-
-    // items array: flatten group order for nicer diffs
-    const flattenedIds = groupsOut.flatMap((g) => g.items || []);
-    const seenItems = new Set();
-    const orderedItems = [];
-
-    for (const id of flattenedIds) {
-      const it = byId.get(id);
-      if (!it) continue;
-      if (seenItems.has(id)) continue;
-      seenItems.add(id);
-      orderedItems.push(it);
-    }
-    for (const it of items) {
-      if (!it || !it.id) continue;
-      if (!seenItems.has(it.id)) {
-        seenItems.add(it.id);
-        orderedItems.push(it);
-      }
-    }
-
-    return {
-      version: Math.max(Number(data.version || 1), 2),
-      updated: nowISODate(),
-      featuredOrder: featuredOut,
-      groups: groupsOut,
-      items: orderedItems.map(({ _resolvedSrc, ...rest }) => rest),
-    };
-  };
-
-  btnDownload?.addEventListener("click", () => {
-    const out = buildOutput();
-    downloadText("portfolio.json", JSON.stringify(out, null, 2));
-    status.textContent =
-      "Pobrano portfolio.json — podmień plik w /data i zacommituj.";
-  });
-
-  btnCopy?.addEventListener("click", async () => {
-    const out = buildOutput();
-    const text = JSON.stringify(out, null, 2);
-    try {
-      await navigator.clipboard.writeText(text);
-      status.textContent = "Skopiowano JSON do schowka.";
-    } catch (err) {
-      console.error(err);
-      status.textContent = "Nie udało się skopiować. Użyj pobierania pliku.";
-    }
-  });
-
-  status.textContent =
-    "Gotowe. Ustaw grupy i kolejność w karuzeli, a potem pobierz JSON.";
+  } catch { /* Invalid/unavailable drafts never block the published data. */ }
 }
-
-window.addEventListener("DOMContentLoaded", init);
+init();

@@ -1,353 +1,61 @@
 <!doctype html>
 <html lang="pl">
-    <head>
-        <meta charset="utf-8" />
-        <link rel="preload" href="../assets/fonts/cormorant-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-        <link rel="preload" href="../assets/fonts/cormorant-garamond-latin-ext-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-        <title>Admin — portfolio (grupy & karuzela)</title>
-        <meta name="robots" content="noindex" />
-
-        <link rel="icon" href="../assets/img/hero.svg" type="image/svg+xml" />
-        <script src="../assets/js/theme.js?v=20260919-theme-icon"></script>
-        <link rel="stylesheet" href="../assets/css/styles.css?v=20260925-wide-containers" />
-        <style>
-            .admin {
-                padding: 24px 0 40px;
-            }
-            .admin h1 {
-                margin: 0 0 8px;
-                font-size: 24px;
-            }
-            .admin p {
-                margin: 0 0 10px;
-                color: var(--muted);
-                font-size: 13px;
-                max-width: 80ch;
-            }
-            .panel {
-                margin-top: 14px;
-                display: flex;
-                gap: 10px;
-                flex-wrap: wrap;
-                align-items: center;
-            }
-            .status {
-                margin-top: 10px;
-                color: var(--muted);
-                font-size: 13px;
-                min-height: 18px;
-            }
-
-            .adminSection {
-                margin-top: 22px;
-            }
-
-            .sectionHead {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 10px;
-                flex-wrap: wrap;
-            }
-
-            .sectionTitle {
-                margin: 0;
-                font-size: 16px;
-                letter-spacing: 0.4px;
-            }
-
-            .sectionDesc {
-                margin: 8px 0 0;
-                color: var(--muted);
-                font-size: 13px;
-                max-width: 80ch;
-            }
-
-            .reorder {
-                margin-top: 14px;
-                border: 1px solid var(--border);
-                border-radius: var(--radius);
-                overflow: hidden;
-            }
-
-            .groups {
-                margin-top: 14px;
-                display: grid;
-                gap: 14px;
-            }
-
-            .group {
-                border: 1px solid var(--border);
-                border-radius: var(--radius);
-                overflow: hidden;
-                background: color-mix(in srgb, var(--bg-2) 92%, transparent);
-            }
-
-            .group.dragging {
-                opacity: 0.65;
-            }
-
-            .group__head {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 10px 12px;
-                border-bottom: 1px solid var(--border);
-                background: color-mix(in srgb, var(--bg) 65%, transparent);
-            }
-
-            .group__handle {
-                color: var(--muted);
-                font-size: 18px;
-                text-align: center;
-                user-select: none;
-                cursor: grab;
-                width: 28px;
-                flex: 0 0 28px;
-            }
-
-            .group--pinned .group__handle {
-                opacity: 0.35;
-                cursor: default;
-            }
-
-            .group__name {
-                width: 100%;
-                padding: 10px 10px;
-                border-radius: 12px;
-                border: 1px solid var(--border);
-                background: color-mix(in srgb, var(--bg) 85%, transparent);
-                color: var(--text);
-                font: inherit;
-                font-size: 13px;
-                flex: 1;
-                min-width: 200px;
-            }
-
-            .group__name[readonly] {
-                border-color: transparent;
-                background: transparent;
-                padding-left: 0;
-                font-weight: 650;
-            }
-
-            .group__count {
-                color: var(--muted);
-                font-size: 12px;
-                white-space: nowrap;
-            }
-
-            .group__list {
-                /* lista w środku grupy */
-            }
-
-            .row {
-                display: grid;
-                grid-template-columns: 28px 64px 1fr auto;
-                gap: 12px;
-                align-items: center;
-                padding: 10px 12px;
-                border-bottom: 1px solid var(--border);
-                background: color-mix(in srgb, var(--bg-2) 92%, transparent);
-            }
-            .row:last-child {
-                border-bottom: none;
-            }
-            .row.dragging {
-                opacity: 0.65;
-            }
-            .handle {
-                color: var(--muted);
-                font-size: 18px;
-                text-align: center;
-                user-select: none;
-                cursor: grab;
-            }
-            .thumb {
-                width: 64px;
-                height: 64px;
-                border-radius: 14px;
-                object-fit: cover;
-                border: 1px solid var(--border);
-                background: var(--bg);
-            }
-            .meta {
-                display: grid;
-                gap: 6px;
-            }
-            .title {
-                font-weight: 650;
-                font-size: 13px;
-                letter-spacing: 0.4px;
-            }
-            .subtitle {
-                color: var(--muted);
-                font-size: 12px;
-            }
-            .alt {
-                width: 100%;
-                padding: 10px 10px;
-                border-radius: 12px;
-                border: 1px solid var(--border);
-                background: color-mix(in srgb, var(--bg) 85%, transparent);
-                color: var(--text);
-                font: inherit;
-                font-size: 13px;
-            }
-            .right {
-                display: flex;
-                gap: 14px;
-                align-items: center;
-                justify-content: flex-end;
-            }
-            .check {
-                font-size: 13px;
-                color: var(--muted);
-                display: flex;
-                gap: 8px;
-                align-items: center;
-                user-select: none;
-            }
-
-            .reorder--compact .row {
-                grid-template-columns: 28px 64px 1fr;
-            }
-            .reorder--compact .right {
-                display: none;
-            }
-            .reorder--compact .alt {
-                display: none;
-            }
-            .reorder--compact .meta {
-                gap: 4px;
-            }
-
-            .hint {
-                margin-top: 10px;
-                display: flex;
-                gap: 10px;
-                flex-wrap: wrap;
-                color: var(--muted);
-                font-size: 13px;
-            }
-        </style>
-    </head>
-
-    <body>
-        <header class="site-header">
-            <div class="container">
-                <nav class="nav" aria-label="Nawigacja">
-                    <a class="brand" href="../">
-                        <span class="brand__dot" aria-hidden="true"></span>
-                        <span>LEXIE</span>
-                    </a>
-                    <div class="nav__links">
-                        <a href="../portfolio/">Portfolio</a>
-                        <a href="../">Strona główna</a>
-                    </div>
-                    <div class="nav__cta">
-                        <a class="btn btn--primary" href="../portfolio/"
-                            >Podgląd</a
-                        >
-                    </div>
-                </nav>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Pracownia — zarządzanie portfolio | Lexie</title>
+    <link rel="icon" href="../assets/img/hero.svg" type="image/svg+xml">
+    <link rel="preload" href="../assets/fonts/cormorant-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="../assets/js/theme.js?v=20260919-theme-icon"></script>
+    <link rel="stylesheet" href="../assets/css/styles.css?v=20260925-muted-portrait">
+    <link rel="stylesheet" href="../assets/css/admin.css?v=20260926">
+</head>
+<body class="admin-page no-justify">
+    <header class="admin-header">
+        <a href="../" class="admin-brand">LEXIE <span>/ Pracownia</span></a>
+        <div class="admin-actions">
+            <a href="../portfolio/" target="_blank" rel="noopener" class="btn btn--ghost">Podgląd strony ↗</a>
+            <button class="btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Zmień motyw"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor" stroke="none"/></svg></button>
+        </div>
+    </header>
+    <main class="admin">
+        <div class="admin-intro">
+            <div><p class="admin-eyebrow">Twoje prace, w Twojej kolejności</p><h1>Pracownia portfolio</h1><p>Ułóż karuzelę, uporządkuj galerie i dodaj nowe zdjęcia.</p></div>
+            <div class="admin-actions">
+                <button class="btn" id="btnUndo" disabled>Cofnij zmianę</button>
+                <button class="btn btn--primary" id="btnDownload" disabled>Pobierz portfolio.json ↓</button>
             </div>
-        </header>
-
-        <main class="admin">
-            <div class="container">
-                <h1>Portfolio — grupy & karuzela</h1>
-                <p>
-                    To jest proste narzędzie (statyczne) do ustawienia:
-                    <strong>grup</strong> i kolejności w portfolio oraz
-                    kolejności elementów w
-                    <strong>karuzeli na stronie głównej</strong>. Zmiany nie
-                    zapisują się automatycznie — pobierz nowy
-                    <code>portfolio.json</code>, podmień w <code>/data</code> i
-                    zacommituj.
-                </p>
-
-                <div class="panel">
-                    <button
-                        class="btn btn--primary"
-                        id="btnDownload"
-                        type="button"
-                    >
-                        Pobierz portfolio.json
-                    </button>
-                    <button class="btn" id="btnCopy" type="button">
-                        Kopiuj JSON do schowka
-                    </button>
-                    <a
-                        class="btn btn--ghost"
-                        href="https://github.com/n0Witam/lexie-tattoo/edit/main/data/portfolio.json"
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        GitHub (commit)
-                    </a>
-                </div>
-
-                <div class="status" id="status"></div>
-
-                <!-- ========== Featured order (carousel) ========== -->
-                <section
-                    class="adminSection"
-                    aria-label="Karuzela — strona główna"
-                >
-                    <div class="sectionHead">
-                        <h2 class="sectionTitle">Karuzela — strona główna</h2>
-                    </div>
-                    <p class="sectionDesc">
-                        Tutaj wyświetlane są prace zaznaczone jako „str.
-                        główna”. Przeciągnij, aby ustawić kolejność w karuzeli.
-                    </p>
-
-                    <div
-                        class="reorder reorder--compact"
-                        id="featuredList"
-                        aria-label="Prace w karuzeli (przeciągnij, aby zmienić kolejność)"
-                    ></div>
-
-                    <div class="hint">
-                        <span class="badge">Tip</span>
-                        Kolejność tutaj steruje kolejnością w karuzeli (nie
-                        wpływa na kolejność w portfolio).
-                    </div>
-                </section>
-
-                <!-- ========== Groups (portfolio) ========== -->
-                <section class="adminSection" aria-label="Grupy — portfolio">
-                    <div class="sectionHead">
-                        <h2 class="sectionTitle">Grupy — portfolio</h2>
-                        <button class="btn" id="btnAddGroup" type="button">
-                            + grupa
-                        </button>
-                    </div>
-
-                    <p class="sectionDesc">
-                        Przeciągaj prace pomiędzy grupami i ustawiaj kolejność
-                        wewnątrz grup. Grupa <strong>„Wolne wzory”</strong> jest
-                        zawsze na górze.
-                    </p>
-
-                    <div
-                        class="groups"
-                        id="groupsList"
-                        aria-label="Lista grup portfolio"
-                    ></div>
-
-                    <div class="hint">
-                        <span class="badge">Tip</span>
-                        Zmiany w checkboxie „str. główna” wpływają na listę
-                        karuzeli powyżej.
-                    </div>
-                </section>
+        </div>
+        <div class="admin-savebar">
+            <p id="status" role="status" aria-live="polite">Wczytuję portfolio…</p>
+            <div class="admin-actions"><button class="admin-link" id="btnCopy" disabled>Kopiuj JSON</button><button class="admin-link" id="btnLoad">Wczytaj JSON</button><input type="file" id="jsonInput" accept=".json,application/json" hidden></div>
+        </div>
+        <div id="draftNotice" class="admin-notice" hidden><span>Znaleziono lokalną kopię roboczą. Możesz ją przywrócić lub pracować na danych ze strony.</span><div class="admin-actions"><button class="btn" id="btnRestore">Przywróć kopię</button><button class="btn" id="btnDiscard">Odrzuć kopię</button></div></div>
+        <div class="admin-stats" aria-label="Podsumowanie"><div><strong id="itemCount">—</strong><span>prac w bibliotece</span></div><div><strong id="featuredCount">—</strong><span>prac w karuzeli</span></div><div><strong id="altCount">—</strong><span>opisów do uzupełnienia</span></div></div>
+        <section class="admin-section" aria-labelledby="carouselTitle">
+            <div class="admin-section-head"><div><p class="admin-eyebrow">01 / Strona główna</p><h2 id="carouselTitle">Karuzela prac</h2></div><div class="admin-actions"><button class="btn icon-button" id="carouselPrev" aria-label="Przewiń karuzelę w lewo">←</button><button class="btn icon-button" id="carouselNext" aria-label="Przewiń karuzelę w prawo">→</button></div></div>
+            <p class="admin-description">Przeciągnij karty w lewo lub w prawo. Możesz też użyć strzałek pod zdjęciem. Kolejność w galerii pozostanie taka sama.</p>
+            <div id="featuredList" class="admin-carousel" tabindex="0" aria-label="Kolejność prac w karuzeli"></div>
+        </section>
+        <section class="admin-section admin-index" aria-labelledby="indexTitle">
+            <div class="admin-section-head"><div><p class="admin-eyebrow">02 / Nowe zdjęcia</p><h2 id="indexTitle">Indeksuj katalog</h2></div><button class="btn btn--ghost" id="btnScan" disabled>Wybierz katalog portfolio</button><input type="file" id="folderInput" webkitdirectory multiple hidden></div>
+            <p class="admin-description">Wybierz lokalny katalog <code>assets/img/portfolio</code>. Znajdziemy zdjęcia, których nie ma jeszcze w danych. Pliki pozostają na Twoim komputerze.</p>
+            <p id="scanStatus" role="status" aria-live="polite"></p>
+            <div id="scanPanel" hidden>
+                <div class="admin-index-toolbar"><label class="admin-check"><input type="checkbox" id="selectAll" checked> Zaznacz wszystkie</label><label class="admin-target">Dodaj do grupy <select id="importGroup"></select></label><button class="btn btn--primary" id="btnImport">Dodaj wybrane zdjęcia</button></div>
+                <div id="scanList" class="admin-scan-grid"></div>
             </div>
-        </main>
-
-        <script type="module" src="../assets/js/reorder.js"></script>
-    </body>
+        </section>
+        <section class="admin-section" aria-labelledby="libraryTitle">
+            <div class="admin-section-head"><div><p class="admin-eyebrow">03 / Galerie</p><h2 id="libraryTitle">Biblioteka prac</h2></div><button class="btn" id="btnAddGroup" disabled>+ Nowa grupa</button></div>
+            <div class="admin-library-toolbar"><label class="admin-search"><span>Szukaj pracy</span><input id="search" type="search" placeholder="Nazwa pliku, opis lub ID…"></label><p>„Wolne wzory” to galeria dostępnych projektów. Pozostałe grupy tworzą Portfolio.</p></div>
+            <p class="admin-description">Przeciągaj prace między grupami. Przyciski ↑ ↓ zmieniają kolejność, a pole „Grupa” przenosi pracę także na telefonie.</p>
+            <div id="groupsList" class="admin-groups"></div>
+            <p id="noResults" hidden>Brak prac pasujących do wyszukiwania.</p>
+        </section>
+        <footer class="admin-footer"><strong>Gotowe do publikacji?</strong><p>Pobierz plik, podmień <code>data/portfolio.json</code> w repozytorium i opublikuj zmiany razem z nowymi zdjęciami. Kopia robocza w tej przeglądarce nie zmienia strony.</p><a class="btn btn--ghost" href="https://github.com/n0Witam/lexie-tattoo/edit/main/data/portfolio.json" target="_blank" rel="noopener noreferrer">Otwórz plik na GitHubie ↗</a></footer>
+    </main>
+    <script type="module" src="../assets/js/reorder.js?v=20260926"></script>
+</body>
 </html>
