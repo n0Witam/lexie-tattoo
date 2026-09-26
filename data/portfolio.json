@@ -18,12 +18,7 @@
     {
       "id": "nowe",
       "name": "Nowe",
-      "items": [
-        "p06",
-        "p_img-8314",
-        "p_6933",
-        "p_img-5395"
-      ]
+      "items": []
     },
     {
       "id": "wolne-wzory",
@@ -117,30 +112,6 @@
     }
   ],
   "items": [
-    {
-      "id": "p06",
-      "src": "../assets/img/portfolio/mucha1.png",
-      "alt": "Projekt tatuażu Alfons Mucha Odpoczynek nocy, art nouveau, wolny wzór Lexie Tattoo Warszawa Mokotów",
-      "featured": false
-    },
-    {
-      "id": "p_img-8314",
-      "src": "../assets/img/portfolio/IMG_8314.JPG",
-      "alt": "",
-      "featured": false
-    },
-    {
-      "id": "p_6933",
-      "src": "../assets/img/portfolio/IMG_8840.JPG",
-      "alt": "Projekt tatuażu art nouveau, ornamentalna ilustracja, wolny wzór Lexie Tattoo Warszawa Mokotów",
-      "featured": false
-    },
-    {
-      "id": "p_img-5395",
-      "src": "../assets/img/portfolio/IMG_5395.JPG",
-      "alt": "",
-      "featured": false
-    },
     {
       "id": "p_6710",
       "src": "../assets/img/portfolio/IMG_8784.JPG",
@@ -342,8 +313,15 @@
     {
       "id": "528",
       "src": "../assets/img/portfolio/528.jpeg",
-      "alt": "Tatuaż karuzela, wesołe miasteczko, delikatny, motyw na ramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
-      "featured": false
+      "alt": "Tatuaż: karuzela, wesołe miasteczko, delikatny, motyw na ramieniu, styl ilustracyjny, na ramieniu – realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false,
+      "altDetails": {
+        "mode": "generated",
+        "kind": "done",
+        "motif": "karuzela, wesołe miasteczko, delikatny, motyw na ramieniu",
+        "style": "illustrative",
+        "bodyPart": "upper-arm"
+      }
     },
     {
       "id": "p_515",
@@ -603,5 +581,17 @@
       "alt": "Tatuaż wróżka, delikatny motyw fine line, na żebrach, realizacja Lexie Tattoo Warszawa Mokotów",
       "featured": false
     }
+  ],
+  "excludedSources": [
+    "../assets/img/portfolio/mucha1.png",
+    "../assets/img/portfolio/IMG_8314.JPG",
+    "../assets/img/portfolio/IMG_8840.JPG",
+    "../assets/img/portfolio/IMG_5395.JPG"
+  ],
+  "deletedSources": [
+    "../assets/img/portfolio/mucha1.png",
+    "../assets/img/portfolio/IMG_8314.JPG",
+    "../assets/img/portfolio/IMG_8840.JPG",
+    "../assets/img/portfolio/IMG_5395.JPG"
   ]
 }
