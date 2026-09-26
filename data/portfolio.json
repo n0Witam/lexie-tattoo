@@ -1,6 +1,6 @@
 {
   "version": 6,
-  "updated": "2026-09-13",
+  "updated": "2026-09-26",
   "featuredOrder": [
     "p_9857",
     "p01",
@@ -18,7 +18,12 @@
     {
       "id": "nowe",
       "name": "Nowe",
-      "items": []
+      "items": [
+        "p_515",
+        "p_530",
+        "p_img-5395",
+        "p_img-8314"
+      ]
     },
     {
       "id": "wolne-wzory",
@@ -572,6 +577,30 @@
       "id": "p07",
       "src": "../assets/img/portfolio/mucha2.png",
       "alt": "Projekt tatuażu Alfons Mucha Księżyc, art nouveau, realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false
+    },
+    {
+      "id": "p_515",
+      "src": "../assets/img/portfolio/515.jpeg",
+      "alt": "",
+      "featured": false
+    },
+    {
+      "id": "p_530",
+      "src": "../assets/img/portfolio/530.jpeg",
+      "alt": "",
+      "featured": false
+    },
+    {
+      "id": "p_img-5395",
+      "src": "../assets/img/portfolio/IMG_5395.JPG",
+      "alt": "",
+      "featured": false
+    },
+    {
+      "id": "p_img-8314",
+      "src": "../assets/img/portfolio/IMG_8314.JPG",
+      "alt": "",
       "featured": false
     }
   ]
