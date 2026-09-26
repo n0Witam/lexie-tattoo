@@ -9,10 +9,10 @@
     "p02",
     "p_6820",
     "p01",
-    "p03",
+    "522",
     "p_5886",
-    "495",
-    "522"
+    "p03",
+    "495"
   ],
   "groups": [
     {
@@ -326,26 +326,54 @@
     {
       "id": "p_515",
       "src": "../assets/img/portfolio/515.jpeg",
-      "alt": "Tatuaż karuzela, Zając między mieczami, rycinowy, motyw na ramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
-      "featured": false
+      "alt": "Tatuaż: Zając między mieczami, rycinowy, na przedramieniu – realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false,
+      "altDetails": {
+        "mode": "generated",
+        "kind": "done",
+        "motif": "Zając między mieczami, rycinowy",
+        "style": "",
+        "bodyPart": "forearm"
+      }
     },
     {
       "id": "525",
       "src": "../assets/img/portfolio/525.jpeg",
-      "alt": "Tatuaż kwiaty róży, w stylu Art Nouveau, motyw na udzie, realizacja Lexie Tattoo Warszawa Mokotów",
-      "featured": false
+      "alt": "Tatuaż: kwiaty róży, styl art nouveau / secesja, na udzie – realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false,
+      "altDetails": {
+        "mode": "generated",
+        "kind": "done",
+        "motif": "kwiaty róży",
+        "style": "art-nouveau",
+        "bodyPart": "thigh"
+      }
     },
     {
       "id": "522",
       "src": "../assets/img/portfolio/522.jpeg",
-      "alt": "Tatuaż ośmiornica, detaliczny motyw morski w stylu ilustracyjnym, motyw na przedramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
-      "featured": true
+      "alt": "Tatuaż: ośmiornica, detaliczny motyw morski, styl blackwork, na przedramieniu – realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": true,
+      "altDetails": {
+        "mode": "generated",
+        "kind": "done",
+        "motif": "ośmiornica, detaliczny motyw morski",
+        "style": "blackwork",
+        "bodyPart": "forearm"
+      }
     },
     {
       "id": "515",
       "src": "../assets/img/portfolio/513.jpeg",
-      "alt": "Tatuaż zając między między ostrzami, flash w stylu ilustracyjnym, motyw na ramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
-      "featured": false
+      "alt": "Tatuaż: Tajska klatka z ptakiem, matching tattoo, styl ilustracyjny, na ramieniu – realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false,
+      "altDetails": {
+        "mode": "generated",
+        "kind": "done",
+        "motif": "Tajska klatka z ptakiem, matching tattoo",
+        "style": "illustrative",
+        "bodyPart": "upper-arm"
+      }
     },
     {
       "id": "495",
@@ -356,8 +384,15 @@
     {
       "id": "508",
       "src": "../assets/img/portfolio/508.jpeg",
-      "alt": "Tatuaż tajska kalatka na ptaki, motyw na tyle ramienia, realizacja Lexie Tattoo Warszawa Mokotów",
-      "featured": false
+      "alt": "Tatuaż: Tajska klatka z ptakiem, matching tattoo, styl ilustracyjny, na ramieniu – realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false,
+      "altDetails": {
+        "mode": "generated",
+        "kind": "done",
+        "motif": "Tajska klatka z ptakiem, matching tattoo",
+        "style": "illustrative",
+        "bodyPart": "upper-arm"
+      }
     },
     {
       "id": "497",
