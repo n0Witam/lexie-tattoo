@@ -19,20 +19,18 @@
       "id": "nowe",
       "name": "Nowe",
       "items": [
-        "p_515",
-        "p_530",
-        "p_img-5395",
-        "p_img-8314"
+        "p06",
+        "p_img-8314",
+        "p_6933",
+        "p_img-5395"
       ]
     },
     {
       "id": "wolne-wzory",
       "name": "Wolne wzory",
       "items": [
-        "p06",
         "p_6710",
         "p_6880",
-        "p_6933",
         "p_4738",
         "p_2106",
         "p08",
@@ -71,6 +69,7 @@
       "name": "Wykonane prace",
       "items": [
         "528",
+        "p_515",
         "525",
         "522",
         "515",
@@ -111,7 +110,8 @@
         "p_8331",
         "p_5799",
         "p05",
-        "p07"
+        "p07",
+        "p_530"
       ],
       "categories": []
     }
@@ -124,6 +124,24 @@
       "featured": false
     },
     {
+      "id": "p_img-8314",
+      "src": "../assets/img/portfolio/IMG_8314.JPG",
+      "alt": "",
+      "featured": false
+    },
+    {
+      "id": "p_6933",
+      "src": "../assets/img/portfolio/IMG_8840.JPG",
+      "alt": "Projekt tatuażu art nouveau, ornamentalna ilustracja, wolny wzór Lexie Tattoo Warszawa Mokotów",
+      "featured": false
+    },
+    {
+      "id": "p_img-5395",
+      "src": "../assets/img/portfolio/IMG_5395.JPG",
+      "alt": "",
+      "featured": false
+    },
+    {
       "id": "p_6710",
       "src": "../assets/img/portfolio/IMG_8784.JPG",
       "alt": "Autorski projekt tatuażu flash w stylu ilustracyjnym, wolny wzór Lexie Tattoo Warszawa Mokotów",
@@ -133,12 +151,6 @@
       "id": "p_6880",
       "src": "../assets/img/portfolio/IMG_8888.JPG",
       "alt": "Autorski projekt tatuażu w czerni, ilustracyjny flash, wolny wzór Lexie Tattoo Warszawa Mokotów",
-      "featured": false
-    },
-    {
-      "id": "p_6933",
-      "src": "../assets/img/portfolio/IMG_8840.JPG",
-      "alt": "Projekt tatuażu art nouveau, ornamentalna ilustracja, wolny wzór Lexie Tattoo Warszawa Mokotów",
       "featured": false
     },
     {
@@ -330,7 +342,13 @@
     {
       "id": "528",
       "src": "../assets/img/portfolio/528.jpeg",
-      "alt": "Tatuaż karuzela, wezsołe miasteczko,delikatny, motyw na ramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
+      "alt": "Tatuaż karuzela, wesołe miasteczko, delikatny, motyw na ramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false
+    },
+    {
+      "id": "p_515",
+      "src": "../assets/img/portfolio/515.jpeg",
+      "alt": "Tatuaż karuzela, Zając między mieczami, rycinowy, motyw na ramieniu, realizacja Lexie Tattoo Warszawa Mokotów",
       "featured": false
     },
     {
@@ -438,7 +456,7 @@
     {
       "id": "p01",
       "src": "../assets/img/portfolio/dziolcha1.png",
-      "alt": "Projekt tatuażu jaskółka, blackwork i linework, realizacja Lexie Tattoo Warszawa Mokotów",
+      "alt": "Tatuaż jaskółka, blackwork i linework, realizacja Lexie Tattoo Warszawa Mokotów",
       "featured": true
     },
     {
@@ -522,7 +540,7 @@
     {
       "id": "p03",
       "src": "../assets/img/portfolio/geisha.png",
-      "alt": "Projekt tatuażu geisha, kobieca ilustracja w stylu japońskim, realizacja Lexie Tattoo Warszawa Mokotów",
+      "alt": "Tatuaż geisha, kobieca ilustracja w stylu japońskim, realizacja Lexie Tattoo Warszawa Mokotów",
       "featured": true
     },
     {
@@ -552,7 +570,7 @@
     {
       "id": "p02",
       "src": "../assets/img/portfolio/dziolcha2.png",
-      "alt": "Projekt tatuażu Omen, mroczna ilustracja blackwork, realizacja Lexie Tattoo Warszawa Mokotów",
+      "alt": "Tatuaż Omen, mroczna ilustracja blackwork, realizacja Lexie Tattoo Warszawa Mokotów",
       "featured": true
     },
     {
@@ -570,37 +588,19 @@
     {
       "id": "p05",
       "src": "../assets/img/portfolio/kwiaty_kolor.png",
-      "alt": "Projekt tatuażu kolorowe kwiaty, florystyczna ilustracja, realizacja Lexie Tattoo Warszawa Mokotów",
+      "alt": "Tatuaż kolorowe kwiaty, florystyczna ilustracja, realizacja Lexie Tattoo Warszawa Mokotów",
       "featured": false
     },
     {
       "id": "p07",
       "src": "../assets/img/portfolio/mucha2.png",
-      "alt": "Projekt tatuażu Alfons Mucha Księżyc, art nouveau, realizacja Lexie Tattoo Warszawa Mokotów",
-      "featured": false
-    },
-    {
-      "id": "p_515",
-      "src": "../assets/img/portfolio/515.jpeg",
-      "alt": "",
+      "alt": "Tatuaż Alfons Mucha Księżyc, art nouveau, realizacja Lexie Tattoo Warszawa Mokotów",
       "featured": false
     },
     {
       "id": "p_530",
       "src": "../assets/img/portfolio/530.jpeg",
-      "alt": "",
-      "featured": false
-    },
-    {
-      "id": "p_img-5395",
-      "src": "../assets/img/portfolio/IMG_5395.JPG",
-      "alt": "",
-      "featured": false
-    },
-    {
-      "id": "p_img-8314",
-      "src": "../assets/img/portfolio/IMG_8314.JPG",
-      "alt": "",
+      "alt": "Tatuaż wróżka, delikatny motyw fine line, na żebrach, realizacja Lexie Tattoo Warszawa Mokotów",
       "featured": false
     }
   ]
