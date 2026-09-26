@@ -1,5 +1,8 @@
 import { fetchJSON, qs, el } from './util.js';
-import { GROUP_IDS, normalizePortfolio, assignmentGroups } from './portfolio-data.js';
+import { GROUP_IDS, normalizePortfolio, assignmentGroups, removePortfolioItem } from './portfolio-data.js?v=20260926-alt-files';
+
+import { setupAltEditor } from './admin-alt.js';
+import { syncGeneratedAlt } from './portfolio-alt.js';
 
 const DATA_URL = new URL('../../data/portfolio.json', import.meta.url);
 const DRAFT_KEY = 'lexie-portfolio-draft-v1';
@@ -10,6 +13,9 @@ let state, published, draft, history = [], drag = null, search = '';
 const normalize = normalizePortfolio;
 const collapsed = new Set();
 const status = qs('#status');
+const editAlt = setupAltEditor({ onSave: (id, alt, details) => {
+  change(() => Object.assign(itemById(id), { alt, altDetails: details }), 'Zapisano opis zdjęcia.');
+} });
 
 function output() {
   const byId = new Map(state.items.map(item => [item.id, item]));
@@ -42,6 +48,7 @@ function groupOf(id) { return assignmentGroups(state).find(group => group.items.
 function doneGroup() { return state.groups.find(group => group.id === GROUP_IDS.DONE); }
 function groupLabel(group) { return doneGroup().categories.includes(group) ? `Wykonane prace / ${group.name}` : group.name; }
 function unfeaturePending(id, target) {
+  syncGeneratedAlt(itemById(id), target.id === GROUP_IDS.NEW ? null : target.id === GROUP_IDS.FREE ? 'free' : 'done');
   if (target.id !== GROUP_IDS.NEW) return;
   itemById(id).featured = false;
   state.featuredOrder = state.featuredOrder.filter(value => value !== id);
@@ -77,6 +84,10 @@ function refreshStats() {
   qs('#featuredCount').textContent = state.featuredOrder.length;
   qs('#altCount').textContent = state.items.filter(item => !item.alt?.trim()).length;
   qs('#btnUndo').disabled = !history.length;
+  const pending = state.deletedSources || [];
+  qs('#deleteQueue').hidden = !pending.length;
+  qs('#deleteQueueTitle').textContent = `Zdjęcia do usunięcia z repozytorium po publikacji: ${pending.length}`;
+  qs('#deleteQueueList').replaceChildren(...pending.map(src => el('li', {}, decodeURIComponent(new URL(src, DATA_URL).pathname.replace('/assets/img/portfolio/', '')))));
   ['#btnDownload', '#btnCopy'].forEach(selector => qs(selector).disabled = false);
 }
 
@@ -125,19 +136,24 @@ function moveItem(id, targetGroup) {
 function moveWithinGroup(id, direction) {
   preserveFocus(() => change(() => swap(groupOf(id).items, id, direction), 'Zmieniono kolejność prac.'), `[data-item-id="${CSS.escape(id)}"]`);
 }
+function deleteItem(id) {
+  const item = itemById(id);
+  if (!item) return;
+  const name = fileName(item);
+  change(() => removePortfolioItem(state, id), `Usunięto ${name}. Możesz cofnąć tę zmianę. Po publikacji JSON runner usunie też nieużywany plik zdjęcia.`);
+  qs('#btnUndo').focus({ preventScroll: true });
+}
 function renderItem(id, group) {
   const item = itemById(id), index = group.items.indexOf(id);
-  const input = el('input', { type: 'text', value: item.alt || '', placeholder: 'Opisz to, co widać na zdjęciu…', onchange: event => {
-    const alt = event.target.value;
-    change(() => item.alt = alt, 'Zapisano opis zdjęcia.', { render: false });
-  } });
   const row = el('article', { class: 'admin-item', tabindex: '0', draggable: search ? 'false' : 'true', dataset: { itemId: id } },
-    image(item), el('div', { class: 'admin-item-meta' }, el('div', { class: 'admin-filename', title: `${fileName(item)} · ${id}` }, fileName(item)), el('label', {}, 'Opis zdjęcia (alt)', input)),
+    image(item), el('div', { class: 'admin-item-meta' }, el('div', { class: 'admin-filename', title: `${fileName(item)} · ${id}` }, fileName(item)), el('p', { class: 'admin-alt-summary' }, item.alt || 'Brak opisu — uzupełnij motyw i wybierz styl.'),
+      el('button', { type: 'button', class: 'btn admin-edit-alt', onclick: () => editAlt({ item, kind: group.id === GROUP_IDS.NEW ? null : group.id === GROUP_IDS.FREE ? 'free' : 'done', src: preview(item) }) }, item.alt ? 'Edytuj opis' : '+ Dodaj opis')),
     el('div', { class: 'admin-item-controls' },
       el('label', { class: 'admin-check' }, el('input', { type: 'checkbox', checked: item.featured ? '' : null, disabled: group.id === GROUP_IDS.NEW ? '' : null, title: group.id === GROUP_IDS.NEW ? 'Najpierw przenieś pracę z grupy Nowe' : null, onchange: () => toggleFeatured(id) }), 'W karuzeli'),
       button('↑', 'Przesuń pracę wyżej', () => moveWithinGroup(id, -1), index === 0 || !!search),
       button('↓', 'Przesuń pracę niżej', () => moveWithinGroup(id, 1), index === group.items.length - 1 || !!search),
-      el('label', { class: 'admin-target' }, 'Grupa', groupSelect(group.id, target => moveItem(id, target)))));
+      el('label', { class: 'admin-target' }, 'Grupa', groupSelect(group.id, target => moveItem(id, target))),
+      el('button', { type: 'button', class: 'btn admin-delete-work', 'aria-label': `Usuń pracę ${fileName(item)}`, onclick: () => deleteItem(id) }, 'Usuń pracę')));
   draggable(row, { type: 'item', id });
   row.addEventListener('keydown', event => {
     if (!search && event.altKey && ['ArrowUp', 'ArrowDown'].includes(event.key)) {

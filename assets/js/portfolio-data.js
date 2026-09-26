@@ -1,3 +1,4 @@
+import { syncGeneratedAlt, validateAltDetails } from './portfolio-alt.js';
 // Shared schema for the editor, indexer and public galleries.
 export const GROUP_IDS = Object.freeze({ NEW: 'nowe', FREE: 'wolne-wzory', DONE: 'wykonane-prace' });
 const MAIN_GROUPS = [
@@ -15,6 +16,16 @@ export function imagePath(src) {
 
 export function validatePortfolio(data) {
   if (!data || !Array.isArray(data.items)) throw new Error('Plik musi zawierać tablicę „items”.');
+  if (data.excludedSources != null) {
+    if (!Array.isArray(data.excludedSources) || data.excludedSources.some(src => typeof src !== 'string' || !src.trim())) {
+      throw new Error('Nieprawidłowa lista zdjęć wykluczonych z indeksowania.');
+    }
+    data.excludedSources.forEach(imagePath);
+  }
+  if (data.deletedSources != null) {
+    if (!Array.isArray(data.deletedSources) || data.deletedSources.some(src => typeof src !== 'string' || !src.trim())) throw new Error('Nieprawidłowa lista zdjęć do usunięcia.');
+    data.deletedSources.forEach(imagePath);
+  }
   const ids = new Set();
   for (const item of data.items) {
     if (!item || typeof item.id !== 'string' || !item.id.trim() || ids.has(item.id)) {
@@ -23,6 +34,7 @@ export function validatePortfolio(data) {
     if (typeof item.src !== 'string' || !item.src.trim()) throw new Error(`Brak adresu zdjęcia: ${item.id}`);
     imagePath(item.src);
     if (item.alt != null && typeof item.alt !== 'string') throw new Error(`Nieprawidłowy opis: ${item.id}`);
+    validateAltDetails(item.altDetails);
     ids.add(item.id);
   }
   const groupIds = new Set();
@@ -46,6 +58,27 @@ export function validatePortfolio(data) {
 
 export function assignmentGroups(data) {
   return data.groups.flatMap(group => [group, ...(group.categories || [])]);
+}
+
+// Remove the work, retaining its path so the runner will not rediscover it.
+// The editor's undo snapshots include this exclusion as well as all assignments.
+export function removePortfolioItem(data, id) {
+  const item = data.items.find(item => item.id === id);
+  if (!item) return false;
+  const excluded = data.excludedSources || [];
+  if (!excluded.some(src => imagePath(src) === imagePath(item.src))) excluded.push(item.src);
+  data.excludedSources = excluded;
+  data.items = data.items.filter(item => item.id !== id);
+  const sourceUrl = new URL(item.src, PORTFOLIO_BASE);
+  const localPhoto = sourceUrl.origin === new URL(PORTFOLIO_BASE).origin && !sourceUrl.search && !sourceUrl.hash && imagePath(item.src).startsWith('/assets/img/portfolio/');
+  if (localPhoto && !data.items.some(other => imagePath(other.src) === imagePath(item.src))) {
+    const deleted = data.deletedSources || [];
+    if (!deleted.some(src => imagePath(src) === imagePath(item.src))) deleted.push(item.src);
+    data.deletedSources = deleted;
+  }
+  for (const group of assignmentGroups(data)) group.items = group.items.filter(value => value !== id);
+  data.featuredOrder = (data.featuredOrder || []).filter(value => value !== id);
+  return true;
 }
 
 export function normalizePortfolio(input) {
@@ -87,7 +120,9 @@ export function normalizePortfolio(input) {
     delete group.ids;
   }
   inbox.items.push(...[...all].filter(id => !assigned.has(id)));
+  const freeIds = new Set(free.items);
   const pending = new Set(inbox.items);
+  for (const item of data.items) syncGeneratedAlt(item, pending.has(item.id) ? null : freeIds.has(item.id) ? 'free' : 'done');
   for (const item of data.items) if (pending.has(item.id)) item.featured = false;
   const featured = new Set(data.items.filter(item => item.featured && !pending.has(item.id)).map(item => item.id));
   data.featuredOrder = [...new Set([...(data.featuredOrder || []), ...featured])].filter(id => featured.has(id));

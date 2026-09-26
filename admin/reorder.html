@@ -9,7 +9,7 @@
     <link rel="preload" href="../assets/fonts/cormorant-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
     <script src="../assets/js/theme.js?v=20260919-theme-icon"></script>
     <link rel="stylesheet" href="../assets/css/styles.css?v=20260925-muted-portrait">
-    <link rel="stylesheet" href="../assets/css/admin.css?v=20260926-groups-v6">
+    <link rel="stylesheet" href="../assets/css/admin.css?v=20260926-alt-files">
 </head>
 <body class="admin-page no-justify">
     <header class="admin-header">
@@ -33,26 +33,41 @@
         </div>
         <div id="draftNotice" class="admin-notice" hidden><span>Znaleziono lokalną kopię roboczą. Możesz ją przywrócić lub pracować na danych ze strony.</span><div class="admin-actions"><button class="btn" id="btnRestore">Przywróć kopię</button><button class="btn" id="btnDiscard">Odrzuć kopię</button></div></div>
         <div class="admin-stats" aria-label="Podsumowanie"><div><strong id="itemCount">—</strong><span>prac w bibliotece</span></div><div><strong id="featuredCount">—</strong><span>prac w karuzeli</span></div><div><strong id="altCount">—</strong><span>opisów do uzupełnienia</span></div></div>
+        <details class="admin-delete-queue" id="deleteQueue" hidden><summary id="deleteQueueTitle"></summary><ul id="deleteQueueList"></ul></details>
         <section class="admin-section" aria-labelledby="carouselTitle">
             <div class="admin-section-head"><div><p class="admin-eyebrow">01 / Strona główna</p><h2 id="carouselTitle">Karuzela prac</h2></div><div class="admin-actions"><button class="btn icon-button" id="carouselPrev" aria-label="Przewiń karuzelę w lewo">←</button><button class="btn icon-button" id="carouselNext" aria-label="Przewiń karuzelę w prawo">→</button></div></div>
             <p class="admin-description">Przeciągnij karty w lewo lub w prawo. Możesz też użyć strzałek pod zdjęciem. Kolejność w galerii pozostanie taka sama.</p>
             <div id="featuredList" class="admin-carousel" tabindex="0" aria-label="Kolejność prac w karuzeli"></div>
         </section>
-        <aside class="admin-section admin-index" aria-labelledby="indexTitle">
-            <p class="admin-eyebrow">02 / Automatyczna biblioteka</p>
-            <h2 id="indexTitle">Nowe zdjęcia trafiają tutaj same</h2>
-            <p class="admin-description">Dodaj zdjęcia do <code>assets/img/portfolio</code> i wypchnij zmiany do repozytorium. Runner zindeksuje je do grupy „Nowe”. Po zakończeniu wdrożenia odśwież panel, uzupełnij opisy i przenieś prace do właściwej galerii.</p>
-            <p class="admin-description">Grupa „Nowe” jest widoczna tylko w panelu — nie publikuje zdjęć w galeriach ani w karuzeli.</p>
-        </aside>
         <section class="admin-section" aria-labelledby="libraryTitle">
-            <div class="admin-section-head"><div><p class="admin-eyebrow">03 / Galerie</p><h2 id="libraryTitle">Biblioteka prac</h2></div></div>
+            <div class="admin-section-head"><div><p class="admin-eyebrow">02 / Galerie</p><h2 id="libraryTitle">Biblioteka prac</h2></div></div>
             <div class="admin-library-toolbar"><label class="admin-search"><span>Szukaj pracy</span><input id="search" type="search" placeholder="Nazwa pliku, opis lub ID…"></label><p>Trzy stałe grupy: Nowe, Wolne wzory i Wykonane prace. Kategorie utworzysz wewnątrz Wykonanych prac.</p></div>
-            <p class="admin-description">Przeciągaj prace między grupami. Przyciski ↑ ↓ zmieniają kolejność, a pole „Grupa” przenosi pracę także na telefonie, również do kategorii.</p>
+            <p class="admin-description">Przeciągaj prace między grupami. Przyciski ↑ ↓ zmieniają kolejność, a pole „Grupa” przenosi pracę także na telefonie, również do kategorii. „Usuń pracę” usuwa ją z biblioteki i karuzeli. Po publikacji zmian runner usunie również plik zdjęcia; do tego czasu możesz cofnąć zmianę.</p>
             <div id="groupsList" class="admin-groups"></div>
             <p id="noResults" hidden>Brak prac pasujących do wyszukiwania.</p>
         </section>
         <footer class="admin-footer"><strong>Gotowe do publikacji?</strong><p>Pobierz plik, podmień <code>data/portfolio.json</code> w repozytorium i opublikuj zmiany razem z nowymi zdjęciami. Kopia robocza w tej przeglądarce nie zmienia strony.</p><a class="btn btn--ghost" href="https://github.com/n0Witam/lexie-tattoo/edit/main/data/portfolio.json" target="_blank" rel="noopener noreferrer">Otwórz plik na GitHubie ↗</a></footer>
     </main>
-    <script type="module" src="../assets/js/reorder.js?v=20260926-groups-v6"></script>
+    <dialog class="admin-alt-dialog" id="altDialog" aria-labelledby="altDialogTitle">
+        <form id="altForm">
+            <div class="admin-alt-header"><div><p class="admin-eyebrow">Opis dostępny dla każdego</p><h2 id="altDialogTitle">Opis zdjęcia</h2></div><button class="btn icon-button" type="button" id="altClose" aria-label="Zamknij edycję opisu">×</button></div>
+            <div class="admin-alt-layout">
+                <div class="admin-alt-photo"><img id="altPhoto" alt=""><p id="altFileName"></p></div>
+                <div class="admin-alt-fields">
+                    <label>Jak chcesz dodać opis?<select id="altMode"><option value="generated">Kreator opisu</option><option value="manual">Własny opis</option></select></label>
+                    <div id="altBuilder">
+                        <label id="altKindLabel">Rodzaj pracy<select id="altKind"><option value="done">Wykonany tatuaż</option><option value="free">Wolny wzór</option></select></label>
+                        <label>Motyw / co widać na zdjęciu<input id="altMotif" type="text" placeholder="np. róże i sztylet" autocomplete="off"></label>
+                        <label>Styl<select id="altStyle"><option value="">Bez określania stylu</option></select></label>
+                        <fieldset id="altBody"><legend>Część ciała</legend><p class="admin-alt-hint">Kliknij obszar sylwetki lub wybierz nazwę.</p><div class="admin-body-picker"><div class="admin-body-map" id="bodyMap"></div><div class="admin-body-options" id="bodyOptions"></div></div></fieldset>
+                    </div>
+                    <label id="altManualLabel">Własny opis<textarea id="altManual" rows="5" placeholder="Opisz zawartość zdjęcia…"></textarea></label>
+                    <div class="admin-alt-preview"><span>Gotowy opis (alt)</span><p id="altPreview" aria-live="polite"></p></div>
+                </div>
+            </div>
+            <div class="admin-alt-footer"><button type="button" class="btn" id="altCancel">Anuluj</button><button class="btn btn--primary" type="submit">Zapisz opis</button></div>
+        </form>
+    </dialog>
+    <script type="module" src="../assets/js/reorder.js?v=20260926-alt-files"></script>
 </body>
 </html>

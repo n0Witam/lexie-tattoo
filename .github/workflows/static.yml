@@ -35,22 +35,23 @@ jobs:
           node-version: "22"
 
       - name: Test portfolio schema and indexing
-        run: node --test tests/portfolio-index.test.mjs
+        run: node --test tests/portfolio-*.test.mjs
 
-      - name: Index portfolio photos into Nowe
-        run: node scripts/index-portfolio.mjs --write
+      - name: Apply photo deletions and index new photos
+        run: node scripts/index-portfolio.mjs --write --delete-files
 
       - name: Commit updated portfolio index
         shell: bash
         run: |
-          if git diff --quiet -- data/portfolio.json; then
+          if git diff --quiet -- data/portfolio.json assets/img/portfolio; then
             echo "Portfolio index is up to date."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- data/portfolio.json
-          git commit -m "chore: index new portfolio photos"
+          git add -u -- assets/img/portfolio
+          git commit -m "chore: update portfolio index and photos"
           # A normal push fails safely if main advanced; never overwrite newer edits.
           git push origin HEAD:main
 

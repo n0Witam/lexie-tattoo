@@ -6,10 +6,11 @@ const IMAGE_EXTENSION = /\.(?:jpe?g|png|webp|avif|gif)$/i;
 export function scanPortfolio(paths, data) {
   validatePortfolio(data);
   const indexed = new Set(data.items.map(item => imagePath(item.src)));
+  const excluded = new Set([...(data.excludedSources || []), ...(data.deletedSources || [])].map(imagePath));
   const ids = new Set(data.items.map(item => item.id));
   const seen = new Set();
   const added = [];
-  let existing = 0, skipped = 0;
+  let existing = 0, skipped = 0, ignored = 0;
   for (const path of [...paths].sort((a, b) => a.localeCompare(b, 'en', { numeric: true }))) {
     const parts = path.split('/');
     if (parts.some(p => !p || p.startsWith('.') || p.includes('\\')) || !IMAGE_EXTENSION.test(path)) {
@@ -20,6 +21,7 @@ export function scanPortfolio(paths, data) {
     if (seen.has(canonical)) { skipped++; continue; }
     seen.add(canonical);
     if (indexed.has(canonical)) { existing++; continue; }
+    if (excluded.has(canonical)) { ignored++; continue; }
     const stem = path.replace(/\.[^.]+$/, '').normalize('NFKD').replace(/[^a-zA-Z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase();
     const baseId = `p_${stem || 'zdjecie'}`;
     let id = baseId, suffix = 2;
@@ -31,5 +33,5 @@ export function scanPortfolio(paths, data) {
     const path = imagePath(item.src);
     return path.startsWith('/assets/img/portfolio/') && !seen.has(path);
   }).map(item => item.src);
-  return { added, existing, skipped, missing };
+  return { added, existing, skipped, ignored, missing };
 }
