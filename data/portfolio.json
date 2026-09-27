@@ -1,6 +1,6 @@
 {
   "version": 6,
-  "updated": "2026-09-26",
+  "updated": "2026-09-27",
   "featuredOrder": [
     "490",
     "p_9857",
@@ -18,7 +18,15 @@
     {
       "id": "nowe",
       "name": "Nowe",
-      "items": []
+      "items": [
+        "p_img-0040",
+        "p_img-0066",
+        "p_img-0067",
+        "p_img-0068",
+        "p_img-9398",
+        "p_img-9809",
+        "p_img-9903"
+      ]
     },
     {
       "id": "wolne-wzory",
@@ -614,6 +622,48 @@
       "id": "p_530",
       "src": "../assets/img/portfolio/530.jpeg",
       "alt": "Tatuaż wróżka, delikatny motyw fine line, na żebrach, realizacja Lexie Tattoo Warszawa Mokotów",
+      "featured": false
+    },
+    {
+      "id": "p_img-0040",
+      "src": "../assets/img/portfolio/IMG_0040.jpeg",
+      "alt": "",
+      "featured": false
+    },
+    {
+      "id": "p_img-0066",
+      "src": "../assets/img/portfolio/IMG_0066.jpeg",
+      "alt": "",
+      "featured": false
+    },
+    {
+      "id": "p_img-0067",
+      "src": "../assets/img/portfolio/IMG_0067.jpeg",
+      "alt": "",
+      "featured": false
+    },
+    {
+      "id": "p_img-0068",
+      "src": "../assets/img/portfolio/IMG_0068.jpeg",
+      "alt": "",
+      "featured": false
+    },
+    {
+      "id": "p_img-9398",
+      "src": "../assets/img/portfolio/IMG_9398.jpeg",
+      "alt": "",
+      "featured": false
+    },
+    {
+      "id": "p_img-9809",
+      "src": "../assets/img/portfolio/IMG_9809.jpeg",
+      "alt": "",
+      "featured": false
+    },
+    {
+      "id": "p_img-9903",
+      "src": "../assets/img/portfolio/IMG_9903.jpeg",
+      "alt": "",
       "featured": false
     }
   ],
