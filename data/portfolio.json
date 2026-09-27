@@ -41,7 +41,6 @@
         "p_5827",
         "p_5765",
         "p_5784",
-        "p_4874",
         "p_6285",
         "p_3476",
         "p_3324",
@@ -247,12 +246,6 @@
       "id": "p_5784",
       "src": "../assets/img/portfolio/IMG_5109.JPG",
       "alt": "Projekt tatuażu muchomory, botaniczny flash ilustracyjny, wolny wzór Lexie Tattoo Warszawa Mokotów",
-      "featured": false
-    },
-    {
-      "id": "p_4874",
-      "src": "../assets/img/portfolio/IMG_5478.JPG",
-      "alt": "Autorski projekt tatuażu flash, ilustracja w czerni, wolny wzór Lexie Tattoo Warszawa Mokotów",
       "featured": false
     },
     {
@@ -719,6 +712,10 @@
     "../assets/img/portfolio/mucha1.png",
     "../assets/img/portfolio/IMG_8314.JPG",
     "../assets/img/portfolio/IMG_8840.JPG",
-    "../assets/img/portfolio/IMG_5395.JPG"
+    "../assets/img/portfolio/IMG_5395.JPG",
+    "../assets/img/portfolio/IMG_5478.JPG"
+  ],
+  "deletedSources": [
+    "../assets/img/portfolio/IMG_5478.JPG"
   ]
 }
