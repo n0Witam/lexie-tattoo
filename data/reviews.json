@@ -1,14 +1,34 @@
 {
   "version": 1,
-  "updated": "2026-03-17",
-
+  "updated": "2026-09-27",
   "items": [
+    {
+      "name": "Anna",
+      "star": 5,
+      "content": "Fantastyczna Artystka ♥️ Od momentu pierwszej wiadomości, przez ustalanie terminu wszystko poszło bardzo sprawnie. Samo spotkanie - jak kawa z kimś kogo znam od lat, spokój i bezpieczeństwo. A efekt - tatuaż w formie jest taki jak go sobie wymyśliłam a w wykonaniu precyzyjne, czyste linie i piękne cieniowania.",
+      "featured": true,
+      "year": 2026
+    },
+    {
+      "name": "Natalia",
+      "star": 5,
+      "content": "Miałam okazję być u Lexi już dwa razy i wyszłam zachwycona! Jest bardzo dokładna, utalentowana i przede wszystkim świetnie rozumie moją wizję. Jej tatuaże są przepiękne i widać, ile serca i dbałości o szczegóły wkłada w swoją pracę. Odliczam dni do kolejnego spotkania :)",
+      "featured": true,
+      "year": 2026
+    },
     {
       "featured": true,
       "name": "Krystyna",
       "star": 5,
       "year": 2026,
       "content": "Polecam serdecznie ten salon, a zwłaszcza artystkę Lexie u której miałam przyjemność się dziarać. Wzory, o które prosiłam Lexie o stworzenie dla mnie, były jeszcze piękniejsze niż je sobie wyobraziłam. Czułam się niesamowicie zaopiekowana i wysłuchana, a w trakcie samego ich robienia nie czułam żadnego bólu (a tatuaże wylądowały na kostce i na żebrach). Jestem bardzo zadowolona z efektu końcowego jak i samego zabiegu. Na pewno do niej wrócę!"
+    },
+    {
+      "featured": true,
+      "name": "Piotr",
+      "star": 5,
+      "year": 2023,
+      "content": "Super miejsce, wspaniała ekipa! Czułem się zaopiekowany od samego wejścia. Pierwszy tatuaż: proces przebiegł (niemal) bezboleśnie - Dzięki, Lexie! ;)"
     },
     {
       "featured": true,
@@ -33,17 +53,17 @@
     },
     {
       "featured": true,
-      "name": "Piotr",
-      "star": 5,
-      "year": 2023,
-      "content": "Super miejsce, wspaniała ekipa! Czułem się zaopiekowany od samego wejścia. Pierwszy tatuaż: proces przebiegł (niemal) bezboleśnie - Dzięki, Lexie! ;)"
-    },
-    {
-      "featured": true,
       "name": "Helena",
       "star": 5,
       "year": 2022,
       "content": "Bardzo dobre studio, pozytywni, życzliwi ludzie. Każdy reprezentuje nieco inny styl tatuażu, dlatego zawsze można znaleźć coś dla siebie. Robiłam 3 tatuaże u Lexie i to jeszcze nie koniec 🤪..."
+    },
+    {
+      "name": "Aleksandra",
+      "star": 5,
+      "content": "Bardzo polecam! Pięknie, precyzyjnie wykonany tatuaż, cały proces przebiegł sprawnie bez problemowo i w przyjemnej atmosferze! 🥰",
+      "featured": true,
+      "year": 2026
     },
     {
       "featured": true,
