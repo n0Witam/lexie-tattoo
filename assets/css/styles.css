@@ -1012,7 +1012,7 @@ a:hover {
     }
 }
 
-@media (min-width: 1920px) and (hover: hover) and (pointer: fine) {
+@media (min-width: 1950px) and (hover: hover) and (pointer: fine) {
     #works .carousel {
         --slide-w: calc((520px + clamp(520px, min(42vw, 64svh), 920px)) / 2);
     }
