@@ -1,3 +1,4 @@
+import { createCarouselAutoplay } from "./carousel-autoplay.js";
 import { normalizePortfolio } from "./portfolio-data.js";
 import { fetchJSON, qs, qsa } from "./util.js";
 import { initSite, openFreePatternModal, setupContactForm } from "./site.js?v=20260920-confetti-scroll";
@@ -137,6 +138,7 @@ function setupCarousel(root) {
   };
   const isProgrammatic = () => performance.now() < programmaticUntil;
   let updateSlideDepth = null;
+  let resetAutoplay = () => {};
 
   const centerToIndex = (idx, behavior = "smooth") => {
     const slides = slidesAll();
@@ -147,6 +149,7 @@ function setupCarousel(root) {
 
     const delta = getSlideCenterX(el) - getTrackCenterX();
     markProgrammatic(300);
+    resetAutoplay();
     track.scrollTo({ left: track.scrollLeft + delta, behavior });
     if (behavior === "auto") updateSlideDepth?.();
   };
@@ -417,37 +420,47 @@ function setupCarousel(root) {
   };
 
   const autoplayMs = Number(root.getAttribute("data-autoplay") || "5000");
-  const enabledAutoplay = Number.isFinite(autoplayMs) && autoplayMs > 0;
+  const enabledAutoplay = Number.isFinite(autoplayMs) && autoplayMs > 0
+    && slidesOriginal().length > 1 && !prefersReduced;
+  const autoplay = createCarouselAutoplay({
+    duration: autoplayMs,
+    onAdvance: next,
+    onProgress: progress => {
+      if (shouldRenderDots) root.style.setProperty("--autoplay-progress", progress.toFixed(4));
+    },
+  });
+  resetAutoplay = () => autoplay.reset();
+  root.classList.toggle("has-autoplay", enabledAutoplay);
 
-  let timer = null;
-  let paused = false;
-
-  const start = () => {
-    if (!enabledAutoplay) return;
-    stop();
-    timer = window.setInterval(() => {
-      if (!paused) next();
-    }, autoplayMs);
-  };
-
-  const stop = () => {
-    if (timer) window.clearInterval(timer);
-    timer = null;
-  };
-
-  root.addEventListener("mouseenter", () => (paused = true));
-  root.addEventListener("mouseleave", () => (paused = false));
-  root.addEventListener("focusin", () => (paused = true));
-  root.addEventListener("focusout", () => (paused = false));
+  // Independent pause reasons prevent a touch timeout from overriding hover/focus.
+  if (isDesktopPointer) {
+    root.addEventListener("mouseenter", () => autoplay.pause("hover"));
+    root.addEventListener("mouseleave", () => autoplay.resume("hover"));
+    if (root.matches(":hover")) autoplay.pause("hover");
+  }
+  root.addEventListener("focusin", () => autoplay.pause("focus"));
+  root.addEventListener("focusout", event => {
+    if (!root.contains(event.relatedTarget)) autoplay.resume("focus");
+  });
+  const syncVisibility = () => document.hidden
+    ? autoplay.pause("hidden") : autoplay.resume("hidden");
+  document.addEventListener("visibilitychange", syncVisibility);
+  syncVisibility();
 
   let userHold = null;
   const pauseOnUser = () => {
-    paused = true;
-    if (userHold) window.clearTimeout(userHold);
-    userHold = window.setTimeout(() => (paused = false), 2000);
+    autoplay.pause("interaction");
+    autoplay.reset();
+    window.clearTimeout(userHold);
+    userHold = window.setTimeout(() => autoplay.resume("interaction"), 2000);
   };
-  track.addEventListener("pointerdown", pauseOnUser, { passive: true });
-  track.addEventListener("touchstart", pauseOnUser, { passive: true });
+  track.addEventListener("pointerdown", () => {
+    autoplay.pause("pointer");
+    pauseOnUser();
+  }, { passive: true });
+  const releasePointer = () => autoplay.resume("pointer");
+  window.addEventListener("pointerup", releasePointer, { passive: true });
+  window.addEventListener("pointercancel", releasePointer, { passive: true });
   track.addEventListener("wheel", pauseOnUser, { passive: true });
 
   let armT = null;
@@ -488,7 +501,7 @@ function setupCarousel(root) {
   initLoop();
   setupDots();
   setupSlideDepth();
-  start();
+  if (enabledAutoplay) autoplay.start();
   window.setTimeout(() => {
     armCenteredCta();
     if (updateDots) updateDots();

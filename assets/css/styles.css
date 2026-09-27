@@ -2363,6 +2363,24 @@ html.home main > section {
     overflow: visible;
 }
 
+/* The active dot fills using the same clock that advances the carousel. */
+.carousel.has-autoplay .carousel__dot.is-active {
+    position: relative;
+    width: 34px;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--muted) 30%, transparent);
+}
+.carousel.has-autoplay .carousel__dot.is-active::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--accent);
+    transform-origin: left center;
+    transform: scaleX(var(--autoplay-progress, 0));
+}
+.carousel__dot { flex-shrink: 0; }
+
 .carousel__dot:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px var(--focus);
@@ -2373,6 +2391,8 @@ html.home main > section {
         margin-top: 12px;
         gap: 7px;
     }
+
+    .carousel.has-autoplay .carousel__dot.is-active { width: 28px; }
 
     .carousel__dot {
         width: 7px;
