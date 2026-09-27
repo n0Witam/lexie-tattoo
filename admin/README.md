@@ -82,3 +82,18 @@ node --test tests/portfolio-*.test.mjs
 ```
 
 Nowe zdjęcia zawsze trafiają do Nowych. `--output` nie nadpisuje istniejącego pliku. `--write` zapisuje wejściowy plik atomowo, tylko jeśli zmieniły się dane. Fizyczne usuwanie zdjęć wymaga dodatkowo `--delete-files`; bez tej opcji kolejka pozostaje w JSON. Raport i `--output` nigdy nie usuwają plików. `--dir` i `--data` pozwalają wskazać inny katalog oraz wejściowy JSON do testów; ścieżki zdjęć nadal zakładają docelowe `assets/img/portfolio`.
+
+## Pracownia opinii
+
+Otwórz `/admin/reviews.html` przez serwer HTTP. Linki w nagłówkach pozwalają przejść między panelem opinii i portfolio. Edytor korzysta z istniejącego `data/reviews.json`; nie wymaga zmian na publicznej stronie.
+
+- **Dodaj opinię / Edytuj**: autor, ocena 1–5, opcjonalny rok, treść oraz podgląd. Enter dodaje nową linię; nie trzeba wpisywać HTML. Istniejące znaczniki `<br />` są zachowywane, jeśli nie zmienisz treści. Anulowanie nie zapisuje zmian.
+- **Kolejność**: przeciągnij uchwyt po lewej albo użyj ↑ / ↓. Klawiaturą: ustaw fokus na karcie i użyj Alt + ↑ / ↓. Kolejność listy jest kolejnością na stronie.
+- **Na stronie**: odznaczenie ukrywa opinię bez usuwania jej z danych. Ukryte opinie nie trafiają do publicznej karuzeli.
+- **Usuń** usuwa wpis z eksportowanego JSON. „Cofnij zmianę” przywraca również treść i pozycję (do 30 operacji w bieżącej sesji).
+- Wyszukiwanie i filtr widoczności nie ograniczają eksportu. Porządkowanie jest dostępne po wyczyszczeniu filtrów.
+- Kopia robocza zapisuje się lokalnie, niezależnie od portfolio. Po odświeżeniu można ją przywrócić lub odrzucić. Przywrócenie zastępuje stan edytora; starsza kopia nie jest automatycznie scalana z aktualnymi danymi strony.
+- **Pobierz reviews.json** lub **Kopiuj JSON** eksportuje wszystkie opinie. Podmień `data/reviews.json` w repozytorium i wypchnij zmianę, aby ją opublikować. Pobranie samo nie publikuje danych. Usunięcie opinii nie wymaga kasowania plików zdjęć ani dodatkowego runnera.
+- **Wczytaj JSON** pozwala zaimportować zapisany plik; niepoprawne dane są odrzucane bez utraty bieżących zmian. Import można cofnąć.
+
+Pola używane przez stronę: `name`, `star`, `year`, `content`, `featured` (`false` ukrywa opinię). Edytor zachowuje dodatkowe metadane. Rok jest aktualnie ukryty w publicznym widoku.

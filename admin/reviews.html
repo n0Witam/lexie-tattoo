@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Pracownia — zarządzanie opiniami | Lexie</title>
+    <link rel="icon" href="../assets/img/hero.svg" type="image/svg+xml">
+    <link rel="preload" href="../assets/fonts/cormorant-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <script src="../assets/js/theme.js?v=20260919-theme-icon"></script>
+    <link rel="stylesheet" href="../assets/css/styles.css?v=20260925-muted-portrait">
+    <link rel="stylesheet" href="../assets/css/admin.css?v=20260927-reviews">
+</head>
+<body class="admin-page no-justify">
+    <header class="admin-header">
+        <a href="../" class="admin-brand">LEXIE <span>/ Pracownia</span></a>
+        <div class="admin-actions">
+            <a href="reorder.html" class="btn btn--ghost">Portfolio</a>
+            <a href="../#reviews" target="_blank" rel="noopener" class="btn btn--ghost">Podgląd strony ↗</a>
+            <button class="btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Zmień motyw"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16Z" fill="currentColor" stroke="none"/></svg></button>
+        </div>
+    </header>
+    <main class="admin">
+        <div class="admin-intro">
+            <div><p class="admin-eyebrow">Głosy Twoich klientów</p><h1>Pracownia opinii</h1><p>Dodawaj opinie, edytuj ich treść i wybierz kolejność na stronie.</p></div>
+            <div class="admin-actions"><button class="btn" id="btnUndo" disabled>Cofnij zmianę</button><button class="btn btn--primary" id="btnDownload" disabled>Pobierz reviews.json ↓</button></div>
+        </div>
+        <div class="admin-savebar"><p id="status" role="status" aria-live="polite">Wczytuję opinie…</p><div class="admin-actions"><button class="admin-link" id="btnCopy" disabled>Kopiuj JSON</button><button class="admin-link" id="btnLoad">Wczytaj JSON</button><input id="jsonInput" type="file" accept=".json,application/json" hidden></div></div>
+        <div class="admin-notice" id="draftNotice" hidden><span>Znaleziono lokalną kopię roboczą. Przywrócenie zastąpi dane w edytorze.</span><div class="admin-actions"><button class="btn" id="btnRestore">Przywróć kopię</button><button class="btn" id="btnDiscard">Odrzuć kopię</button></div></div>
+        <div class="admin-stats" aria-label="Podsumowanie"><div><strong id="itemCount">—</strong><span>wszystkich opinii</span></div><div><strong id="visibleCount">—</strong><span>na stronie</span></div><div><strong id="hiddenCount">—</strong><span>ukrytych</span></div></div>
+        <section class="admin-section" aria-labelledby="reviewsTitle">
+            <div class="admin-section-head"><div><p class="admin-eyebrow">01 / Strona główna</p><h2 id="reviewsTitle">Twoje opinie</h2></div><button class="btn btn--primary" id="btnAdd" disabled>+ Dodaj opinię</button></div>
+            <div class="admin-library-toolbar"><label class="admin-search"><span>Szukaj opinii</span><input id="search" type="search" placeholder="Autor, treść lub rok…"></label><label class="admin-search review-filter"><span>Widoczność</span><select id="visibility"><option value="all">Wszystkie opinie</option><option value="visible">Na stronie</option><option value="hidden">Ukryte</option></select></label></div>
+            <p class="admin-description" id="orderHint">Kolejność poniżej odpowiada kolejności na stronie. Przeciągnij uchwyt lub użyj strzałek ↑ ↓. Ukryte opinie są pomijane na stronie.</p>
+            <div id="reviewsList" class="admin-review-list" aria-describedby="orderHint"></div>
+            <p id="emptyReviews" class="admin-empty" hidden></p>
+        </section>
+        <footer class="admin-footer"><strong>Gotowe do publikacji?</strong><p>Pobierz plik, podmień <code>data/reviews.json</code> w repozytorium i opublikuj zmiany. Kopia robocza w tej przeglądarce nie zmienia strony. Usunięte opinie znikną ze strony po publikacji pliku.</p><a class="btn btn--ghost" href="https://github.com/n0Witam/lexie-tattoo/edit/main/data/reviews.json" target="_blank" rel="noopener noreferrer">Otwórz plik na GitHubie ↗</a></footer>
+    </main>
+    <dialog class="admin-alt-dialog admin-review-dialog" id="reviewDialog" aria-labelledby="reviewDialogTitle">
+        <form id="reviewForm">
+            <div class="admin-alt-header"><div><p class="admin-eyebrow">Opinia klientki lub klienta</p><h2 id="reviewDialogTitle">Dodaj opinię</h2></div><button type="button" class="btn icon-button" id="btnClose" aria-label="Zamknij edycję">×</button></div>
+            <div class="review-editor-layout">
+                <div class="admin-alt-fields">
+                    <label>Autor<input id="reviewName" required placeholder="Imię lub nazwa autora" autocomplete="off"></label>
+                    <div class="review-field-pair"><label>Ocena<select id="reviewStars"><option value="5">5 / 5</option><option value="4">4 / 5</option><option value="3">3 / 5</option><option value="2">2 / 5</option><option value="1">1 / 5</option></select></label><label>Rok (opcjonalnie)<input id="reviewYear" type="number" min="1900" max="2100" step="1" inputmode="numeric"></label></div>
+                    <label>Treść opinii<textarea id="reviewContent" rows="9" required placeholder="Wklej treść opinii. Enter rozpoczyna nowy akapit."></textarea></label>
+                    <label class="review-featured"><input id="reviewFeatured" type="checkbox" checked> Pokaż na stronie</label>
+                </div>
+                <aside class="review-preview"><p class="admin-eyebrow">Podgląd treści</p><article><div id="previewStars" class="admin-review-stars" role="img"></div><h3 id="previewName"></h3><p id="previewContent"></p></article><p class="review-preview-note">Rok jest zapisany w danych; obecnie nie jest wyświetlany na stronie.</p></aside>
+            </div>
+            <div class="admin-alt-footer"><button type="button" class="btn" id="btnCancel">Anuluj</button><button class="btn btn--primary" type="submit">Zapisz opinię</button></div>
+        </form>
+    </dialog>
+    <script type="module" src="../assets/js/admin-reviews.js?v=20260927-reviews"></script>
+</body>
+</html>
