@@ -991,7 +991,7 @@ a:hover {
 
 @media (min-width: 901px) and (hover: hover) and (pointer: fine) {
     #works .carousel {
-        --slide-w: calc(((520px + clamp(520px, min(42vw, 64svh), 920px)) / 2) * 0.7);
+        --slide-w: calc(((520px + clamp(520px, min(42vw, 64svh), 920px)) / 2) * 0.75);
     }
 
     #featuredTrack {
