@@ -18,15 +18,7 @@
     {
       "id": "nowe",
       "name": "Nowe",
-      "items": [
-        "p_img-0040",
-        "p_img-0066",
-        "p_img-0067",
-        "p_img-0068",
-        "p_img-9398",
-        "p_img-9809",
-        "p_img-9903"
-      ]
+      "items": []
     },
     {
       "id": "wolne-wzory",
@@ -34,7 +26,11 @@
       "items": [
         "p_6710",
         "p_6880",
+        "p_img-9809",
+        "p_img-0068",
+        "p_img-9903",
         "p_4738",
+        "p_img-0040",
         "p_2106",
         "p08",
         "p_7131",
@@ -64,7 +60,10 @@
         "p_7974",
         "p_1085",
         "p_9903",
-        "p_3137"
+        "p_3137",
+        "p_img-0067",
+        "p_img-0066",
+        "p_img-9398"
       ]
     },
     {
@@ -133,10 +132,62 @@
       "featured": false
     },
     {
+      "id": "p_img-9809",
+      "src": "../assets/img/portfolio/IMG_9809.jpeg",
+      "alt": "Projekt tatuażu: Lato, styl art nouveau / secesja – wolny wzór Lexie Tattoo Warszawa Mokotów",
+      "featured": false,
+      "altDetails": {
+        "mode": "generated",
+        "kind": "free",
+        "motif": "Lato",
+        "style": "art-nouveau",
+        "bodyPart": ""
+      }
+    },
+    {
+      "id": "p_img-0068",
+      "src": "../assets/img/portfolio/IMG_0068.jpeg",
+      "alt": "Projekt tatuażu: Łuczniczka, styl ilustracyjny – wolny wzór Lexie Tattoo Warszawa Mokotów",
+      "featured": false,
+      "altDetails": {
+        "mode": "generated",
+        "kind": "free",
+        "motif": "Łuczniczka",
+        "style": "illustrative",
+        "bodyPart": ""
+      }
+    },
+    {
+      "id": "p_img-9903",
+      "src": "../assets/img/portfolio/IMG_9903.jpeg",
+      "alt": "Projekt tatuażu: Lilie, styl ilustracyjny – wolny wzór Lexie Tattoo Warszawa Mokotów",
+      "featured": false,
+      "altDetails": {
+        "mode": "generated",
+        "kind": "free",
+        "motif": "Lilie",
+        "style": "illustrative",
+        "bodyPart": ""
+      }
+    },
+    {
       "id": "p_4738",
       "src": "../assets/img/portfolio/IMG_7923.JPG",
       "alt": "Projekt tatuażu Szczerbatek, fantasy flash, wolny wzór Lexie Tattoo Warszawa Mokotów",
       "featured": false
+    },
+    {
+      "id": "p_img-0040",
+      "src": "../assets/img/portfolio/IMG_0040.jpeg",
+      "alt": "Projekt tatuażu: Jaskółka, styl blackwork – wolny wzór Lexie Tattoo Warszawa Mokotów",
+      "featured": false,
+      "altDetails": {
+        "mode": "generated",
+        "kind": "free",
+        "motif": "Jaskółka",
+        "style": "blackwork",
+        "bodyPart": ""
+      }
     },
     {
       "id": "p_2106",
@@ -317,6 +368,45 @@
       "src": "../assets/img/portfolio/IMG_9070.JPG",
       "alt": "Projekt tatuażu walczące zające, matching tattoos, dynamiczna ilustracja, wolny wzór Lexie Tattoo Warszawa Mokotów",
       "featured": false
+    },
+    {
+      "id": "p_img-0067",
+      "src": "../assets/img/portfolio/IMG_0067.jpeg",
+      "alt": "Projekt tatuażu: Świeca, styl blackwork – wolny wzór Lexie Tattoo Warszawa Mokotów",
+      "featured": false,
+      "altDetails": {
+        "mode": "generated",
+        "kind": "free",
+        "motif": "Świeca",
+        "style": "blackwork",
+        "bodyPart": ""
+      }
+    },
+    {
+      "id": "p_img-0066",
+      "src": "../assets/img/portfolio/IMG_0066.jpeg",
+      "alt": "Projekt tatuażu: żuk w kwiatach – wolny wzór Lexie Tattoo Warszawa Mokotów",
+      "featured": false,
+      "altDetails": {
+        "mode": "generated",
+        "kind": "free",
+        "motif": "żuk w kwiatach",
+        "style": "",
+        "bodyPart": ""
+      }
+    },
+    {
+      "id": "p_img-9398",
+      "src": "../assets/img/portfolio/IMG_9398.jpeg",
+      "alt": "Projekt tatuażu: Eliksir, styl ilustracyjny – wolny wzór Lexie Tattoo Warszawa Mokotów",
+      "featured": false,
+      "altDetails": {
+        "mode": "generated",
+        "kind": "free",
+        "motif": "Eliksir",
+        "style": "illustrative",
+        "bodyPart": ""
+      }
     },
     {
       "id": "528",
@@ -622,48 +712,6 @@
       "id": "p_530",
       "src": "../assets/img/portfolio/530.jpeg",
       "alt": "Tatuaż wróżka, delikatny motyw fine line, na żebrach, realizacja Lexie Tattoo Warszawa Mokotów",
-      "featured": false
-    },
-    {
-      "id": "p_img-0040",
-      "src": "../assets/img/portfolio/IMG_0040.jpeg",
-      "alt": "",
-      "featured": false
-    },
-    {
-      "id": "p_img-0066",
-      "src": "../assets/img/portfolio/IMG_0066.jpeg",
-      "alt": "",
-      "featured": false
-    },
-    {
-      "id": "p_img-0067",
-      "src": "../assets/img/portfolio/IMG_0067.jpeg",
-      "alt": "",
-      "featured": false
-    },
-    {
-      "id": "p_img-0068",
-      "src": "../assets/img/portfolio/IMG_0068.jpeg",
-      "alt": "",
-      "featured": false
-    },
-    {
-      "id": "p_img-9398",
-      "src": "../assets/img/portfolio/IMG_9398.jpeg",
-      "alt": "",
-      "featured": false
-    },
-    {
-      "id": "p_img-9809",
-      "src": "../assets/img/portfolio/IMG_9809.jpeg",
-      "alt": "",
-      "featured": false
-    },
-    {
-      "id": "p_img-9903",
-      "src": "../assets/img/portfolio/IMG_9903.jpeg",
-      "alt": "",
       "featured": false
     }
   ],
