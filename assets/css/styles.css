@@ -1890,6 +1890,7 @@ uc-file-uploader-minimal {
     aspect-ratio: 1 / 1; /* lub np. 4/3 */
     object-fit: cover;
     display: block;
+    filter: var(--about-portrait-filter);
 
     transform: scale(1.5);
     transition: transform 3.5s cubic-bezier(0.2, 0.9, 0.2, 1);
