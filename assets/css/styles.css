@@ -1382,7 +1382,7 @@ a:hover {
 }
 
 .field textarea {
-    min-height: 100px;
+    min-height: 90px;
     resize: vertical;
 }
 
