@@ -2342,11 +2342,6 @@ html.home main > section {
     line-height: 1.75;
     font-size: 13px;
 }
-
-.ig-card {
-    min-height: 400px;
-}
-
 /* tablet/mobile */
 @media (max-width: 1000px) {
     .experience--contact .experience__content p {
