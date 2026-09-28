@@ -2180,8 +2180,8 @@ html.home main > section {
 
 .review-card__name {
     margin: 0;
-    font-size: 1rem;
-    font-weight: 200;
+    font-size: 16pt;
+    font-weight: 350;
     letter-spacing: 0.5px;
 }
 
