@@ -1,3 +1,4 @@
+import { setupHomeSections } from "./home-sections.js";
 import { createCarouselAutoplay } from "./carousel-autoplay.js";
 import { normalizePortfolio } from "./portfolio-data.js";
 import { fetchJSON, qs, qsa } from "./util.js";
@@ -673,6 +674,7 @@ async function renderReviews() {
 
 window.addEventListener("DOMContentLoaded", async () => {
   initSite();
+  setupHomeSections();
 
   const contentReady = Promise.all([renderFeatured(), renderReviews()]).then(() => {
     qsa("[data-carousel]").forEach(setupCarousel);

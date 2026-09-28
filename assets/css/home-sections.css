@@ -1,0 +1,63 @@
+/* Page-level snapping belongs only to the home page. Horizontal carousels
+   keep their own snap containers; tall sections retain natural scrolling. */
+html.home {
+    --section-offset: calc(var(--header-h, 72px) + 13px + env(safe-area-inset-top, 0px));
+    --section-space: clamp(24px, 4svh, 56px);
+    scroll-padding-block: var(--section-offset) 0;
+    scroll-snap-type: y proximity;
+}
+
+html.home main > section {
+    min-block-size: calc(100svh - var(--section-offset));
+    padding-block: var(--section-space) max(var(--section-space), var(--section-offset));
+    margin-block: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
+}
+
+html.home main > section > * { flex-shrink: 0; }
+html.home main > section > .container > h2:first-child { margin-top: 0; }
+html.home #studio-interior .slide { scroll-snap-align: none; }
+html.home > body > .footer { scroll-snap-align: none; }
+
+/* Give the opening illustration its own space instead of extending into works. */
+html.home .hero__side { min-height: 0; margin: 0; }
+html.home .hero__imageWrap {
+    width: min(100%, 560px);
+    margin: 0 auto;
+    scale: 1;
+}
+html.home .hero__image {
+    max-height: min(78svh, 900px);
+    object-fit: contain;
+}
+html.home .hero__grid { margin-top: 0; }
+
+@media (min-width: 901px) and (hover: hover) and (pointer: fine) {
+    html.home { scroll-snap-type: y mandatory; }
+    html.home > body > .footer { scroll-snap-align: end; }
+    html.home .hero__image {
+        max-height: calc(100svh - var(--section-offset) - var(--section-space) - max(var(--section-space), var(--section-offset)));
+    }
+}
+
+@media (max-width: 900px) {
+    html.home { --section-space: 28px; }
+    html.home .hero__image { max-height: 65svh; }
+}
+
+/* Let browser focus scrolling and the on-screen keyboard position form fields. */
+html.home:has(input:focus, textarea:focus, select:focus, dialog[open]) {
+    scroll-snap-type: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html.home { scroll-snap-type: none; scroll-behavior: auto; }
+}
+
+@media (max-width: 900px), (hover: none), (pointer: coarse) {
+    html.home main > section.is-scrollable-section { scroll-snap-align: none; }
+}
