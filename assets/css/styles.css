@@ -1821,19 +1821,50 @@ uc-file-uploader-minimal {
 }
 
 .ig-card {
-    height: 400px;
-    max-width: 400px;
+    position: relative;
+
+    width: min(100%, 300px);
+    height: 280px;
+    min-height: 0;
+
+    padding: 80px 20px 20px;
+
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     text-align: center;
+
+    overflow: visible;
+
+    justify-self: center;
+    margin-top: 65px;
+}
+
+.ig-card .ig-profile__link {
+    position: absolute;
+
+    top: -65px;
+    left: 50%;
+
+    width: 130px;
+    height: 130px;
+
+    margin: 0;
+
+    transform: translateX(-50%) rotate(-45deg);
+
+    z-index: 2;
 }
 
 .ig-card .btn {
-    width: 250px;
+    width: 220px;
     justify-content: center;
-    margin-top: 14px;
+    margin-top: 12px;
+}
+
+.ig-counter {
+    margin-top: 0;
 }
 
 .split--where_to_find_me {
