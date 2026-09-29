@@ -45,7 +45,7 @@ function renderStars(rating = 5) {
    - click slide (desktop) to center
    - prev/next hit-areas (desktop via CSS)
    - CTA "Chcę ten wzór!" arms after 1s when a FREE slide is centered
-   - dots only for featured/image carousel
+   - dots and autoplay progress for works and reviews
    ============================================================ */
 function setupCarousel(root) {
   const track = qs("[data-track]", root);
@@ -214,9 +214,8 @@ function setupCarousel(root) {
     root.append(btnPrev, btnNext);
   }
 
-  const shouldRenderDots =
-    track.id === "featuredTrack" &&
-    !root.classList.contains("carousel--reviews");
+  const isReviews = track.id === "reviewsTrack";
+  const shouldRenderDots = track.id === "featuredTrack" || isReviews;
 
   let updateDots = null;
 
@@ -229,13 +228,13 @@ function setupCarousel(root) {
 
     const dots = document.createElement("div");
     dots.className = "carousel__dots";
-    dots.setAttribute("aria-label", "Wskaźnik slajdów");
+    dots.setAttribute("aria-label", isReviews ? "Wskaźnik opinii" : "Wskaźnik slajdów");
 
     const dotButtons = originals.map((_, index) => {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "carousel__dot";
-      btn.setAttribute("aria-label", `Przejdź do slajdu ${index + 1}`);
+      btn.setAttribute("aria-label", isReviews ? `Przejdź do opinii ${index + 1}` : `Przejdź do slajdu ${index + 1}`);
       btn.setAttribute("aria-current", "false");
 
       btn.addEventListener("click", () => {
