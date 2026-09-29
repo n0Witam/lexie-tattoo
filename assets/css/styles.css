@@ -2168,7 +2168,7 @@ html.home main > section {
 }
 @media (max-width: 900px) {
     .review-card {
-        min-height: 350px;
+        min-height: 375px;
     }
 }
 
