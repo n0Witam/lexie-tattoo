@@ -53,7 +53,7 @@
             sizes="192x192"
         />
         <script src="./assets/js/theme.js?v=20260919-theme-icon"></script>
-        <link href="./assets/css/styles.css?v=20260930-map-ratio" rel="stylesheet" />
+        <link href="./assets/css/styles.css?v=20260930-location" rel="stylesheet" />
 
         <script type="application/ld+json">
             {
@@ -525,58 +525,61 @@
                     </div>
                 </div>
             </section>
-            <section class="section" id="where_to_find_me">
-                <div class="container">
-                    <div class="reviews__header reveal">
-                        <h2 class="section__title reviews__title">
-                            PRISM – Tattoo Studio
-                        </h2>
-                        <p class="lead" style="margin-bottom:30px">Wyjątkowe studio, w którym
-                        design spotyka się ze sztuką tatuażu</p>
+            <section class="section location" id="where_to_find_me" aria-labelledby="locationTitle">
+                <div class="container location-layout">
+                    <div class="location-intro reveal">
+                        <p class="location-eyebrow">Kontakt i dojazd</p>
+                        <h2 id="locationTitle">PRISM – <span>Tattoo Studio</span></h2>
+                        <div class="location-description">
+                            <p>Wyjątkowe studio, w którym design spotyka się ze sztuką tatuażu.</p>
+                            <p>PRISM Tattoo znajduje się w sercu zielonego Starego Mokotowa,
+                                w klimatycznym, przedwojennym budynku. To miejsce stworzone z pasji
+                                i przyjaźni – z myślą o łączeniu klasycznych inspiracji ze
+                                współczesnymi formami sztuki.</p>
+                        </div>
                     </div>
-                    <div class="split split--where_to_find_me reveal">
+                    <div class="location-map reveal">
                         <div class="card card--map">
-                            <a
-                                aria-label="Otwórz lokalizację studia PRISM Tattoo w Google Maps"
-                                class="mapLink"
-                                href="https://maps.app.goo.gl/jwE6DrTtevjHMHL5A?g_st=ic"
-                            >
-                                <img
-                                    alt="Mapa dojazdu do studia PRISM Tattoo w Warszawie"
-                                    decoding="async"
-                                    height="1100"
-                                    loading="lazy"
-                                    src="./assets/img/map.webp"
-                                    width="1100"
-                                />
+                            <a aria-label="Otwórz lokalizację studia PRISM Tattoo w Google Maps"
+                                class="mapLink" href="https://maps.app.goo.gl/jwE6DrTtevjHMHL5A?g_st=ic">
+                                <img alt="Mapa dojazdu do studia PRISM Tattoo w Warszawie"
+                                    decoding="async" height="1100" loading="lazy"
+                                    src="./assets/img/map.webp" width="1100" />
                             </a>
                         </div>
-                        <div class="card" style="margin-bottom: 5vh">
-                            <p style="text-align: justify; margin-bottom: 20px">
-                                PRISM Tattoo znajduje się w sercu zielonego Starego Mokotowa, w
-                                klimatycznym, przedwojennym budynku. To miejsce
-                                stworzone z pasji i przyjaźni – z myślą o
-                                łączeniu klasycznych inspiracji ze współczesnymi
-                                formami sztuki.
-                            </p>
-                            <ul class="list" style="margin-bottom: 20px">
-                                <li>Adres: Puławska 41/26, 02-508 Warszawa</li>
-                                <li>Czynne: Wtorek - Sobota (11:00-18:00)</li>
-                                <li>
-                                    Telefon:
-                                    <a href="tel:+48790340440"
-                                        >+48 790 340 440</a
-                                    >
-                                </li>
-                            </ul>
-                            <p style="text-align: justify; margin-bottom: 20px">
-                                Studio jest świetnie skomunikowane. W
-                                najbliższej okolicy znajdują się dwa przystanki:
-                            </p>
-                            <ul class="list">
-                                <li>Autobus: Dworkowa – 50 m</li>
-                                <li>Tramwaj: Park Dreszera – 170 m</li>
-                            </ul>
+                    </div>
+                    <div class="location-details reveal">
+                        <div class="location-card">
+                            <span class="location-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 11-8 11S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg></span>
+                            <div class="location-card__body">
+                                <h3>Adres</h3>
+                                <address><a href="https://maps.app.goo.gl/jwE6DrTtevjHMHL5A?g_st=ic">Puławska 41/26,<br>02-508 Warszawa</a></address>
+                            </div>
+                        </div>
+                        <div class="location-card">
+                            <span class="location-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 3"/></svg></span>
+                            <div class="location-card__body">
+                                <h3>Godziny otwarcia</h3>
+                                <p>Wtorek – Sobota<br>11:00–18:00</p>
+                            </div>
+                        </div>
+                        <div class="location-card location-card--wide">
+                            <span class="location-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m8 3 3 5-3 2a15 15 0 0 0 6 6l2-3 5 3-1 4c-1 2-6 1-11-4S3 6 4 4Z"/></svg></span>
+                            <div class="location-card__body">
+                                <h3>Telefon</h3>
+                                <p><a href="tel:+48790340440">+48 790 340 440</a></p>
+                            </div>
+                        </div>
+                        <div class="location-card location-card--wide location-card--transport">
+                            <span class="location-card__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="17" rx="3"/><path d="M4 12h16M8 3V1m8 2V1M7 20v2m10-2v2M1 7v5m22-5v5"/><path d="M7 16h1m8 0h1"/></svg></span>
+                            <div class="location-card__body">
+                                <h3>Najbliższe przystanki</h3>
+                                <p class="location-transport-note">Studio jest świetnie skomunikowane. W najbliższej okolicy znajdują się dwa przystanki:</p>
+                                <ul class="location-transit">
+                                    <li><span>Autobus: Dworkowa</span><span class="location-distance">50 m</span></li>
+                                    <li><span>Tramwaj: Park Dreszera</span><span class="location-distance">170 m</span></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>

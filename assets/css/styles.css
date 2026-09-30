@@ -1868,14 +1868,117 @@ uc-file-uploader-minimal {
     margin-bottom: 4px;
 }
 
-.split--where_to_find_me {
-    grid-template-columns: 0.7fr 1fr;
+/* ====== Studio / contact and directions ====== */
+.location { padding-block: clamp(40px, 6vw, 88px); }
+.location-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+    grid-template-areas: "intro map" "details map";
+    column-gap: clamp(28px, 3.5vw, 64px);
+    row-gap: 28px;
+    align-items: start;
 }
-
+.location-intro { grid-area: intro; min-width: 0; }
+.location .location-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin: 0 0 22px;
+    color: var(--muted);
+    font-size: 12px;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+}
+.location-eyebrow::after {
+    content: "";
+    width: 48px;
+    height: 1px;
+    background: currentColor;
+    opacity: .6;
+}
+.location h2 {
+    margin: 0 0 24px;
+    font-size: clamp(40px, 3.35vw, 60px);
+    line-height: 1.08;
+    text-wrap: initial;
+}
+.location h2 span { display: inline-block; }
+.location-description { color: var(--muted); font-size: clamp(15px, 1.1vw, 18px); line-height: 1.8; }
+.location-description p { margin: 0; text-align: left; }
+.location-map { grid-area: map; min-width: 0; align-self: center; }
+.location-map .card--map { border-radius: 22px; box-shadow: none; }
+.location-map .mapLink:focus-visible { outline: 3px solid var(--accent); outline-offset: -5px; border-radius: inherit; }
+.location-details {
+    grid-area: details;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    min-width: 0;
+}
+.location-card {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    min-width: 0;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    background: color-mix(in srgb, var(--muted) 4%, transparent);
+}
+.location-card--wide { grid-column: 1 / -1; }
+.location-card__icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 54px;
+    width: 54px;
+    height: 54px;
+    border-radius: 19px;
+    color: var(--text);
+    background: color-mix(in srgb, var(--muted) 13%, transparent);
+}
+.location-card__icon svg { width: 29px; height: 29px; }
+.location-card__body { min-width: 0; }
+.location-card h3 {
+    margin: 0 0 9px;
+    font-family: inherit;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .17em;
+    line-height: 1.5;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-wrap: initial;
+}
+.location-card p, .location-card address { margin: 0; font-style: normal; font-size: 15px; line-height: 1.65; text-align: left; }
+.location-card a { text-decoration: none; }
+.location-card a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.location-card a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 3px; }
+.location .location-transport-note { font-size: 12px; line-height: 1.65; color: var(--muted); margin-bottom: 12px; }
+.location-transit { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; list-style: none; padding: 0; margin: 0; }
+.location .location-transit li { display: grid; gap: 2px; font-size: 14px; line-height: 1.6; align-self: start; }
+.location-transit li + li { border-left: 1px solid var(--border); padding-left: 20px; }
+.location-distance { color: var(--muted); }
+@media (min-width: 901px) and (max-width: 1150px) {
+    .location-card { gap: 12px; padding: 16px; }
+    .location-card__icon { flex-basis: 40px; width: 40px; height: 40px; border-radius: 14px; }
+    .location-card__icon svg { width: 24px; height: 24px; }
+    .location-card p, .location-card address { font-size: 14px; }
+}
 @media (max-width: 900px) {
-    .split--where_to_find_me {
-        grid-template-columns: 1fr;
-    }
+    .location-layout { grid-template-columns: minmax(0, 1fr); grid-template-areas: "intro" "map" "details"; gap: 24px; }
+    .location h2 { font-size: clamp(40px, 7vw, 54px); margin-bottom: 20px; }
+    .location-description { font-size: 16px; line-height: 1.75; }
+    .location .location-eyebrow { margin-bottom: 18px; font-size: 11px; gap: 18px; }
+}
+@media (max-width: 600px) {
+    .location-details { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+    .location-card { gap: 18px; padding: 18px; border-radius: 18px; }
+    .location-card--transport { align-items: flex-start; }
+    .location-card h3 { font-size: 10px; letter-spacing: .16em; margin-bottom: 6px; }
+    .location-card p, .location-card address { font-size: 16px; }
+    .location-transit { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+    .location-transit li + li { border-left: 0; padding-left: 0; }
+    .location .location-transit li { font-size: 14px; }
 }
 
 .card--map {
