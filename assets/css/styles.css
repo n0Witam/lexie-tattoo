@@ -2358,15 +2358,50 @@ html.home main > section {
     overflow-x: clip;
 }
 
-/* ====== Carousel dots ====== */
+/* ====== Carousel controls ====== */
+
+.carousel__controls {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    width: fit-content;
+    max-width: calc(100% - 32px);
+    margin: 14px auto 0;
+    padding: 5px 6px 5px 18px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+}
+.carousel__playback {
+    display: grid;
+    place-items: center;
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--muted) 10%, transparent);
+    color: var(--text);
+    cursor: pointer;
+    transition: background-color .2s ease;
+}
+.carousel__playback svg { width: 20px; height: 20px; }
+.carousel__playback:hover { background: color-mix(in srgb, var(--muted) 22%, transparent); }
+.carousel__playback:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.carousel__controls:not(:has(.carousel__playback)) { padding: 15px 18px; }
 
 .carousel__dots {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 8px;
-    margin-top: 14px;
-    padding-inline: 16px;
+    flex-wrap: wrap;
+    min-width: 0;
+    padding-block: 8px;
 }
 
 .carousel__dot {
@@ -2418,8 +2453,9 @@ html.home main > section {
 }
 
 @media (max-width: 600px) {
+    .carousel__controls { margin-top: 12px; gap: 12px; padding-left: 14px; }
+
     .carousel__dots {
-        margin-top: 12px;
         gap: 7px;
     }
 

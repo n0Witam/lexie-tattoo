@@ -250,7 +250,39 @@ function setupCarousel(root) {
       return btn;
     });
 
-    root.appendChild(dots);
+    const controls = document.createElement("div");
+    controls.className = "carousel__controls";
+    controls.setAttribute("role", "group");
+    controls.setAttribute("aria-label", isReviews ? "Sterowanie karuzelą opinii" : "Sterowanie karuzelą prac");
+    controls.appendChild(dots);
+
+    if (availableAutoplay) {
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "carousel__playback";
+      toggle.setAttribute("aria-controls", track.id);
+      const updateToggle = () => {
+        const label = manuallyPaused ? "Wznów automatyczne przewijanie" : "Wstrzymaj automatyczne przewijanie";
+        toggle.setAttribute("aria-label", label);
+        toggle.title = label;
+        toggle.innerHTML = manuallyPaused
+          ? '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5.5 19 12 9 18.5Z" fill="currentColor"/></svg>'
+          : '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6v12M15 6v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+      };
+      toggle.addEventListener("click", () => {
+        manuallyPaused = !manuallyPaused;
+        if (manuallyPaused) autoplay.pause("manual");
+        else {
+          autoplay.resume("manual");
+          autoplay.start();
+          root.classList.add("has-autoplay");
+        }
+        updateToggle();
+      });
+      updateToggle();
+      controls.appendChild(toggle);
+    }
+    root.appendChild(controls);
 
     let rafId = 0;
 
@@ -419,8 +451,10 @@ function setupCarousel(root) {
   };
 
   const autoplayMs = Number(root.getAttribute("data-autoplay") || "5000");
-  const enabledAutoplay = Number.isFinite(autoplayMs) && autoplayMs > 0
-    && slidesOriginal().length > 1 && !prefersReduced;
+  const availableAutoplay = Number.isFinite(autoplayMs) && autoplayMs > 0
+    && slidesOriginal().length > 1;
+  const enabledAutoplay = availableAutoplay && !prefersReduced;
+  let manuallyPaused = prefersReduced;
   const autoplay = createCarouselAutoplay({
     duration: autoplayMs,
     onAdvance: next,
@@ -431,15 +465,17 @@ function setupCarousel(root) {
   resetAutoplay = () => autoplay.reset();
   root.classList.toggle("has-autoplay", enabledAutoplay);
 
-  // Independent pause reasons prevent a touch timeout from overriding hover/focus.
-  if (isDesktopPointer) {
-    root.addEventListener("mouseenter", () => autoplay.pause("hover"));
-    root.addEventListener("mouseleave", () => autoplay.resume("hover"));
-    if (root.matches(":hover")) autoplay.pause("hover");
-  }
-  root.addEventListener("focusin", () => autoplay.pause("focus"));
+  if (manuallyPaused) autoplay.pause("manual");
+  // Controls remain usable while playing. Keyboard focus on slide content
+  // pauses movement without overriding the user's explicit pause choice.
+  root.addEventListener("focusin", event => {
+    if (event.target.closest(".carousel__controls")) autoplay.resume("focus");
+    else autoplay.pause("focus");
+  });
   root.addEventListener("focusout", event => {
-    if (!root.contains(event.relatedTarget)) autoplay.resume("focus");
+    if (!root.contains(event.relatedTarget) || event.relatedTarget?.closest(".carousel__controls")) {
+      autoplay.resume("focus");
+    }
   });
   const syncVisibility = () => document.hidden
     ? autoplay.pause("hidden") : autoplay.resume("hidden");
