@@ -1887,7 +1887,7 @@ uc-file-uploader-minimal {
 .card--map img {
     width: 100%;
     height: auto;
-    aspect-ratio: 5 / 4;
+    aspect-ratio: 8 / 7;
     object-fit: cover;
     display: block;
     filter: var(--about-portrait-filter);
