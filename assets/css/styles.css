@@ -1791,22 +1791,6 @@ uc-file-uploader-minimal {
     }
 }
 
-/* Kontakt: grid ma się rozciągać na wysokość najwyższej kolumny */
-.split--contact {
-    grid-template-columns: 0.9fr 1fr 0.7fr;
-    align-items: start;
-    margin-bottom: 3vh;
-}
-
-/* Mobile */
-@media (max-width: 1000px) {
-    .split--contact {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* zdjęcie nad glow */
-
 .btn--ig {
     display: inline-flex;
     align-items: center;
@@ -1820,52 +1804,87 @@ uc-file-uploader-minimal {
     flex: 0 0 auto;
 }
 
-.ig-card {
-    position: relative;
-
-    width: min(100%, 300px);
-    height: 280px;
-    min-height: 0;
-
-    padding: 80px 20px 20px;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    text-align: center;
-
-    overflow: visible;
-
-    justify-self: center;
-    margin-top: 100px;
+/* ====== Contact / booking ====== */
+.contact-overview {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2.6fr);
+    gap: clamp(28px, 3vw, 52px);
+    align-items: start;
+    margin-bottom: 32px;
 }
-
-.ig-card .ig-profile__link {
-    position: absolute;
-
-    top: -75px;
-    left: 50%;
-
-    width: 150px;
-    height: 150px;
-
-    margin: 0;
-
-    transform: translateX(-50%) rotate(-45deg);
-
-    z-index: 2;
+.section--contact .contact-eyebrow {
+    margin: 0 0 18px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.7;
+    letter-spacing: .25em;
+    text-transform: uppercase;
 }
-
-.ig-card .btn {
-    width: 220px;
-    justify-content: center;
-    margin-top: 12px;
+.contact-eyebrow--rule { display: flex; align-items: center; gap: 20px; }
+.contact-eyebrow--rule::after { content: ""; width: 48px; height: 1px; background: currentColor; opacity: .6; }
+.contact-intro h2 { margin: 0 0 18px; font-size: clamp(38px, 3.35vw, 56px); line-height: 1.08; text-wrap: balance; }
+.contact-intro .lead { margin: 0; font-size: clamp(17px, 1.5vw, 22px); }
+.contact-steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(18px, 2vw, 32px);
+    margin: 24px 0 0;
+    padding: 0;
+    list-style: none;
 }
-
-.ig-counter {
-    margin-top: 8px;
-    margin-bottom: 4px;
+.section--contact .contact-step { align-self: start; min-width: 0; }
+.contact-step__number { display: flex; align-items: center; gap: 18px; margin-bottom: 16px; font-size: 18px; font-weight: 600; }
+.contact-step__number::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+.contact-step h3 { margin: 0 0 12px; font-size: clamp(21px, 1.55vw, 25px); line-height: 1.2; }
+.contact-step p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.7; text-align: left; }
+.contact-channels { display: grid; grid-template-columns: minmax(0, 2.25fr) minmax(0, 1fr); gap: 24px; align-items: stretch; }
+.contact-channels > .card { min-width: 0; padding: clamp(24px, 2.5vw, 40px); border-radius: 22px; }
+.contact-card__header { margin-bottom: 24px; }
+.contact-card__header h3 { margin: 0 0 10px; font-size: clamp(32px, 2.65vw, 44px); line-height: 1.1; }
+.contact-card__header p:last-child { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.65; text-align: left; }
+.contact-card__header .contact-eyebrow { margin-bottom: 8px; }
+#contactForm { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; }
+#contactForm > .field { min-width: 0; }
+#contactForm .field--message, #contactForm .field--uploads, #contactForm .form__submit { grid-column: 1 / -1; }
+#contactForm textarea { min-height: 124px; }
+#contactForm label, #contactForm .field__label { font-size: 14px; }
+.contact-optional { color: var(--muted); }
+.contact-upload { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); align-items: center; gap: 12px; padding: 8px 16px; border: 1px solid var(--border); border-radius: 14px; }
+.contact-upload #lexieUploader { min-width: 0; }
+#contact #lexieUploader > uc-start-from uc-drop-area { min-height: 64px !important; border: 0 !important; }
+#contact .contact-upload .form__hint { margin: 0; text-align: left; font-size: 11px; }
+.contact-arrow { width: 20px; height: 20px; flex: 0 0 auto; }
+#contact .form__send { gap: 20px; }
+#contact .form__send[aria-busy="true"] .contact-arrow { display: none; }
+.contact-channels .ig-card { display: flex; flex-direction: column; align-items: center; }
+.ig-card .contact-card__header { align-self: stretch; }
+.ig-card .ig-profile__link { width: 160px; height: 160px; flex: 0 0 auto; margin: 8px 0 12px; transform: none; }
+.ig-card .ig-profile__link img { transform: none; }
+.ig-card .ig-counter { margin: 0 0 auto; padding-bottom: 22px; font-size: 16px; text-align: center; }
+.ig-card .btn { width: 100%; min-height: 48px; margin-top: 10px; padding-inline: 20px; }
+.ig-card .btn span { flex: 1; text-align: center; }
+@media (max-width: 1150px) {
+    .contact-overview { grid-template-columns: 1fr; gap: 24px; }
+    .contact-intro h2 { max-width: 20ch; }
+    .contact-steps { margin: 0; }
+    .contact-channels { grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); }
+    .contact-upload { grid-template-columns: 1fr; gap: 0; }
+    #contact .contact-upload .form__hint { padding-bottom: 8px; text-align: center; }
+}
+@media (max-width: 800px) {
+    .contact-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+    .contact-channels { grid-template-columns: 1fr; }
+    .ig-card .ig-profile__link { margin-top: 0; }
+    .ig-card .btn { max-width: 400px; }
+}
+@media (max-width: 500px) {
+    .contact-steps { grid-template-columns: 1fr; gap: 24px; }
+    .contact-step__number { margin-bottom: 10px; }
+    .contact-step h3 { font-size: 25px; margin-bottom: 8px; }
+    .contact-channels > .card { padding: 24px 20px; }
+    #contactForm { grid-template-columns: 1fr; }
+    .contact-card__header h3 { font-size: 28px; }
+    .contact-card__header p:last-child { font-size: 15px; }
 }
 
 /* ====== Studio / contact and directions ====== */
@@ -2373,93 +2392,6 @@ html.home main > section {
         line-clamp: 9;
     }
 }
-/* ====== Experience / Process ====== */
-
-.experience--contact {
-    position: relative;
-    display: grid;
-    gap: 28px;
-    padding: 8px 0 4px;
-}
-
-.experience--contact .experience__line {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 24px;
-    left: auto;
-    width: 1px;
-    background: var(--border);
-    opacity: 0.7;
-}
-
-.experience--contact .experience__step {
-    position: relative;
-    padding-left: 0;
-    padding-right: 64px;
-}
-
-.experience--contact .experience__dot {
-    position: absolute;
-    right: 24px;
-    top: 0;
-    width: 34px;
-    height: 34px;
-    border-radius: 999px;
-    border: 1px solid var(--accent);
-    background: var(--bg);
-    color: var(--accent);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1;
-    transform: translateX(50%);
-}
-
-.experience--contact .experience__title {
-    margin: 0 0 10px;
-    font-size: 18px;
-    font-weight: 200;
-    line-height: 38px;
-    letter-spacing: 0.01em;
-}
-
-.experience--contact .experience__content {
-    padding: 0;
-    background: transparent;
-    border: 0;
-    box-shadow: none;
-    text-align: right;
-    font-size: 14px;
-}
-
-.experience--contact .experience__eyebrow {
-    display: none;
-}
-
-.experience--contact .experience__title {
-    margin: 0 0 10px;
-    font-size: 20px;
-    font-weight: 200;
-    letter-spacing: 0.01em;
-}
-
-.experience--contact .experience__content p {
-    margin: 0 0 0 auto;
-    width: 100%;
-    color: var(--muted);
-    line-height: 1.75;
-    font-size: 13px;
-}
-/* tablet/mobile */
-@media (max-width: 1000px) {
-    .experience--contact .experience__content p {
-        max-width: 42ch;
-    }
-}
-
 .carousel,
 .container-reviews,
 .section--reviews,

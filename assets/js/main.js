@@ -1,7 +1,7 @@
 import { createCarouselAutoplay } from "./carousel-autoplay.js";
 import { normalizePortfolio } from "./portfolio-data.js";
 import { fetchJSON, qs, qsa } from "./util.js";
-import { initSite, openFreePatternModal, setupContactForm } from "./site.js?v=20260920-confetti-scroll";
+import { initSite, openFreePatternModal, setupContactForm } from "./site.js?v=20261001-contact";
 import { setupAnchorNavigation } from "./anchors.js?v=20260919-section-start";
 
 const DATA_URL = "./data/portfolio.json";

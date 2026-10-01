@@ -419,6 +419,7 @@ export async function setupContactForm() {
 
   if (!nameEl || !emailEl || !msgEl || !submitButton || !submitLabel || !confirmation || !iframe) return;
 
+  const defaultSubmitLabel = submitLabel.textContent.trim() || "Wyślij";
   const ctxEl = qs("#lexieUploadCtx");
   let collector = null;
 
@@ -453,7 +454,7 @@ export async function setupContactForm() {
     submitLabel.textContent = next === "sending" ? "Wysyłanie…"
       : next === "unconfirmed" ? "Brak potwierdzenia — spróbuj ponownie"
       : next === "offline" ? "Brak internetu — spróbuj ponownie"
-      : "Wyślij";
+      : defaultSubmitLabel;
     confirmation.hidden = next !== "success";
   };
 
