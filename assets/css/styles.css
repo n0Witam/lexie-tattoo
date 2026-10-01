@@ -1555,6 +1555,7 @@ uc-file-uploader-minimal {
 
 .field--uploads .form__hint {
     margin-top: 10px;
+    padding-left: 10px;
     font-style: normal;
     font-size: 11px;
     line-height: 1.65;
@@ -1858,9 +1859,9 @@ uc-file-uploader-minimal {
 #contact .form__send[aria-busy="true"] .contact-arrow { display: none; }
 .contact-channels .ig-card { display: flex; flex-direction: column; align-items: center; }
 .ig-card .contact-card__header { align-self: stretch; }
-.ig-card .ig-profile__link { width: 160px; height: 160px; flex: 0 0 auto; margin: 8px 0 12px; transform: none; }
+.ig-card .ig-profile__link { width: 180px; height: 180px; flex: 0 0 auto; margin: 8px 0 12px; transform: none; }
 .ig-card .ig-profile__link img { transform: none; }
-.ig-card .ig-counter { margin: 0 0 auto; padding-bottom: 22px; font-size: 16px; text-align: center; }
+.ig-card .ig-counter { margin: 0 0 auto; padding-top: 22px; padding-bottom: 22px; font-size: 18px; text-align: center; }
 .ig-card .btn { width: 100%; min-height: 48px; margin-top: 10px; padding-inline: 20px; }
 .ig-card .btn span { flex: 1; text-align: center; }
 @media (max-width: 1150px) {
