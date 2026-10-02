@@ -546,114 +546,197 @@ a:hover {
 }
 
 /* ====== Hero ====== */
+
 .hero {
     position: relative;
     isolation: isolate;
-    overflow: clip;
-    display: grid;
-    align-items: center;
-    min-height: clamp(640px, calc(100svh - var(--header-h) - 24px), 1040px);
-    padding-block: clamp(72px, 9vw, 150px);
-    margin-bottom: clamp(32px, 4vw, 64px);
+    overflow: visible;
+    padding: 20px 0 0;
 }
-.hero__content {
+
+.hero .container {
     position: relative;
     z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 62%;
-    max-width: 880px;
-    text-align: center;
 }
-.hero__title { width: 100%; margin: 0; }
-.hero__logo {
-    display: block;
-    width: 100%;
-    aspect-ratio: 3508 / 1181;
-    background-color: black;
-    -webkit-mask: url("../img/logotyp.svg") center / contain no-repeat;
-    mask: url("../img/logotyp.svg") center / contain no-repeat;
-    filter: var(--hero-logo-filter);
+
+.hero__title {
+    display: flex;
+    justify-content: center;
     user-select: none;
     -webkit-user-select: none;
+    -webkit-user-drag: none;
 }
+
+.hero__logo {
+    width: 100%;
+    aspect-ratio: 5 / 2;
+    background-color: black;
+    display: block;
+    margin-inline: auto;
+    -webkit-mask-source-type: auto;
+    -webkit-mask: url("../img/logotyp.svg") center center / contain no-repeat;
+    mask: url("../img/logotyp.svg") center center / contain no-repeat;
+    margin-bottom: -35px;
+    filter: var(--hero-logo-filter);
+}
+
+.hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.7fr);
+    gap: clamp(24px, 4vw, 48px);
+    align-items: center;
+}
+
+.hero__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 0 38px;
+    max-width: 700px;
+}
+
 .hero__kicker {
-    margin: 20px 0 0;
-    color: var(--muted);
-    font-size: clamp(12px, 1.05vw, 18px);
-    letter-spacing: .25em;
+    margin: 18px 0px 3vh;
+    color: color-mix(in srgb, var(--muted) 90%, transparent);
+    letter-spacing: 0.22em;
     text-transform: uppercase;
 }
+
 .hero__about {
-    max-width: 46ch;
     margin: 0;
     color: var(--muted);
-    font-family: Cormorant, Georgia, serif;
-    font-size: clamp(23px, 1.9vw, 32px);
-    line-height: 1.4;
-    text-align: center;
-    text-wrap: balance;
+    font-size: 14px;
+    line-height: 1.85;
+    text-align: justify;
 }
-.hero__about::before {
-    content: "";
-    display: block;
-    width: 80px;
-    height: 1px;
-    margin: clamp(24px, 2.5vw, 40px) auto;
-    background: currentColor;
-    opacity: .55;
-}
+
 .hero__actions {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: clamp(16px, 2vw, 28px);
-    width: 100%;
-    margin-top: clamp(28px, 3vw, 44px);
+    gap: 26px;
+    margin-top: 28px;
+    align-self: center;
 }
-.hero__actions .btn { min-width: 0; width: min(40%, 260px); padding: 14px 22px; font-size: 16px; }
+
 .hero__side {
-    position: absolute;
-    z-index: 0;
-    top: 24px;
-    bottom: 0;
-    right: max(-80px, calc((100% - var(--container)) / 2 - 170px));
-    width: clamp(520px, 48vw, 900px);
-    overflow: clip;
-    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 64px), transparent);
-    mask-image: linear-gradient(to bottom, #000 calc(100% - 64px), transparent);
-    pointer-events: none;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    min-height: 640px;
+    overflow-y: visible;
 }
-.hero__imageWrap, .hero__imageWrap picture { display: block; width: 100%; }
+
+.hero__imageWrap {
+    position: relative;
+    width: min(100%, 720px);
+    margin-inline: auto;
+    margin-bottom: -320px;
+    margin-top: 12vh;
+    scale: 1.25;
+}
+
 .hero__image {
+    position: relative;
+    z-index: 1;
     display: block;
     width: 100%;
     height: auto;
+    object-fit: contain;
+    object-position: bottom center;
     filter: var(--hero-image-filter);
 }
-@media (max-width: 1100px) and (min-width: 901px) {
-    .hero__content { width: 60%; }
-    .hero__kicker { letter-spacing: .15em; }
-    .hero__actions .btn { width: 44%; }
-}
-@media (max-width: 900px) {
-    .hero { min-height: 0; padding: 40px 0 0; margin-bottom: 32px; }
-    .hero__content { width: 100%; max-width: 600px; margin-inline: auto; }
-    .hero__kicker { margin-top: 14px; font-size: clamp(11px, 2.6vw, 15px); letter-spacing: .13em; }
-    .hero__about { max-width: 34ch; font-size: clamp(22px, 4vw, 28px); }
-    .hero__about::before { width: 60px; margin-block: 24px; }
-    .hero__actions { gap: 12px; margin-top: 26px; }
-    .hero__actions .btn { width: min(46%, 220px); padding: 13px 12px; font-size: 14px; }
+
+
+@media (max-width: 1100px) {
+    .hero {
+        overflow: visible;
+        padding: 20px 0 24px;
+    }
+
+    .hero__grid {
+        grid-template-columns: 1fr 0.95fr;
+        align-items: center;
+    }
+
+    .hero__content {
+        padding-bottom: 18px;
+    }
+
     .hero__side {
-        position: relative;
-        top: auto;
-        bottom: auto;
-        right: auto;
-        width: min(100%, 540px);
-        height: clamp(360px, 105vw, 650px);
-        margin: 30px auto 0;
-        overflow: clip;
+        min-height: 460px;
+    }
+
+    .hero__imageWrap {
+        width: min(100%, 560px);
+        margin-bottom: 0;
+    }
+}
+
+@media (max-width: 900px) {
+    .hero {
+        padding: 12px 0 18px;
+    }
+
+    .hero__grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "logo"
+            "kicker"
+            "image"
+            "about"
+            "actions";
+        gap: 18px;
+        margin-top: -20px;
+    }
+
+    .hero__content {
+        display: contents;
+    }
+
+    .hero__logo {
+        grid-area: logo;
+        width: clamp(260px, 90vw, 520px);
+        overflow-x: clip;
+    }
+
+    .hero__kicker {
+        grid-area: kicker;
+        margin: 0 auto;
+        text-align: center;
+        font-size: 15px;
+        letter-spacing: 0.09em;
+    }
+
+    .hero__side {
+        grid-area: image;
+        order: unset;
+        min-height: 0;
+        margin-inline: auto;
+        margin-bottom: -40px;
+    }
+
+    .hero__imageWrap {
+        margin-top: -5vh;
+        scale: 0.85;
+    }
+
+    .hero__about {
+        grid-area: about;
+        max-width: 50ch;
+        margin-inline: auto;
+    }
+
+    .hero__actions {
+        grid-area: actions;
+        gap: 10px;
+        justify-content: center;
+    }
+    .hero__actions a {
+        width: 130px;
+        font-size: 14px;
     }
 }
 
