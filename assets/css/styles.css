@@ -647,17 +647,19 @@ a:hover {
     object-fit: contain;
     object-position: bottom center;
     filter: var(--hero-image-filter);
+}
 
+@media (min-width: 901px) {
     -webkit-mask-image: linear-gradient(
         to bottom,
         black 0%,
-        black 70%,
+        black 60%,
         transparent 100%
     );
     mask-image: linear-gradient(
         to bottom,
         black 0%,
-        black 70%,
+        black 60%,
         transparent 100%
     );
 }
