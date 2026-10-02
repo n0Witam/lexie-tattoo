@@ -53,7 +53,7 @@
             sizes="192x192"
         />
         <script src="./assets/js/theme.js?v=20260919-theme-icon"></script>
-        <link href="./assets/css/styles.css?v=20261002-studio-mosaic" rel="stylesheet" />
+        <link href="./assets/css/styles.css?v=20261002-hero" rel="stylesheet" />
 
         <script type="application/ld+json">
             {
@@ -171,15 +171,12 @@
         <main>
             <section class="hero">
                 <div class="container">
-                    <h1 class="sr-only">Lexie Tattoo</h1>
-                    <div
-                        aria-label="Lexie Tattoo"
-                        class="hero__title"
-                        role="img"
-                    ></div>
                     <div class="hero__grid">
                         <div class="hero__content">
-                            <span aria-hidden="true" class="hero__logo"></span>
+                            <h1 class="hero__title">
+                                <span class="sr-only">Lexie Tattoo</span>
+                                <span aria-hidden="true" class="hero__logo"></span>
+                            </h1>
                             <p class="hero__kicker">
                                 Tattoo ✧ Fine Line ✧ Blackwork
                             </p>
@@ -192,29 +189,27 @@
                                 <a
                                     class="btn btn--ghost"
                                     href="./available_designs/"
-                                    style="width: 150px"
                                     >Wolne wzory</a
                                 >
                                 <a
                                     class="btn btn--ghost"
                                     href="#where_to_find_me"
-                                    style="width: 150px"
                                     >Adres i dojazd</a
                                 >
                             </div>
                         </div>
-                        <div class="hero__side">
+                        <div class="hero__side" aria-hidden="true">
                             <div class="hero__imageWrap">
                                 <picture
                                     ><source
-                                        sizes="(max-width: 900px) 92vw, (max-width: 1100px) 45vw, 560px"
+                                        sizes="(max-width: 580px) calc(100vw - 40px), (max-width: 900px) 540px, (max-width: 1083px) 520px, (max-width: 1875px) 48vw, 900px"
                                         srcset="
                                             ./assets/img/hero-380.webp 380w,
                                             ./assets/img/hero-618.webp 618w
                                         "
                                         type="image/webp" />
                                     <img
-                                        alt="Alfons Mucha"
+                                        alt=""
                                         class="hero__image"
                                         decoding="async"
                                         height="1196"
