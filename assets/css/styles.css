@@ -747,7 +747,7 @@ a:hover {
 }
 
 /* Shared section label and decorative rule. */
-p.section-eyebrow {
+.section-eyebrow {
     display: flex;
     align-items: center;
     gap: 22px;
@@ -768,7 +768,7 @@ p.section-eyebrow {
 }
 .reviews__header > .section-eyebrow { margin-bottom: 12px; }
 @media (max-width: 900px) {
-    p.section-eyebrow { margin-bottom: 18px; font-size: 11px; gap: 18px; }
+    .section-eyebrow { margin-bottom: 18px; font-size: 11px; gap: 18px; }
     .reviews__header > .section-eyebrow { margin-bottom: 8px; }
 }
 
@@ -1589,6 +1589,65 @@ uc-file-uploader-minimal {
 }
 
 
+
+/* ====== Studio photo mosaic ====== */
+.studio { padding-bottom: clamp(32px, 4vw, 64px); }
+.studio__header { margin-bottom: 26px; }
+.studio__header .section-eyebrow { margin: 0; font-family: inherit; font-weight: 400; }
+.studio-gallery {
+    display: grid;
+    grid-template-columns: 1.05fr .9fr 1fr 1.25fr;
+    grid-template-rows: repeat(8, minmax(0, 1fr));
+    grid-template-areas:
+        "entrance details chandelier station"
+        "entrance details chandelier station"
+        "entrance details chandelier station"
+        "entrance waiting chandelier prints"
+        "entrance waiting chandelier prints"
+        "room waiting mirrors prints"
+        "room waiting mirrors prints"
+        "room waiting mirrors prints";
+    gap: clamp(10px, 1.15vw, 18px);
+    aspect-ratio: 2.1;
+}
+.studio-gallery__item {
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    overflow: hidden;
+    border-radius: clamp(14px, 1.2vw, 20px);
+    background: var(--bg-2);
+}
+.studio-gallery__item picture { display: block; width: 100%; height: 100%; }
+.studio-gallery__item img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.8); }
+.studio-gallery__item--entrance { grid-area: entrance; }
+.studio-gallery__item--details { grid-area: details; }
+.studio-gallery__item--chandelier { grid-area: chandelier; }
+.studio-gallery__item--station { grid-area: station; }
+.studio-gallery__item--room { grid-area: room; }
+.studio-gallery__item--waiting { grid-area: waiting; }
+.studio-gallery__item--mirrors { grid-area: mirrors; }
+.studio-gallery__item--prints { grid-area: prints; }
+.studio-gallery__item--details img { object-position: 50% 60%; }
+.studio-gallery__item--station img { object-position: 50% 60%; }
+@media (max-width: 900px) {
+    .studio-gallery {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-rows: 1.15fr 1.2fr 1.05fr .95fr;
+        grid-template-areas:
+            "entrance entrance entrance details details details"
+            "chandelier chandelier chandelier chandelier chandelier chandelier"
+            "station station station room room room"
+            "waiting waiting mirrors mirrors prints prints";
+        aspect-ratio: 1 / 2.1;
+        gap: 12px;
+    }
+    .studio-gallery__item--chandelier img { object-position: 50% 32%; }
+}
+@media (max-width: 600px) {
+    .studio-gallery { gap: 10px; }
+    .studio-gallery__item { border-radius: 14px; }
+}
 
 /* ====== Portfolio grid ====== */
 

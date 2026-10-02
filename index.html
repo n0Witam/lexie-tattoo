@@ -53,7 +53,7 @@
             sizes="192x192"
         />
         <script src="./assets/js/theme.js?v=20260919-theme-icon"></script>
-        <link href="./assets/css/styles.css?v=20261002-section-eyebrows" rel="stylesheet" />
+        <link href="./assets/css/styles.css?v=20261002-studio-mosaic" rel="stylesheet" />
 
         <script type="application/ld+json">
             {
@@ -566,157 +566,164 @@
                     </div>
                 </div>
             </section>
-            <section>
+            <section class="studio" aria-labelledby="studioTitle">
                 <div class="container">
-                    <div class="reviews__header reveal">
-                        <p class="section-eyebrow">Wnętrze</p>
-                        <p class="lead"></p>
-                    </div>
-                    <div class="grid" style="filter: saturate(0.8)">
-                        <div class="slide">
+                    <header class="studio__header reveal">
+                        <h2 class="section-eyebrow" id="studioTitle">Wnętrze</h2>
+                    </header>
+                    <div class="studio-gallery">
+                        <figure class="studio-gallery__item studio-gallery__item--entrance">
                             <picture
                                 ><source
-                                    sizes="(max-width: 600px) 50vw, (max-width: 1200px) 33vw, 300px"
+                                    sizes="(max-width: 900px) calc((100vw - 50px) / 2), (max-width: 1500px) 30vw, 370px"
                                     srcset="
                                         ./assets/img/studio/wejscie-360.webp 360w,
-                                        ./assets/img/studio/wejscie-720.webp 720w
+                                        ./assets/img/studio/wejscie-720.webp 720w,
+                                            ./assets/img/studio/wejscie.jpeg 1024w
                                     "
-                                    type="image/webp" />
+                                    />
                                 <img
-                                    alt="Wejście do studia"
+                                    alt="Wejście do studia PRISM z roślinami i przeszklonymi drzwiami"
                                     decoding="async"
                                     height="1280"
                                     loading="lazy"
                                     src="./assets/img/studio/wejscie.jpeg"
                                     width="1024"
                             /></picture>
-                        </div>
-                        <div class="slide">
+                        </figure>
+                        <figure class="studio-gallery__item studio-gallery__item--details">
                             <picture
                                 ><source
-                                    sizes="(max-width: 600px) 50vw, (max-width: 1200px) 33vw, 300px"
+                                    sizes="(max-width: 900px) calc((100vw - 50px) / 2), (max-width: 1500px) 30vw, 370px"
                                     srcset="
                                         ./assets/img/studio/wejscie2-360.webp 360w,
-                                        ./assets/img/studio/wejscie2-720.webp 720w
+                                        ./assets/img/studio/wejscie2-720.webp 720w,
+                                            ./assets/img/studio/wejscie2.jpeg 1024w
                                     "
-                                    type="image/webp" />
+                                    />
                                 <img
-                                    alt="Wejście do studia"
+                                    alt="Kwiaty i wizytówki przy wejściu do studia"
                                     decoding="async"
                                     height="1280"
                                     loading="lazy"
                                     src="./assets/img/studio/wejscie2.jpeg"
                                     width="1024"
                             /></picture>
-                        </div>
-                        <div class="slide">
+                        </figure>
+                        <figure class="studio-gallery__item studio-gallery__item--chandelier">
                             <picture
                                 ><source
-                                    sizes="(max-width: 600px) 50vw, (max-width: 1200px) 33vw, 300px"
+                                    sizes="(max-width: 900px) calc(100vw - 40px), (max-width: 1500px) 30vw, 370px"
                                     srcset="
                                         ./assets/img/studio/stanowisko-360.webp 360w,
-                                        ./assets/img/studio/stanowisko-720.webp 720w
+                                        ./assets/img/studio/stanowisko-720.webp 720w,
+                                            ./assets/img/studio/stanowisko.jpeg 1024w
                                     "
-                                    type="image/webp" />
+                                    />
                                 <img
-                                    alt="Stanowisko do tatuażu"
+                                    alt="Żyrandol pod ozdobną rozetą i rośliny w studiu"
                                     decoding="async"
                                     height="1280"
                                     loading="lazy"
                                     src="./assets/img/studio/stanowisko.jpeg"
                                     width="1024"
                             /></picture>
-                        </div>
-                        <div class="slide">
+                        </figure>
+                        <figure class="studio-gallery__item studio-gallery__item--station">
                             <picture
                                 ><source
-                                    sizes="(max-width: 600px) 50vw, (max-width: 1200px) 33vw, 300px"
+                                    sizes="(max-width: 900px) calc((100vw - 50px) / 2), (max-width: 1500px) 30vw, 440px"
                                     srcset="
                                         ./assets/img/studio/stanowisko2-360.webp 360w,
-                                        ./assets/img/studio/stanowisko2-720.webp 720w
+                                        ./assets/img/studio/stanowisko2-720.webp 720w,
+                                            ./assets/img/studio/stanowisko2.jpeg 1024w
                                     "
-                                    type="image/webp" />
+                                    />
                                 <img
-                                    alt="Stanowisko do tatuażu"
+                                    alt="Stanowisko do tatuowania w studiu PRISM"
                                     decoding="async"
                                     height="1280"
                                     loading="lazy"
                                     src="./assets/img/studio/stanowisko2.jpeg"
                                     width="1024"
                             /></picture>
-                        </div>
-                        <div class="slide">
+                        </figure>
+                        <figure class="studio-gallery__item studio-gallery__item--room">
                             <picture
                                 ><source
-                                    sizes="(max-width: 600px) 50vw, (max-width: 1200px) 33vw, 300px"
+                                    sizes="(max-width: 900px) calc((100vw - 50px) / 2), (max-width: 1500px) 30vw, 370px"
                                     srcset="
                                         ./assets/img/studio/pokoj-360.webp 360w,
-                                        ./assets/img/studio/pokoj-720.webp 720w
+                                        ./assets/img/studio/pokoj-720.webp 720w,
+                                            ./assets/img/studio/pokoj.jpeg 1024w
                                     "
-                                    type="image/webp" />
+                                    />
                                 <img
-                                    alt="Pokój w studiu"
+                                    alt="Pokój do tatuowania z neonem na ścianie"
                                     decoding="async"
                                     height="1280"
                                     loading="lazy"
                                     src="./assets/img/studio/pokoj.jpeg"
                                     width="1024"
                             /></picture>
-                        </div>
-                        <div class="slide">
+                        </figure>
+                        <figure class="studio-gallery__item studio-gallery__item--waiting">
                             <picture
                                 ><source
-                                    sizes="(max-width: 600px) 50vw, (max-width: 1200px) 33vw, 300px"
+                                    sizes="(max-width: 900px) calc((100vw - 60px) / 3), (max-width: 1500px) 30vw, 370px"
                                     srcset="
                                         ./assets/img/studio/poczekalnia-360.webp 360w,
-                                        ./assets/img/studio/poczekalnia-720.webp 720w
+                                        ./assets/img/studio/poczekalnia-720.webp 720w,
+                                            ./assets/img/studio/poczekalnia.jpeg 1024w
                                     "
-                                    type="image/webp" />
+                                    />
                                 <img
-                                    alt="Poczekalnia w studiu"
+                                    alt="Poczekalnia z kominkiem, roślinami i stolikiem"
                                     decoding="async"
                                     height="1280"
                                     loading="lazy"
                                     src="./assets/img/studio/poczekalnia.jpeg"
                                     width="1024"
                             /></picture>
-                        </div>
-                        <div class="slide">
+                        </figure>
+                        <figure class="studio-gallery__item studio-gallery__item--mirrors">
                             <picture
                                 ><source
-                                    sizes="(max-width: 600px) 50vw, (max-width: 1200px) 33vw, 300px"
+                                    sizes="(max-width: 900px) calc((100vw - 60px) / 3), (max-width: 1500px) 30vw, 370px"
                                     srcset="
                                         ./assets/img/studio/poczekalnia2-360.webp 360w,
-                                        ./assets/img/studio/poczekalnia2-720.webp 720w
+                                        ./assets/img/studio/poczekalnia2-720.webp 720w,
+                                            ./assets/img/studio/poczekalnia2.jpeg 1024w
                                     "
-                                    type="image/webp" />
+                                    />
                                 <img
-                                    alt="Poczekalnia w studiu"
+                                    alt="Dekoracyjne lustra w poczekalni"
                                     decoding="async"
                                     height="1280"
                                     loading="lazy"
                                     src="./assets/img/studio/poczekalnia2.jpeg"
                                     width="1024"
                             /></picture>
-                        </div>
-                        <div class="slide">
+                        </figure>
+                        <figure class="studio-gallery__item studio-gallery__item--prints">
                             <picture
                                 ><source
-                                    sizes="(max-width: 600px) 50vw, (max-width: 1200px) 33vw, 300px"
+                                    sizes="(max-width: 900px) calc((100vw - 60px) / 3), (max-width: 1500px) 30vw, 440px"
                                     srcset="
                                         ./assets/img/studio/poczekalnia3-360.webp 360w,
-                                        ./assets/img/studio/poczekalnia3-720.webp 720w
+                                        ./assets/img/studio/poczekalnia3-720.webp 720w,
+                                            ./assets/img/studio/poczekalnia3.jpeg 1024w
                                     "
-                                    type="image/webp" />
+                                    />
                                 <img
-                                    alt="Poczekalnia w studiu"
+                                    alt="Ilustracje roślinne wyeksponowane w studiu"
                                     decoding="async"
                                     height="1280"
                                     loading="lazy"
                                     src="./assets/img/studio/poczekalnia3.jpeg"
                                     width="1024"
                             /></picture>
-                        </div>
+                        </figure>
                     </div>
                 </div>
             </section>
