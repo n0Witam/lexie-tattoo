@@ -598,9 +598,10 @@ a:hover {
 }
 
 .hero__kicker {
-    margin: 18px 0px 3vh;
-    color: color-mix(in srgb, var(--muted) 90%, transparent);
-    letter-spacing: 0.22em;
+    margin: 20px 0 0;
+    color: var(--muted);
+    font-size: clamp(12px, 1.05vw, 18px);
+    letter-spacing: .25em;
     text-transform: uppercase;
 }
 
