@@ -885,7 +885,7 @@ a:hover {
     /* sterowanie szerokością slajdu */
     --slide-w: clamp(220px, 62vw, 520px);
     --gap: 0px;
-    margin: 25px 20px;
+    margin: 16px 20px;
 }
 
 .carousel__nav {
