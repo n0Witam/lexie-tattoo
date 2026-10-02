@@ -772,20 +772,6 @@ a:hover {
     }
 }
 
-@media (max-width: 1100px) and (min-width: 901px) {
-    .hero__content { width: 60%; }
-    .hero__kicker { letter-spacing: .15em; }
-    .hero__actions .btn { width: 44%; }
-}
-@media (max-width: 900px) {
-    .hero { min-height: 0; padding: 40px 0 0; margin-bottom: 32px; }
-    .hero__content { width: 100%; max-width: 600px; margin-inline: auto; }
-    .hero__kicker { margin-top: 14px; font-size: clamp(11px, 2.6vw, 15px); letter-spacing: .13em; }
-    .hero__about { max-width: 34ch; font-size: clamp(22px, 4vw, 28px); }
-    .hero__about::before { width: 60px; margin-block: 24px; }
-    .hero__actions { gap: 12px; margin-top: 26px; }
-    .hero__actions .btn { width: min(46%, 220px); padding: 13px 12px; font-size: 14px; }
-
 /* ====== Sections ====== */
 
 .section {
