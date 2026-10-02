@@ -309,7 +309,7 @@ a:hover {
     /* Blur background behind the links (desktop) */
     padding: 6px 8px;
     border-radius: 999px;
-    border: 1px solid var(--border);
+    /* border: 1px solid var(--border); */
 
     /* Fallback first, then modern color-mix */
     background: rgba(23, 23, 23, 0.45);
