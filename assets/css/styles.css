@@ -1415,7 +1415,7 @@ a:hover {
 
 .required::after {
   content: " *";
-  color: red;
+  color: #C70000;
 }
 
 .field input:focus,
