@@ -1340,11 +1340,6 @@ a:hover {
         min-height: 70px;
     }
 
-    .required::after {
-      content: " *";
-      color: red;
-    }
-
     /* X nie wchodzi w safe-area */
     .modal__close {
         top: calc(env(safe-area-inset-top, 0px) + 10px);
@@ -1415,6 +1410,12 @@ a:hover {
 .field textarea {
     min-height: 90px;
     resize: vertical;
+}
+
+
+.required::after {
+  content: " *";
+  color: red;
 }
 
 .field input:focus,
