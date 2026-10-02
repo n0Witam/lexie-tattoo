@@ -313,7 +313,7 @@ a:hover {
 
     /* Fallback first, then modern color-mix */
     background: rgba(23, 23, 23, 0.45);
-    background: color-mix(in srgb, var(--bg) 55%, transparent);
+    background: color-mix(in srgb, var(--bg) 65%, transparent);
 }
 
 .nav__links a {
