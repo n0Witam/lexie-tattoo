@@ -785,7 +785,7 @@ a:hover {
     .hero__about::before { width: 60px; margin-block: 24px; }
     .hero__actions { gap: 12px; margin-top: 26px; }
     .hero__actions .btn { width: min(46%, 220px); padding: 13px 12px; font-size: 14px; }
-
+}
 /* ====== Sections ====== */
 
 .section {
