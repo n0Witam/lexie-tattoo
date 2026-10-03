@@ -1694,7 +1694,7 @@ uc-file-uploader-minimal {
         aspect-ratio: 1 / 2.1;
         gap: 12px;
     }
-    .studio-gallery__item--chandelier img { object-position: 50% 32%; }
+    .studio-gallery__item--chandelier img { object-position: 50% 50%; }
 }
 @media (max-width: 600px) {
     .studio-gallery { gap: 10px; }
@@ -2005,7 +2005,7 @@ uc-file-uploader-minimal {
     .contact-steps { margin: 0; }
     .contact-channels { grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); }
     .contact-upload { grid-template-columns: 1fr; gap: 0; }
-    #contact .contact-upload .form__hint { padding-bottom: 2px; padding-bottom: 8px; text-align: center; }
+    #contact .contact-upload .form__hint { padding-bottom: 6px; padding-bottom: 2px; text-align: center; }
 }
 @media (max-width: 800px) {
     .contact-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
