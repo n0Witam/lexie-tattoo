@@ -436,8 +436,8 @@
     text-align: center;
     gap: 10px;
     display: inline-block;
-    width: 144px;
-    height: 144px;
+    width: 186px;
+    height: 186px;
     padding: 3px;
     border-radius: 50%;
     background: linear-gradient(to right, red, orange, purple);
@@ -461,7 +461,7 @@
 .ig-card .ig-counter {
     opacity: 1;
     color: var(--muted);
-    font-size: 16px;
+    font-size: 18px;
     margin: 0 0 auto;
     text-align: center;
     padding-block: 16px 24px;
@@ -602,7 +602,7 @@
     font-style: normal;
     line-height: 1.65;
     text-align: left;
-    font-size: 17px;
+    font-size: 16px;
 }
 
 .location-card a {
@@ -788,9 +788,9 @@
     line-clamp: 8;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1.75;
-    min-height: 14em;
+    min-height: 16em;
 }
 
 /* Featured artwork: depth changes the surface, never the snap geometry. */
@@ -1215,7 +1215,7 @@
 
     .lead,
     .location-description {
-        font-size: 17px;
+        font-size: 16px;
     }
 
     .contact-steps {
