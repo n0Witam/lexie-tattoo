@@ -783,11 +783,8 @@
 .review-card__text {
     margin: 0;
     color: var(--muted);
-    display: -webkit-box;
-    -webkit-line-clamp: 8;
-    line-clamp: 8;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    /* Let the full review determine the card height; do not clamp its lines. */
+    display: block;
     font-size: 16px;
     line-height: 1.75;
     min-height: 16em;
@@ -1196,8 +1193,6 @@
     }
 
     .review-card__text {
-        -webkit-line-clamp: 9;
-        line-clamp: 9;
         font-size: 17px;
         min-height: 15em;
     }
