@@ -1,44 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://lexietattoo.pl/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/" />
   </url>
-
+  <url>
+    <loc>https://lexietattoo.pl/en/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/" />
+  </url>
   <url>
     <loc>https://lexietattoo.pl/portfolio/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/portfolio/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/portfolio/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/portfolio/" />
   </url>
-
+  <url>
+    <loc>https://lexietattoo.pl/en/portfolio/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/portfolio/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/portfolio/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/portfolio/" />
+  </url>
   <url>
     <loc>https://lexietattoo.pl/available_designs/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/available_designs/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/available_designs/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/available_designs/" />
   </url>
-
   <url>
-    <loc>https://lexietattoo.pl/faq/</loc>
+    <loc>https://lexietattoo.pl/en/available_designs/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/available_designs/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/available_designs/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/available_designs/" />
   </url>
-
-  <url>
-    <loc>https://lexietattoo.pl/faq/zapisy-i-ceny/</loc>
-  </url>
-
-  <url>
-    <loc>https://lexietattoo.pl/faq/projekt-i-sesja/</loc>
-  </url>
-
-  <url>
-    <loc>https://lexietattoo.pl/faq/przygotowanie/</loc>
-  </url>
-
-  <url>
-    <loc>https://lexietattoo.pl/faq/gojenie-i-pielegnacja/</loc>
-  </url>
-
   <url>
     <loc>https://lexietattoo.pl/about/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/about/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/about/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/about/" />
   </url>
-
+  <url>
+    <loc>https://lexietattoo.pl/en/about/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/about/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/about/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/about/" />
+  </url>
+  <url>
+    <loc>https://lexietattoo.pl/faq/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/faq/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/faq/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/faq/" />
+  </url>
+  <url>
+    <loc>https://lexietattoo.pl/en/faq/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/faq/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/faq/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/faq/" />
+  </url>
+  <url>
+    <loc>https://lexietattoo.pl/faq/zapisy-i-ceny/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/faq/zapisy-i-ceny/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/faq/zapisy-i-ceny/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/faq/zapisy-i-ceny/" />
+  </url>
+  <url>
+    <loc>https://lexietattoo.pl/en/faq/zapisy-i-ceny/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/faq/zapisy-i-ceny/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/faq/zapisy-i-ceny/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/faq/zapisy-i-ceny/" />
+  </url>
+  <url>
+    <loc>https://lexietattoo.pl/faq/projekt-i-sesja/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/faq/projekt-i-sesja/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/faq/projekt-i-sesja/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/faq/projekt-i-sesja/" />
+  </url>
+  <url>
+    <loc>https://lexietattoo.pl/en/faq/projekt-i-sesja/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/faq/projekt-i-sesja/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/faq/projekt-i-sesja/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/faq/projekt-i-sesja/" />
+  </url>
+  <url>
+    <loc>https://lexietattoo.pl/faq/przygotowanie/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/faq/przygotowanie/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/faq/przygotowanie/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/faq/przygotowanie/" />
+  </url>
+  <url>
+    <loc>https://lexietattoo.pl/en/faq/przygotowanie/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/faq/przygotowanie/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/faq/przygotowanie/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/faq/przygotowanie/" />
+  </url>
+  <url>
+    <loc>https://lexietattoo.pl/faq/gojenie-i-pielegnacja/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/faq/gojenie-i-pielegnacja/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/faq/gojenie-i-pielegnacja/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/faq/gojenie-i-pielegnacja/" />
+  </url>
+  <url>
+    <loc>https://lexietattoo.pl/en/faq/gojenie-i-pielegnacja/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/faq/gojenie-i-pielegnacja/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/faq/gojenie-i-pielegnacja/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/faq/gojenie-i-pielegnacja/" />
+  </url>
   <url>
     <loc>https://lexietattoo.pl/terms_of_service/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/terms_of_service/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/terms_of_service/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/terms_of_service/" />
   </url>
-
+  <url>
+    <loc>https://lexietattoo.pl/en/terms_of_service/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/terms_of_service/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/terms_of_service/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/terms_of_service/" />
+  </url>
 </urlset>

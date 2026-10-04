@@ -34,8 +34,11 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Test portfolio schema and indexing
-        run: node --test tests/portfolio-*.test.mjs
+      - name: Build English pages and bilingual sitemap
+        run: node scripts/build-languages.mjs
+
+      - name: Test site utilities and language generation
+        run: node --test tests/*.test.mjs
 
       - name: Apply photo deletions and index new photos
         run: node scripts/index-portfolio.mjs --write --delete-files

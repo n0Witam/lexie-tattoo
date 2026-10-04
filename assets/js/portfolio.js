@@ -1,8 +1,9 @@
+import { t } from "./i18n.js?v=20261004-pl-en";
 import { fetchJSON, resolveUrl, qs } from "./util.js";
-import { initSite, openFreePatternModal } from "./site.js";
+import { initSite, openFreePatternModal } from "./site.js?v=20261004-pl-en";
 import { galleryGroups, GROUP_IDS } from "./portfolio-data.js";
 
-const DATA_URL = "../data/portfolio.json";
+const DATA_URL = new URL("../../data/portfolio.json", import.meta.url);
 
 function setupLightbox(items) {
   const lb = qs("#lightbox");
@@ -63,7 +64,7 @@ function setupLightbox(items) {
     const request = ++imageRequest;
     imageRatio = 0.8;
     lbImg.src = item._resolvedSrc;
-    lbImg.alt = item.alt || "Tatuaż – praca Lexie";
+    lbImg.alt = t(item.alt) || t("Tatuaż – praca Lexie");
     // Cached images may already be complete before the load event is handled.
     syncImageDimensions();
     lbImg.decode().then(() => {
@@ -71,7 +72,7 @@ function setupLightbox(items) {
     }).catch(() => {}); // A fast next/previous click can cancel the old decode.
 
     if (lbCap) {
-      lbCap.textContent = item._showCaption ? item.alt || "" : "";
+      lbCap.textContent = item._showCaption ? t(item.alt) || "" : "";
     }
 
     if (btnInquiry) {
@@ -79,7 +80,7 @@ function setupLightbox(items) {
         btnInquiry.hidden = false;
         btnInquiry.onclick = () => {
           close();
-          openFreePatternModal(item._resolvedSrc, item.alt || "Wolny wzór");
+          openFreePatternModal(item._resolvedSrc, item.alt || t("Wolny wzór"));
         };
       } else {
         btnInquiry.hidden = true;
@@ -169,7 +170,7 @@ async function renderPortfolio() {
 
       const grid = document.createElement("div");
       grid.className = "grid";
-      grid.setAttribute("aria-label", `Portfolio — ${group.name || ""}`);
+      grid.setAttribute("aria-label", `Portfolio — ${t(group.name || "")}`);
 
       for (const id of ids) {
         const item = byId.get(id);
@@ -186,7 +187,7 @@ async function renderPortfolio() {
 
         const img = document.createElement("img");
         img.src = item._resolvedSrc;
-        img.alt = item.alt || "Tatuaż – praca Lexie";
+        img.alt = t(item.alt) || t("Tatuaż – praca Lexie");
         img.loading = "lazy";
         img.fetchPriority = "low";
         img.decoding = "async";
@@ -204,7 +205,7 @@ async function renderPortfolio() {
           if (view !== "available") {
             const badge = document.createElement("div");
             badge.className = "slide__badge";
-            badge.textContent = "Wolny wzór!";
+            badge.textContent = t("Wolny wzór!");
 
             const ctaWrap = document.createElement("div");
             ctaWrap.className = "slide__ctaWrap";
@@ -212,10 +213,10 @@ async function renderPortfolio() {
             const ctaBtn = document.createElement("button");
             ctaBtn.type = "button";
             ctaBtn.className = "slide__ctaBtn btn btn--primary";
-            ctaBtn.textContent = "Chcę ten wzór!";
+            ctaBtn.textContent = t("Chcę ten wzór!");
             ctaBtn.addEventListener("click", (e) => {
               e.stopPropagation();
-              openFreePatternModal(item._resolvedSrc, item.alt || "Wolny wzór");
+              openFreePatternModal(item._resolvedSrc, item.alt || t("Wolny wzór"));
             });
             ctaBtn.addEventListener("keydown", (e) => e.stopPropagation());
 
@@ -240,12 +241,12 @@ async function renderPortfolio() {
     }
 
     if (!renderedAny) {
-      root.append("Brak prac do wyświetlenia — uzupełnij portfolio.json.");
+      root.append(t("Brak prac do wyświetlenia — uzupełnij portfolio.json."));
     }
   } catch (err) {
     console.error(err);
     root.innerHTML = "";
-    root.append("Nie udało się wczytać portfolio (sprawdź JSON / ścieżki).");
+    root.append(t("Nie udało się wczytać portfolio (sprawdź JSON / ścieżki)."));
   }
 }
 

@@ -1619,8 +1619,47 @@ uc-file-uploader-minimal {
 .footer__actions {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 10px;
     margin-left: auto;
+}
+
+.language-switch {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 3px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+}
+
+.language-switch a {
+    display: grid;
+    place-items: center;
+    min-width: 42px;
+    min-height: 38px;
+    padding: 0 10px;
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 160ms, color 160ms;
+}
+
+.language-switch a:hover {
+    color: var(--text);
+    background: color-mix(in srgb, var(--text) 6%, transparent);
+}
+
+.language-switch a[aria-current="true"] {
+    background: var(--accent);
+    color: var(--bg);
+}
+
+.language-switch a:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 2px;
 }
 
 .footer__terms {

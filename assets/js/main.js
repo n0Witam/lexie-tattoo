@@ -1,11 +1,12 @@
+import { t } from "./i18n.js?v=20261004-pl-en";
 import { createCarouselAutoplay } from "./carousel-autoplay.js";
 import { normalizePortfolio } from "./portfolio-data.js";
 import { fetchJSON, qs, qsa } from "./util.js";
-import { initSite, openFreePatternModal, setupContactForm } from "./site.js?v=20261001-contact";
+import { initSite, openFreePatternModal, setupContactForm } from "./site.js?v=20261004-pl-en";
 import { setupAnchorNavigation } from "./anchors.js?v=20260919-section-start";
 
-const DATA_URL = "./data/portfolio.json";
-const REVIEWS_URL = "./data/reviews.json";
+const DATA_URL = new URL("../../data/portfolio.json", import.meta.url);
+const REVIEWS_URL = new URL("../../data/reviews.json", import.meta.url);
 
 function normalizeReviewText(value = "") {
   return String(value)
@@ -190,7 +191,7 @@ function setupCarousel(root) {
     if (!slide) return;
 
     const src = slide.dataset.imageSrc;
-    const alt = slide.dataset.imageAlt || "Wolny wzór Lexie";
+    const alt = slide.dataset.imageAlt || t("Wolny wzór Lexie");
     if (!src) return;
 
     e.preventDefault();
@@ -202,13 +203,13 @@ function setupCarousel(root) {
     const btnPrev = document.createElement("button");
     btnPrev.type = "button";
     btnPrev.className = "carousel__nav carousel__nav--prev";
-    btnPrev.setAttribute("aria-label", "Poprzedni slajd");
+    btnPrev.setAttribute("aria-label", t("Poprzedni slajd"));
     btnPrev.addEventListener("click", () => prev());
 
     const btnNext = document.createElement("button");
     btnNext.type = "button";
     btnNext.className = "carousel__nav carousel__nav--next";
-    btnNext.setAttribute("aria-label", "Następny slajd");
+    btnNext.setAttribute("aria-label", t("Następny slajd"));
     btnNext.addEventListener("click", () => next());
 
     root.append(btnPrev, btnNext);
@@ -228,13 +229,13 @@ function setupCarousel(root) {
 
     const dots = document.createElement("div");
     dots.className = "carousel__dots";
-    dots.setAttribute("aria-label", isReviews ? "Wskaźnik opinii" : "Wskaźnik slajdów");
+    dots.setAttribute("aria-label", isReviews ? t("Wskaźnik opinii") : t("Wskaźnik slajdów"));
 
     const dotButtons = originals.map((_, index) => {
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "carousel__dot";
-      btn.setAttribute("aria-label", isReviews ? `Przejdź do opinii ${index + 1}` : `Przejdź do slajdu ${index + 1}`);
+      btn.setAttribute("aria-label", isReviews ? t("Przejdź do opinii {index}", { index: index + 1 }) : t("Przejdź do slajdu {index}", { index: index + 1 }));
       btn.setAttribute("aria-current", "false");
 
       btn.addEventListener("click", () => {
@@ -253,7 +254,7 @@ function setupCarousel(root) {
     const controls = document.createElement("div");
     controls.className = "carousel__controls";
     controls.setAttribute("role", "group");
-    controls.setAttribute("aria-label", isReviews ? "Sterowanie karuzelą opinii" : "Sterowanie karuzelą prac");
+    controls.setAttribute("aria-label", isReviews ? t("Sterowanie karuzelą opinii") : t("Sterowanie karuzelą prac"));
     controls.appendChild(dots);
 
     if (availableAutoplay) {
@@ -262,7 +263,7 @@ function setupCarousel(root) {
       toggle.className = "carousel__playback";
       toggle.setAttribute("aria-controls", track.id);
       const updateToggle = () => {
-        const label = manuallyPaused ? "Wznów automatyczne przewijanie" : "Wstrzymaj automatyczne przewijanie";
+        const label = manuallyPaused ? t("Wznów automatyczne przewijanie") : t("Wstrzymaj automatyczne przewijanie");
         toggle.setAttribute("aria-label", label);
         toggle.title = label;
         toggle.innerHTML = manuallyPaused
@@ -593,7 +594,7 @@ async function renderFeatured() {
     if (featured.length === 0) {
       carouselTrack.innerHTML = "";
       carouselTrack.append(
-        "Brak prac do wyświetlenia — dodaj je w data/portfolio.json.",
+        t("Brak prac do wyświetlenia — dodaj je w data/portfolio.json."),
       );
       return;
     }
@@ -605,7 +606,7 @@ async function renderFeatured() {
 
       const img = document.createElement("img");
       img.src = src;
-      img.alt = item.alt || "Tatuaż – praca Lexie";
+      img.alt = t(item.alt) || t("Tatuaż – praca Lexie");
       img.loading = "lazy";
       img.fetchPriority = "low";
       img.decoding = "async";
@@ -627,7 +628,7 @@ async function renderFeatured() {
 
         const badge = document.createElement("div");
         badge.className = "slide__badge";
-        badge.textContent = "Wolny wzór!";
+        badge.textContent = t("Wolny wzór!");
         surface.append(badge);
 
         const ctaWrap = document.createElement("div");
@@ -636,7 +637,7 @@ async function renderFeatured() {
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "slide__ctaBtn btn btn--primary";
-        btn.textContent = "Chcę ten wzór!";
+        btn.textContent = t("Chcę ten wzór!");
 
         ctaWrap.append(btn);
         surface.append(ctaWrap);
@@ -649,7 +650,7 @@ async function renderFeatured() {
     console.error(err);
     carouselTrack.innerHTML = "";
     carouselTrack.append(
-      "Nie udało się wczytać galerii (sprawdź ścieżki i JSON).",
+      t("Nie udało się wczytać galerii (sprawdź ścieżki i JSON)."),
     );
   }
 }
@@ -668,30 +669,30 @@ async function renderReviews() {
 
     if (!featured.length) {
       track.innerHTML =
-        '<p class="reviews__empty">Opinie pojawią się wkrótce.</p>';
+        `<p class="reviews__empty">${t("Opinie pojawią się wkrótce.")}</p>`;
       return;
     }
 
     track.innerHTML = featured
       .map((item) => {
-        const name = escapeHTML(item.name || "Anonimowa opinia");
+        const name = escapeHTML(item.name || t("Anonimowa opinia"));
         const year = item.year
           ? `<span class="review-card__year" style="display: none">${escapeHTML(item.year)}</span>`
           : "";
-        const content = escapeHTML(normalizeReviewText(item.content)).replace(
+        const content = escapeHTML(normalizeReviewText(t(item.content))).replace(
           /\n/g,
           "<br>",
         );
         const rating = Number(item.star) || 5;
 
         return `
-          <article class="slide review-card" data-slide="1" aria-label="Opinia klientki lub klienta od ${name}">
+          <article class="slide review-card" data-slide="1" aria-label="${escapeHTML(t("Opinia klientki lub klienta od {name}", { name: item.name || t("Anonimowa opinia") }))}">
             <div class="review-card__top">
               <div class="review-card__identity">
                 <h3 class="review-card__name">${name}</h3>
                 ${year}
               </div>
-              <div class="review-card__stars" role="img" aria-label="Ocena ${rating} na 5">
+              <div class="review-card__stars" role="img" aria-label="${t("Ocena {rating} na 5", { rating })}">
                 ${renderStars(rating)}
               </div>
             </div>
@@ -702,7 +703,7 @@ async function renderReviews() {
   } catch (error) {
     console.error(error);
     track.innerHTML =
-      '<p class="reviews__empty">Nie udało się wczytać opinii.</p>';
+      `<p class="reviews__empty">${t("Nie udało się wczytać opinii.")}</p>`;
   }
 }
 

@@ -19,7 +19,9 @@
     document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
       button.hidden = false;
       button.setAttribute("aria-label",
-        theme === "light" ? "Włącz ciemny motyw" : "Włącz jasny motyw");
+        document.documentElement.lang === "en"
+          ? theme === "light" ? "Switch to dark theme" : "Switch to light theme"
+          : theme === "light" ? "Włącz ciemny motyw" : "Włącz jasny motyw");
     });
   };
 

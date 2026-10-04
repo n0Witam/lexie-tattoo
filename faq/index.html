@@ -1,7 +1,8 @@
 <!doctype html>
-<html class="faq-page" lang="pl">
+<html class="faq-page" lang="pl" data-page-path="faq/">
 <head>
 <meta charset="utf-8">
+<script src="../assets/js/language.js?v=20261004-pl-en"></script>
 <link rel="preload" href="../assets/fonts/cormorant-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="../assets/fonts/cormorant-garamond-latin-ext-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -14,8 +15,11 @@
 
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TattooParlor","@id":"https://lexietattoo.pl/#tattoo-parlor","name":"Lexie Tattoo","url":"https://lexietattoo.pl/","image":"https://lexietattoo.pl/assets/img/lexie-1000.webp","telephone":"+48790340440","address":{"@type":"PostalAddress","streetAddress":"Puławska 41/26","postalCode":"02-508","addressLocality":"Warszawa","addressCountry":"PL"},"sameAs":["https://www.instagram.com/lexietattoo/"],"areaServed":{"@type":"City","name":"Warszawa"}},{"@type":"WebSite","@id":"https://lexietattoo.pl/#website","name":"Lexie Tattoo","url":"https://lexietattoo.pl/","inLanguage":"pl-PL"},{"@type":"WebPage","@id":"https://lexietattoo.pl/faq/#webpage","url":"https://lexietattoo.pl/faq/","name":"Przed wizytą — pytania o tatuaż | Lexie Tattoo Warszawa","description":"Odpowiedzi na pytania o tatuaż: zapisy i ceny, projekt, przygotowanie do wizyty, gojenie i pielęgnacja. Informacje przed sesją u Lexie Tattoo.","inLanguage":"pl-PL","isPartOf":{"@id":"https://lexietattoo.pl/#website"}}]}</script>
 
-<script src="../assets/js/theme.js?v=20260919-theme-icon"></script>
-<link href="../assets/css/styles.css?v=20261004-css-refactor" rel="stylesheet">
+<script src="../assets/js/theme.js?v=20261004-pl-en"></script>
+<link href="../assets/css/styles.css?v=20261004-pl-en" rel="stylesheet">
+<link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/faq/">
+<link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/faq/">
+<link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/faq/">
 </head>
 <body>
     <header class="site-header">
@@ -80,6 +84,10 @@
         <div class="footer__row">
             <div>© <span data-year=""></span> Lexie Tattoo</div>
             <div class="footer__actions">
+                        <div class="language-switch" role="group" aria-label="Język strony">
+                            <a href="../faq/?lang=pl" data-language-choice="pl" lang="pl" hreflang="pl" aria-label="Polski" aria-current="true">PL</a>
+                            <a href="../en/faq/?lang=en" data-language-choice="en" lang="en" hreflang="en" aria-label="English">EN</a>
+                        </div>
                 <a class="btn footer__terms" href="../terms_of_service/">Regulamin PRISM</a>
                 <button class="btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Zmień motyw">
                     <svg class="theme-toggle__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
@@ -91,6 +99,6 @@
         </div>
     </div>
 </footer>
-<script src="../assets/js/faq.js" type="module"></script>
+<script src="../assets/js/faq.js?v=20261004-pl-en" type="module"></script>
 </body>
 </html>

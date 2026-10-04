@@ -1,3 +1,4 @@
+import { t, getLanguage, localizeElement } from "./i18n.js?v=20261004-pl-en";
 import { qs, qsa } from "./util.js";
 import { GFORM_ACTION } from "./config.js";
 
@@ -148,10 +149,10 @@ function clearFieldError(el) {
 
 function validateName(el) {
   const v = normalizeSpaces(el.value);
-  if (!v) return (setFieldError(el, "Podaj imię i nazwisko."), false);
+  if (!v) return (setFieldError(el, t("Podaj imię i nazwisko.")), false);
   if (!NAME_RE.test(v))
     return (
-      setFieldError(el, "Podaj poprawne imię i nazwisko (2–60 znaków)."),
+      setFieldError(el, t("Podaj poprawne imię i nazwisko (2–60 znaków).")),
       false
     );
   clearFieldError(el);
@@ -160,16 +161,16 @@ function validateName(el) {
 
 function validateEmail(el) {
   const v = normalizeSpaces(el.value).toLowerCase();
-  if (!v) return (setFieldError(el, "Podaj adres e-mail."), false);
+  if (!v) return (setFieldError(el, t("Podaj adres e-mail.")), false);
 
   // Najpierw podstawowa walidacja przeglądarki dla type="email"
   if (typeof el.checkValidity === "function" && !el.checkValidity()) {
-    return (setFieldError(el, "Podaj poprawny adres e-mail."), false);
+    return (setFieldError(el, t("Podaj poprawny adres e-mail.")), false);
   }
 
   // Dodatkowy regex jako zabezpieczenie
   if (!EMAIL_RE.test(v)) {
-    return (setFieldError(el, "Podaj poprawny adres e-mail."), false);
+    return (setFieldError(el, t("Podaj poprawny adres e-mail.")), false);
   }
 
   clearFieldError(el);
@@ -178,10 +179,10 @@ function validateEmail(el) {
 
 function validateMessage(el) {
   const v = String(el.value || "").trim();
-  if (!v) return (setFieldError(el, "Napisz kilka słów o tatuażu."), false);
+  if (!v) return (setFieldError(el, t("Napisz kilka słów o tatuażu.")), false);
   if (v.length < 10)
     return (
-      setFieldError(el, "Wiadomość jest zbyt krótka (min. 10 znaków)."),
+      setFieldError(el, t("Wiadomość jest zbyt krótka (min. 10 znaków).")),
       false
     );
   clearFieldError(el);
@@ -255,18 +256,29 @@ async function ensureUploadcareComponents() {
       await ensureUploadcareStyles();
       const UC =
         await import("https://cdn.jsdelivr.net/npm/@uploadcare/file-uploader@v1/web/file-uploader.min.js");
-      const { default: polish } =
-        await import("https://cdn.jsdelivr.net/npm/@uploadcare/file-uploader@v1/locales/file-uploader/pl.js");
-      UC.defineLocale("pl", {
-        ...polish,
-        "choose-file": "Dodaj zdjęcie",
-        "choose-files": "Dodaj zdjęcia",
-        "drop-file-here": "Upuść zdjęcie tutaj",
-        "drop-files-here": "Upuść zdjęcia tutaj",
-        "add-more": "Dodaj kolejne zdjęcia",
-      });
+      if (getLanguage() === "pl") {
+        const { default: polish } =
+          await import("https://cdn.jsdelivr.net/npm/@uploadcare/file-uploader@v1/locales/file-uploader/pl.js");
+        UC.defineLocale("pl", {
+          ...polish,
+          "choose-file": "Dodaj zdjęcie",
+          "choose-files": "Dodaj zdjęcia",
+          "drop-file-here": "Upuść zdjęcie tutaj",
+          "drop-files-here": "Upuść zdjęcia tutaj",
+          "add-more": "Dodaj kolejne zdjęcia",
+        });
+      }
       UC.defineComponents(UC);
       await customElements.whenDefined("uc-upload-ctx-provider");
+      if (getLanguage() === "en") {
+        qsa("uc-config").forEach(config => {
+          config.localeDefinitionOverride = { en: {
+            "choose-file": "Add a photo", "choose-files": "Add photos",
+            "drop-file-here": "Drop a photo here", "drop-files-here": "Drop photos here",
+            "add-more": "Add more photos",
+          } };
+        });
+      }
       return true;
     } catch (err) {
       console.warn("Uploadcare failed to load:", err);
@@ -419,7 +431,7 @@ export async function setupContactForm() {
 
   if (!nameEl || !emailEl || !msgEl || !submitButton || !submitLabel || !confirmation || !iframe) return;
 
-  const defaultSubmitLabel = submitLabel.textContent.trim() || "Wyślij";
+  const defaultSubmitLabel = submitLabel.textContent.trim() || t("Wyślij");
   const ctxEl = qs("#lexieUploadCtx");
   let collector = null;
 
@@ -451,9 +463,9 @@ export async function setupContactForm() {
     submitButton.hidden = next === "success";
     submitButton.disabled = next === "sending";
     submitButton.setAttribute("aria-busy", String(next === "sending"));
-    submitLabel.textContent = next === "sending" ? "Wysyłanie…"
-      : next === "unconfirmed" ? "Brak potwierdzenia — spróbuj ponownie"
-      : next === "offline" ? "Brak internetu — spróbuj ponownie"
+    submitLabel.textContent = next === "sending" ? t("Wysyłanie…")
+      : next === "unconfirmed" ? t("Brak potwierdzenia — spróbuj ponownie")
+      : next === "offline" ? t("Brak internetu — spróbuj ponownie")
       : defaultSubmitLabel;
     confirmation.hidden = next !== "success";
   };
@@ -521,7 +533,7 @@ export async function setupContactForm() {
 
     const trimmed = String(msgEl.value || "").trim();
     const hiddenMessage = urls.length > 0
-      ? `${trimmed}\n\n---\nZdjęcia:${urls.map((u) => `\n${u}`).join("")}`
+      ? `${trimmed}\n\n---\n${t("Zdjęcia:")}${urls.map((u) => `\n${u}`).join("")}`
       : trimmed;
     const restore = setHiddenMessageField(form, msgEl, hiddenMessage);
     let restored = false;
@@ -628,6 +640,7 @@ function ensureFreePatternModal() {
     </div>
   `;
 
+  localizeElement(modal);
   document.body.appendChild(modal);
   freePatternModalEl = modal;
 
@@ -649,7 +662,7 @@ function ensureFreePatternModal() {
 }
 
 function buildFreePatternPrefillVisible() {
-  return `✧ Miejsce na ciele: \n✧ Rozmiar (cm): `;
+  return t(`✧ Miejsce na ciele: \n✧ Rozmiar (cm): `);
 }
 
 function buildFreePatternMessageForSubmit(visibleText, imgUrl) {
@@ -660,7 +673,7 @@ function buildFreePatternMessageForSubmit(visibleText, imgUrl) {
     .join("\n")
     .trimEnd();
 
-  const header = imgUrl ? `✧ Wybrany wzór: ${imgUrl}\n` : "";
+  const header = imgUrl ? `${t("✧ Wybrany wzór:")} ${imgUrl}\n` : "";
   return (header + cleaned).trimEnd() + "\n";
 }
 
@@ -684,7 +697,7 @@ function setupFreePatternForm(modal) {
     const ok = validateAll({ nameEl, emailEl, msgEl });
     if (!ok) return;
 
-    if (statusEl) statusEl.textContent = "Wysyłanie…";
+    if (statusEl) statusEl.textContent = t("Wysyłanie…");
 
     const imgUrl = String(
       modal.dataset.fpImgUrl || qs("#fp_img", modal)?.getAttribute("src") || "",
@@ -703,7 +716,7 @@ function setupFreePatternForm(modal) {
         body: new FormData(form),
       });
 
-      if (statusEl) statusEl.textContent = "Dziękuję! Odezwę się wkrótce 💌";
+      if (statusEl) statusEl.textContent = t("Dziękuję! Odezwę się wkrótce 💌");
       form.reset();
 
       window.setTimeout(() => {
@@ -714,7 +727,7 @@ function setupFreePatternForm(modal) {
       console.warn("Free pattern submit failed:", err);
       if (statusEl)
         statusEl.textContent =
-          "Ups — nie udało się wysłać. Spróbuj ponownie albo napisz na IG.";
+          t("Ups — nie udało się wysłać. Spróbuj ponownie albo napisz na IG.");
     } finally {
       window.setTimeout(restore, 1500);
     }
@@ -732,7 +745,7 @@ export function openFreePatternModal(imgUrl, altText = "") {
 
   if (img) {
     img.src = imgUrl;
-    img.alt = altText || "Wolny wzór";
+    img.alt = t(altText) || t("Wolny wzór");
   }
 
   modal.dataset.fpImgUrl = imgUrl;
