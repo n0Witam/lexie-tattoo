@@ -438,7 +438,7 @@
     display: inline-block;
     width: 186px;
     height: 186px;
-    padding: 3px;
+    padding: 5px;
     border-radius: 50%;
     background: linear-gradient(to right, red, orange, purple);
     transform: none;
@@ -678,6 +678,29 @@
 .mapLink {
     display: block;
     position: relative;
+}
+
+@media (min-width: 901px) {
+    .location-map {
+        position: relative;
+        align-self: stretch;
+        min-height: 0;
+    }
+
+    /* Let the left column set the grid height instead of the image's ratio. */
+    .location-map .card--map {
+        position: absolute;
+        inset: 0;
+    }
+
+    .location-map .mapLink,
+    .location-map .card--map img {
+        height: 100%;
+    }
+
+    .location-map .card--map img {
+        aspect-ratio: auto;
+    }
 }
 
 /* ====== Reviews ====== */
