@@ -9,7 +9,7 @@ on:
 jobs:
   sync_fork:
     if: github.event.workflow_run.conclusion == 'success'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, ARM64]
     permissions:
       contents: write
     steps:
