@@ -2150,6 +2150,8 @@ uc-file-uploader-minimal {
 .faq-page .page-title {
     padding: 0;
     margin: 0;
+    font-family: Cormorant, Georgia, serif;
+    font-size: clamp(42px, 6vw, 64px);
 }
 
 .page-eyebrow,
@@ -2230,7 +2232,7 @@ uc-file-uploader-minimal {
     max-width: 58ch;
     margin: 0 0 28px;
     color: var(--muted);
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.65;
 }
 
@@ -2269,11 +2271,12 @@ uc-file-uploader-minimal {
 
 .breadcrumbs {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 9px;
     margin-bottom: 28px;
     color: var(--muted);
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .breadcrumbs a:hover {
@@ -2307,7 +2310,7 @@ uc-file-uploader-minimal {
 .faq-layout > aside > p {
     margin: 28px 0 0;
     color: var(--muted);
-    font-size: 12px;
+    font-size: 16px;
     line-height: 1.7;
 }
 
@@ -2324,7 +2327,7 @@ uc-file-uploader-minimal {
     padding: 13px 0;
     border-bottom: 1px solid var(--border);
     color: var(--muted);
-    font-size: 13px;
+    font-size: 15px;
 }
 
 .topic-nav a[aria-current="page"] {
@@ -2373,7 +2376,7 @@ uc-file-uploader-minimal {
 .answer-number {
     color: var(--muted);
     opacity: .55;
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: .08em;
 }
 
@@ -2395,7 +2398,7 @@ uc-file-uploader-minimal {
 .answer-body {
     padding: 0 50px 30px 58px;
     color: var(--muted);
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.8;
 }
 
@@ -2416,6 +2419,11 @@ uc-file-uploader-minimal {
 .answer-body .faq-list--star {
     color: var(--muted);
     line-height: 1.75;
+}
+
+/* Lists must follow the answer's type size, including the global desktop li rule. */
+.faq-page .answer-body li {
+    font-size: inherit;
 }
 
 .answer-body .faq-list--star {
@@ -2461,10 +2469,6 @@ uc-file-uploader-minimal {
         padding-top: 24px;
     }
 
-    .page-lead {
-        font-size: 15px;
-    }
-
     .topic-grid {
         margin-top: 34px;
     }
@@ -2472,10 +2476,6 @@ uc-file-uploader-minimal {
     .topic-card {
         min-height: 190px;
         padding: 22px;
-    }
-
-    .topic-card p {
-        font-size: 12px;
     }
 
     .topic-card h2 {
@@ -2504,7 +2504,6 @@ uc-file-uploader-minimal {
 
     .answer-body {
         padding: 0 0 26px 38px;
-        font-size: 13px;
     }
 }
 
