@@ -813,21 +813,7 @@
     opacity: var(--slide-opacity, 1);
 }
 
-/* Homepage variants of shared navigation and controls. */
-
-.site-header {
-    box-shadow: var(--shadow);
-}
-
-.nav__links a {
-    font-size: 16px;
-}
-
-.nav__cta .btn {
-    min-height: 50px;
-    padding-inline: 26px;
-    font-size: 16px;
-}
+/* Homepage variants of shared controls. */
 
 .btn:focus-visible {
     outline: 2px solid var(--accent);
@@ -890,10 +876,6 @@
     background: transparent;
     color: var(--text);
     border-color: var(--border);
-}
-
-.footer {
-    font-size: 14px;
 }
 
 @media (min-width: 901px) {

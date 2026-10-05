@@ -18,6 +18,7 @@
     --border: rgba(218, 210, 198, 0.15);
     --accent: #fbf8f4;
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    --nav-shadow: 0 4px 18px rgba(0, 0, 0, 0.16);
     --radius: 18px;
     --header-h: 72px;
     --radius-sm: 12px;
@@ -47,6 +48,7 @@
         --border: rgba(52, 42, 35, 0.15);
         --accent: #2e2119;
         --shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        --nav-shadow: 0 4px 18px rgba(52, 42, 35, 0.07);
         --focus: rgba(52, 42, 35, 0.55);
     }
 }
@@ -66,6 +68,7 @@
     --border: rgba(52, 42, 35, 0.15);
     --accent: #2e2119;
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    --nav-shadow: 0 4px 18px rgba(52, 42, 35, 0.07);
     --focus: rgba(52, 42, 35, 0.55);
 }
 
@@ -280,7 +283,7 @@ a:hover {
     backdrop-filter: blur(10px);
     background: color-mix(in srgb, var(--bg) 76%, transparent);
     border: 1px solid var(--border);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+    box-shadow: var(--nav-shadow);
     overflow: visible;
 }
 
@@ -329,7 +332,7 @@ a:hover {
     border-radius: 999px;
     border: 1px solid transparent;
     color: var(--muted);
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .nav__links a:hover {
@@ -341,6 +344,12 @@ a:hover {
     display: flex;
     gap: 10px;
     align-items: center;
+}
+
+.nav__cta .btn {
+    min-height: 50px;
+    padding-inline: 26px;
+    font-size: 16px;
 }
 
 .icon {
@@ -1605,7 +1614,7 @@ uc-file-uploader-minimal {
     border-top: 1px solid var(--border);
     padding: 20px 0 20px;
     color: var(--muted);
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .footer__row {
@@ -1683,6 +1692,38 @@ uc-file-uploader-minimal {
 .theme-toggle__icon {
     width: 20px;
     height: 20px;
+}
+
+@media (max-width: 720px) {
+    .footer__row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas: "copyright theme" "terms language";
+        gap: 16px 12px;
+    }
+
+    .footer__row > :first-child {
+        grid-area: copyright;
+    }
+
+    .footer__actions {
+        display: contents;
+    }
+
+    .footer__terms {
+        grid-area: terms;
+        justify-self: start;
+    }
+
+    .footer .language-switch {
+        grid-area: language;
+        justify-self: end;
+    }
+
+    .footer .theme-toggle {
+        grid-area: theme;
+        justify-self: end;
+    }
 }
 
 .kbd {
