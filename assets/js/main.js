@@ -141,6 +141,7 @@ function setupCarousel(root) {
   const isProgrammatic = () => performance.now() < programmaticUntil;
   let updateSlideDepth = null;
   let resetAutoplay = () => {};
+  let scheduleSettle = () => {};
   let pointerDown = false;
   const isDesktopPointer = window.matchMedia(
     "(hover: hover) and (pointer: fine)",
@@ -154,8 +155,15 @@ function setupCarousel(root) {
   };
   if (scroller) {
     track.classList.add("has-scripted-scroll");
-    track.addEventListener("pointerdown", () => scroller.cancel(), { passive: true });
-    track.addEventListener("wheel", () => scroller.cancel(), { passive: true });
+    const interruptScroll = () => {
+      scroller.cancel();
+      programmaticUntil = 0;
+      // A trailing wheel event can cancel a snap before its first frame,
+      // without causing another scroll event. Always schedule its replacement.
+      scheduleSettle();
+    };
+    track.addEventListener("pointerdown", interruptScroll, { passive: true });
+    track.addEventListener("wheel", interruptScroll, { passive: true });
     let resizeTimer = 0;
     window.addEventListener("resize", () => {
       scroller.cancel();
@@ -472,14 +480,12 @@ function setupCarousel(root) {
       }
     };
 
-    track.addEventListener(
-      "scroll",
-      () => {
-        if (scrollEndT) clearTimeout(scrollEndT);
-        scrollEndT = setTimeout(normalizeLoop, 140);
-      },
-      { passive: true },
-    );
+    const scheduleNormalize = () => {
+      window.clearTimeout(scrollEndT);
+      scrollEndT = window.setTimeout(normalizeLoop, scroller ? 200 : 140);
+    };
+    scheduleSettle = scheduleNormalize;
+    track.addEventListener("scroll", scheduleNormalize, { passive: true });
   };
 
   const autoplayMs = Number(root.getAttribute("data-autoplay") || "5000");
@@ -527,8 +533,10 @@ function setupCarousel(root) {
     pauseOnUser();
   }, { passive: true });
   const releasePointer = () => {
+    const wasDown = pointerDown;
     pointerDown = false;
     autoplay.resume("pointer");
+    if (scroller && wasDown) scheduleSettle();
   };
   window.addEventListener("pointerup", releasePointer, { passive: true });
   window.addEventListener("pointercancel", releasePointer, { passive: true });
