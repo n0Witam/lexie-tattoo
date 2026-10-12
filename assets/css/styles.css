@@ -18,7 +18,7 @@
     --border: rgba(218, 210, 198, 0.15);
     --accent: #fbf8f4;
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-    --nav-shadow: 0 4px 18px rgba(0, 0, 0, 0.16);
+    --nav-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
     --radius: 18px;
     --header-h: 72px;
     --radius-sm: 12px;
@@ -48,7 +48,7 @@
         --border: rgba(52, 42, 35, 0.15);
         --accent: #2e2119;
         --shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-        --nav-shadow: 0 4px 18px rgba(52, 42, 35, 0.07);
+        --nav-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
         --focus: rgba(52, 42, 35, 0.55);
     }
 }
