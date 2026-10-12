@@ -1,6 +1,6 @@
 import { t } from "./i18n.js?v=20261004-pl-en";
 import { createCarouselAutoplay } from "./carousel-autoplay.js";
-import { createCarouselScroller } from "./carousel-scroll.js";
+import { createCarouselScroller } from "./carousel-scroll.js?v=20261012-stable-snap";
 import { normalizePortfolio } from "./portfolio-data.js";
 import { fetchJSON, qs, qsa } from "./util.js";
 import { initSite, openFreePatternModal, setupContactForm } from "./site.js?v=20261004-pl-en";
@@ -141,6 +141,7 @@ function setupCarousel(root) {
   const isProgrammatic = () => performance.now() < programmaticUntil;
   let updateSlideDepth = null;
   let resetAutoplay = () => {};
+  let pointerDown = false;
   const isDesktopPointer = window.matchMedia(
     "(hover: hover) and (pointer: fine)",
   ).matches;
@@ -152,9 +153,17 @@ function setupCarousel(root) {
     else track.scrollTo({ left, top: 0, behavior });
   };
   if (scroller) {
+    track.classList.add("has-scripted-scroll");
     track.addEventListener("pointerdown", () => scroller.cancel(), { passive: true });
     track.addEventListener("wheel", () => scroller.cancel(), { passive: true });
-    window.addEventListener("resize", () => scroller.cancel());
+    let resizeTimer = 0;
+    window.addEventListener("resize", () => {
+      scroller.cancel();
+      window.clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        centerToIndex(getCenteredIndex(), "auto");
+      }, 150);
+    });
   }
 
   const centerToIndex = (idx, behavior = "smooth") => {
@@ -168,7 +177,7 @@ function setupCarousel(root) {
     markProgrammatic(scroller ? 500 : 300);
     resetAutoplay();
     scrollTo(track.scrollLeft + delta, behavior);
-    if (behavior === "auto") updateSlideDepth?.();
+    if (behavior === "auto" && !scroller) updateSlideDepth?.();
   };
 
   const next = () => {
@@ -362,7 +371,7 @@ function setupCarousel(root) {
       track.classList.add("has-slide-depth");
     };
     const schedule = () => {
-      if (frame) return;
+      if (frame || scroller?.isAnimating) return;
       frame = requestAnimationFrame(() => {
         frame = 0;
         updateSlideDepth();
@@ -421,9 +430,21 @@ function setupCarousel(root) {
     const normalizeLoop = () => {
       if (lock) return;
 
-      if (isProgrammatic()) {
+      if (scroller?.isAnimating || isProgrammatic() || (scroller && pointerDown)) {
         scrollEndT = setTimeout(normalizeLoop, 120);
         return;
+      }
+
+      // Desktop wheel/trackpad input settles using the same animation as the
+      // buttons. Never toggle native snapping on again after each transition.
+      if (scroller) {
+        const centered = slidesAll()[getCenteredIndex()];
+        // WebKit may round scroll offsets to CSS pixels; do not keep correcting
+        // an already centered slide by an unrepresentable fraction of a pixel.
+        if (Math.abs(getSlideCenterX(centered) - getTrackCenterX()) > 1) {
+          centerToIndex(getCenteredIndex(), prefersReduced ? "auto" : "smooth");
+          return;
+        }
       }
 
       const step = getStep();
@@ -434,7 +455,7 @@ function setupCarousel(root) {
         lock = true;
         markProgrammatic(350);
         scrollTo(track.scrollLeft + originalsCount * step);
-        updateSlideDepth?.();
+        if (!scroller) updateSlideDepth?.();
         requestAnimationFrame(() => {
           lock = false;
           if (updateDots) updateDots();
@@ -443,7 +464,7 @@ function setupCarousel(root) {
         lock = true;
         markProgrammatic(350);
         scrollTo(track.scrollLeft - originalsCount * step);
-        updateSlideDepth?.();
+        if (!scroller) updateSlideDepth?.();
         requestAnimationFrame(() => {
           lock = false;
           if (updateDots) updateDots();
@@ -501,10 +522,14 @@ function setupCarousel(root) {
     userHold = window.setTimeout(() => autoplay.resume("interaction"), 2000);
   };
   track.addEventListener("pointerdown", () => {
+    pointerDown = true;
     autoplay.pause("pointer");
     pauseOnUser();
   }, { passive: true });
-  const releasePointer = () => autoplay.resume("pointer");
+  const releasePointer = () => {
+    pointerDown = false;
+    autoplay.resume("pointer");
+  };
   window.addEventListener("pointerup", releasePointer, { passive: true });
   window.addEventListener("pointercancel", releasePointer, { passive: true });
   track.addEventListener("wheel", pauseOnUser, { passive: true });
@@ -615,14 +640,16 @@ async function renderFeatured() {
       const src = new URL(item.src, url).toString();
 
       const img = document.createElement("img");
-      img.src = src;
       img.alt = t(item.alt) || t("Tatuaż – praca Lexie");
-      img.loading = "lazy";
+      // This deck contains at most 12 images. Fetch them ahead of navigation;
+      // lazy loading is unreliable for artwork pulled into view by transforms.
+      img.loading = "eager";
       img.fetchPriority = "low";
       img.decoding = "async";
       if (item.width) img.width = item.width;
       if (item.height) img.height = item.height;
       img.draggable = false;
+      img.src = src;
 
       const fig = document.createElement("figure");
       fig.className = "slide";

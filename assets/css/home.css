@@ -820,6 +820,10 @@
 }
 
 /* Featured artwork: depth changes the surface, never the snap geometry. */
+#featuredTrack.has-scripted-scroll {
+    scroll-snap-type: none;
+}
+
 #featuredTrack .slide {
     margin: 16px 0;
     overflow: visible;

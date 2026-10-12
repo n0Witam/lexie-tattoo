@@ -24,19 +24,29 @@ function fixture() {
     onUpdate: () => updates.push(track.scrollLeft),
   });
   return { track, scroller, frames, writes, updates,
-    advance(ms) { time += ms; const queued = [...frames.values()]; frames.clear(); queued.forEach(fn => fn(time)); },
+    advance(ms, frameTime) { time += ms; const queued = [...frames.values()]; frames.clear(); queued.forEach(fn => fn(frameTime ?? time)); },
   };
 }
 
-test('scrolling and depth updates share a frame, with no vertical movement or native smooth scroll', () => {
+test('scrolling and depth updates share a frame without toggling native snapping', () => {
   const c = fixture(); c.scroller.scrollTo(600);
-  assert.equal(c.track.style.getPropertyValue('scroll-snap-type'), 'none');
+  assert.equal(c.scroller.isAnimating, true);
+  assert.equal(c.track.style.getPropertyValue('scroll-snap-type'), '');
   c.advance(200); assert.ok(c.track.scrollLeft > 100 && c.track.scrollLeft < 600);
   c.advance(200); assert.equal(c.track.scrollLeft, 600);
   assert.equal(c.track.scrollTop, 0); assert.equal(c.frames.size, 0);
+  assert.equal(c.scroller.isAnimating, false);
   assert.equal(c.track.style.getPropertyValue('scroll-snap-type'), '');
   assert.deepEqual(c.writes.map(w => w.left), c.updates);
   assert.ok(c.writes.every(w => w.behavior === 'instant' && w.top === 0));
+});
+
+test('a delayed frame with a stale timestamp does not extend the animation', () => {
+  const c = fixture(); c.scroller.scrollTo(600);
+  c.advance(600, 100);
+  assert.equal(c.track.scrollLeft, 600);
+  assert.equal(c.frames.size, 0);
+  assert.equal(c.scroller.isAnimating, false);
 });
 
 test('rapid navigation replaces the old target and manual input can cancel animation', () => {
