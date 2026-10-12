@@ -965,15 +965,20 @@
     #featuredTrack {
         height: calc(var(--slide-w) * 1.25 + 58px);
         overflow-y: hidden;
+        align-items: flex-start;
+        overflow-anchor: none;
     }
 
     #featuredTrack .slide {
         height: calc(var(--slide-w) * 1.25);
-        align-self: center;
+        align-self: flex-start;
         scroll-snap-align: none center;
     }
 
-    #featuredTrack .slide.is-in-view .slide__surface {
+    /* Keep layers alive between slides; promoting/demoting them mid-scroll
+       causes flickering in Safari. Preserve the stable snap boxes above. */
+    #featuredTrack.has-slide-depth .slide__surface {
+        transform: translate3d(var(--slide-shift, 0px), 0, 0) scale(var(--slide-scale, 1));
         will-change: transform, opacity;
     }
 }

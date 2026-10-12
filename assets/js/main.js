@@ -1,5 +1,6 @@
 import { t } from "./i18n.js?v=20261004-pl-en";
 import { createCarouselAutoplay } from "./carousel-autoplay.js";
+import { createCarouselScroller } from "./carousel-scroll.js";
 import { normalizePortfolio } from "./portfolio-data.js";
 import { fetchJSON, qs, qsa } from "./util.js";
 import { initSite, openFreePatternModal, setupContactForm } from "./site.js?v=20261004-pl-en";
@@ -140,6 +141,21 @@ function setupCarousel(root) {
   const isProgrammatic = () => performance.now() < programmaticUntil;
   let updateSlideDepth = null;
   let resetAutoplay = () => {};
+  const isDesktopPointer = window.matchMedia(
+    "(hover: hover) and (pointer: fine)",
+  ).matches;
+  const scroller = track.id === "featuredTrack" && isDesktopPointer
+    ? createCarouselScroller(track, { onUpdate: () => updateSlideDepth?.() })
+    : null;
+  const scrollTo = (left, behavior = "auto") => {
+    if (scroller) scroller.scrollTo(left, behavior);
+    else track.scrollTo({ left, top: 0, behavior });
+  };
+  if (scroller) {
+    track.addEventListener("pointerdown", () => scroller.cancel(), { passive: true });
+    track.addEventListener("wheel", () => scroller.cancel(), { passive: true });
+    window.addEventListener("resize", () => scroller.cancel());
+  }
 
   const centerToIndex = (idx, behavior = "smooth") => {
     const slides = slidesAll();
@@ -149,9 +165,9 @@ function setupCarousel(root) {
     const el = slides[idx];
 
     const delta = getSlideCenterX(el) - getTrackCenterX();
-    markProgrammatic(300);
+    markProgrammatic(scroller ? 500 : 300);
     resetAutoplay();
-    track.scrollTo({ left: track.scrollLeft + delta, behavior });
+    scrollTo(track.scrollLeft + delta, behavior);
     if (behavior === "auto") updateSlideDepth?.();
   };
 
@@ -164,10 +180,6 @@ function setupCarousel(root) {
     const behavior = prefersReduced ? "auto" : "smooth";
     centerToIndex(getCenteredIndex() - 1, behavior);
   };
-
-  const isDesktopPointer = window.matchMedia(
-    "(hover: hover) and (pointer: fine)",
-  ).matches;
 
   if (isDesktopPointer) {
     track.addEventListener("click", (e) => {
@@ -324,7 +336,6 @@ function setupCarousel(root) {
       if (step <= 0) return;
       const nearFade = desktopDepth.matches ? 0.14 : 0.28;
       const farFade = desktopDepth.matches ? 0.20 : 0.14;
-      const visibleDistance = track.clientWidth / (2 * step) + 0.5;
 
       // Read stable slide positions before scaling their visual contents.
       // Snap targets and infinite-loop offsets keep their original geometry.
@@ -347,7 +358,6 @@ function setupCarousel(root) {
         slide.style.setProperty("--slide-scale", (1 - 0.16 * near - 0.08 * far).toFixed(4));
         slide.style.setProperty("--slide-opacity", (1 - nearFade * near - farFade * far).toFixed(4));
         slide.style.zIndex = String(Math.max(0, 10 - Math.round(distance * 2)));
-        slide.classList.toggle("is-in-view", distance - extraGap < visibleDistance);
       }
       track.classList.add("has-slide-depth");
     };
@@ -398,7 +408,7 @@ function setupCarousel(root) {
 
     requestAnimationFrame(() => {
       const step = getStep();
-      track.scrollLeft = cloneCount * step;
+      scrollTo(cloneCount * step);
       requestAnimationFrame(() => {
         centerToIndex(getCenteredIndex(), "auto");
         if (updateDots) updateDots();
@@ -423,16 +433,16 @@ function setupCarousel(root) {
       if (track.scrollLeft < start - step * 0.25) {
         lock = true;
         markProgrammatic(350);
-        track.scrollLeft = track.scrollLeft + originalsCount * step;
+        scrollTo(track.scrollLeft + originalsCount * step);
         updateSlideDepth?.();
         requestAnimationFrame(() => {
           lock = false;
           if (updateDots) updateDots();
         });
-      } else if (track.scrollLeft > end + step * 0.25) {
+      } else if (track.scrollLeft > end - step * 0.25) {
         lock = true;
         markProgrammatic(350);
-        track.scrollLeft = track.scrollLeft - originalsCount * step;
+        scrollTo(track.scrollLeft - originalsCount * step);
         updateSlideDepth?.();
         requestAnimationFrame(() => {
           lock = false;

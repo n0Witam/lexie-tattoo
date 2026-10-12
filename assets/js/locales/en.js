@@ -13,6 +13,8 @@ export const EN = {
   "Zapisz się!": "Book a session!",
   "Lexie Tattoo": "Lexie Tattoo",
   "Tattoo ✧ Fine Line ✧ Blackwork": "Tattoo ✧ Fine Line ✧ Blackwork",
+  "Tatuaże Fine Line i Blackwork – Warszawa Mokotów": "Fine Line and Blackwork Tattoos – Warsaw Mokotów",
+  "Fine Line ✧ Blackwork ✧ Warszawa Mokotów": "Fine Line ✧ Blackwork ✧ Warsaw Mokotów",
   "Tworzę subtelne, graficzne tatuaże inspirowane naturą i kobiecością, w których liczy się każdy detal.": "I create delicate, graphic tattoos inspired by nature and femininity, where every detail matters.",
   "Adres i dojazd": "Address and directions",
   "Alfons Mucha": "Alfons Mucha",
