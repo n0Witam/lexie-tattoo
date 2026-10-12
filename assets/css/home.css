@@ -1067,7 +1067,7 @@
         grid-area: kicker;
         margin: 0 auto;
         margin-top: 4px;
-        font-size: clamp(12px, 2.6vw, 15px);
+        font-size: clamp(11px, 2.6vw, 15px);
         letter-spacing: .15em;
     }
 
