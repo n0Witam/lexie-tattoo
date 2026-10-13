@@ -1719,8 +1719,8 @@ body .privacy-content li { font-size: 16px; line-height: 1.75; }
 @media (max-width: 720px) {
     .footer__row {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        grid-template-areas: "copyright theme" "terms terms" "privacy privacy" "language language";
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        grid-template-areas: "copyright language theme" "terms terms terms" "privacy privacy privacy";
         gap: 12px;
     }
 
@@ -1759,6 +1759,14 @@ body .privacy-content li { font-size: 16px; line-height: 1.75; }
         grid-area: theme;
         justify-self: end;
     }
+}
+
+@media (max-width: 359px) {
+    .footer__row {
+        grid-template-areas: "copyright copyright copyright" "language language theme" "terms terms terms" "privacy privacy privacy";
+    }
+
+    .footer .language-switch { justify-self: end; }
 }
 
 .kbd {
