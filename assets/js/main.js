@@ -480,12 +480,19 @@ function setupCarousel(root) {
       }
     };
 
-    const scheduleNormalize = () => {
+    const scheduleNormalize = (delay = scroller ? 32 : 140) => {
       window.clearTimeout(scrollEndT);
-      scrollEndT = window.setTimeout(normalizeLoop, scroller ? 200 : 140);
+      if (delay === 0) normalizeLoop();
+      else scrollEndT = window.setTimeout(normalizeLoop, delay);
     };
     scheduleSettle = scheduleNormalize;
-    track.addEventListener("scroll", scheduleNormalize, { passive: true });
+    track.addEventListener("scroll", () => scheduleNormalize(), { passive: true });
+    if (scroller) {
+      // Hand off native momentum to centering as soon as the gesture ends.
+      // The short quiet-frame fallback also covers older Safari and wheel
+      // events that cancel an animation without moving the track.
+      track.addEventListener("scrollend", () => scheduleNormalize(0), { passive: true });
+    }
   };
 
   const autoplayMs = Number(root.getAttribute("data-autoplay") || "5000");
@@ -536,7 +543,7 @@ function setupCarousel(root) {
     const wasDown = pointerDown;
     pointerDown = false;
     autoplay.resume("pointer");
-    if (scroller && wasDown) scheduleSettle();
+    if (scroller && wasDown) scheduleSettle(0);
   };
   window.addEventListener("pointerup", releasePointer, { passive: true });
   window.addEventListener("pointercancel", releasePointer, { passive: true });
