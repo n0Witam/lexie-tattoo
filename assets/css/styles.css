@@ -1448,7 +1448,8 @@ uc-file-uploader-minimal {
 /* ====== Portfolio and about pages — shared typography and spacing ====== */
 
 .portfolio .section--page,
-.about-page .section--page {
+.about-page .section--page,
+.privacy-page .section--page {
     padding-top: clamp(28px, 5vw, 64px);
 }
 
@@ -1459,7 +1460,8 @@ uc-file-uploader-minimal {
 
 .portfolio .page-title,
 .about-page .page-title,
-.terms-page .page-title {
+.terms-page .page-title,
+.privacy-page .page-title {
     padding: 0;
     font-family: Cormorant, Georgia, serif;
     font-size: clamp(42px, 6vw, 64px);
@@ -1521,7 +1523,8 @@ uc-file-uploader-minimal {
 
 @media (max-width: 600px) {
     .portfolio .section--page,
-    .about-page .section--page {
+    .about-page .section--page,
+    .privacy-page .section--page {
         padding-top: 24px;
     }
 
@@ -1615,7 +1618,7 @@ uc-file-uploader-minimal {
 .privacy-content section { padding-block: 32px; border-top: 1px solid var(--border); }
 .privacy-content section:first-of-type { margin-top: 40px; }
 .privacy-content h2 { font-size: clamp(28px, 4vw, 36px); margin-bottom: 20px; }
-.privacy-content p,
+.privacy-content p:not(.section-eyebrow),
 body .privacy-content li { font-size: 16px; line-height: 1.75; }
 .privacy-content li + li { margin-top: 12px; }
 .privacy-content a:not(.btn) { text-decoration: underline; text-underline-offset: 3px; }
@@ -1716,9 +1719,9 @@ body .privacy-content li { font-size: 16px; line-height: 1.75; }
 @media (max-width: 720px) {
     .footer__row {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        grid-template-areas: "copyright theme" "terms language" "privacy privacy";
-        gap: 16px 12px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-areas: "copyright theme" "terms terms" "privacy privacy" "language language";
+        gap: 12px;
     }
 
     .footer__row > :first-child {
@@ -1731,14 +1734,25 @@ body .privacy-content li { font-size: 16px; line-height: 1.75; }
 
     .footer__terms {
         grid-area: terms;
-        justify-self: start;
+        justify-self: stretch;
     }
 
-    .footer__legal { grid-area: privacy; }
+    .footer__legal {
+        grid-area: privacy;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .footer__legal .btn {
+        min-width: 0;
+        padding-inline: 12px;
+        text-align: center;
+    }
 
     .footer .language-switch {
         grid-area: language;
-        justify-self: end;
+        justify-self: center;
     }
 
     .footer .theme-toggle {
