@@ -3,14 +3,9 @@
 <html class="home" lang="en" data-page-path="">
     <head>
         <meta charset="utf-8" />
-        <!-- Google Tag Manager -->
-        <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-5245GRKX');</script>
-        <!-- End Google Tag Manager -->
-        <script src="../assets/js/language.js?v=20261004-pl-en"></script>
+        <script src="../assets/js/language.js?v=20261013-consent"></script>
+        <script src="../assets/js/consent.js?v=20261013-consent"></script>
+        <link href="../assets/css/consent.css?v=20261013-consent" rel="stylesheet">
         <link rel="preload" href="../assets/fonts/cormorant-garamond-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
         <link rel="preload" href="../assets/fonts/cormorant-garamond-latin-ext-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 
@@ -61,7 +56,7 @@
             sizes="192x192"
         />
         <script src="../assets/js/theme.js?v=20261004-pl-en"></script>
-        <link href="../assets/css/styles.css?v=20261005-faq-type" rel="stylesheet" />
+        <link href="../assets/css/styles.css?v=20261013-consent-footer" rel="stylesheet" />
         <link href="../assets/css/home.css?v=20261012-carousel-snap" rel="stylesheet" />
 
         <script type="application/ld+json">{
@@ -153,10 +148,6 @@
         <link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/" />
     </head>
     <body>
-        <!-- Google Tag Manager (noscript) -->
-        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5245GRKX"
-        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-        <!-- End Google Tag Manager (noscript) -->
         <header class="site-header">
             <div class="container">
                 <nav aria-label="Main navigation" class="nav" data-nav="">
@@ -745,6 +736,10 @@
                             <a href="../en/?lang=en" data-language-choice="en" lang="en" hreflang="en" aria-label="English" aria-current="true">EN</a>
                         </div>
                         <a class="btn footer__terms" href="./terms_of_service/">PRISM terms</a>
+                        <div class="footer__legal">
+                            <a class="btn footer__privacy" href="./privacy/">Privacy and cookies</a>
+                            <button class="btn footer__cookies" type="button" data-cookie-settings hidden>Cookie settings</button>
+                        </div>
                         <button class="btn theme-toggle" type="button" data-theme-toggle hidden aria-label="Change theme">
                             <svg class="theme-toggle__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
                                 <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5" />

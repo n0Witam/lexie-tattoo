@@ -16,6 +16,7 @@
   const preferred = requested || saved || (current === "en" ? "en" : /^pl(?:-|$)/i.test(system) ? "pl" : "en");
   const route = document.documentElement.dataset.pagePath || "";
   if (preferred !== current) {
+    document.documentElement.dataset.languageRedirecting = "true";
     const destination = new URL((preferred === "en" ? "en/" : "") + route, base);
     destination.search = url.search;
     destination.hash = url.hash;

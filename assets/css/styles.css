@@ -1608,6 +1608,20 @@ uc-file-uploader-minimal {
     }
 }
 
+/* ====== Privacy page ====== */
+
+.privacy-content > .container { max-width: 880px; }
+.privacy-content .page-title { margin-bottom: 24px; }
+.privacy-content section { padding-block: 32px; border-top: 1px solid var(--border); }
+.privacy-content section:first-of-type { margin-top: 40px; }
+.privacy-content h2 { font-size: clamp(28px, 4vw, 36px); margin-bottom: 20px; }
+.privacy-content p,
+body .privacy-content li { font-size: 16px; line-height: 1.75; }
+.privacy-content li + li { margin-top: 12px; }
+.privacy-content a:not(.btn) { text-decoration: underline; text-underline-offset: 3px; }
+.privacy-content .privacy-links { display: flex; flex-wrap: wrap; gap: 12px 24px; padding: 0; list-style: none; }
+.privacy-content .privacy-links li { margin: 0; }
+
 /* ====== Footer ====== */
 
 .footer {
@@ -1671,12 +1685,17 @@ uc-file-uploader-minimal {
     outline-offset: 2px;
 }
 
-.footer__terms {
+.footer__terms,
+.footer__privacy,
+.footer__cookies {
     min-height: 44px;
     padding: 10px 18px;
     font-size: 13px;
     font-weight: 500;
 }
+
+.footer__cookies[hidden] { display: none; }
+.footer__legal { display: flex; flex-wrap: wrap; gap: 10px; }
 
 .theme-toggle {
     width: 44px;
@@ -1698,7 +1717,7 @@ uc-file-uploader-minimal {
     .footer__row {
         display: grid;
         grid-template-columns: minmax(0, 1fr) auto;
-        grid-template-areas: "copyright theme" "terms language";
+        grid-template-areas: "copyright theme" "terms language" "privacy privacy";
         gap: 16px 12px;
     }
 
@@ -1714,6 +1733,8 @@ uc-file-uploader-minimal {
         grid-area: terms;
         justify-self: start;
     }
+
+    .footer__legal { grid-area: privacy; }
 
     .footer .language-switch {
         grid-area: language;

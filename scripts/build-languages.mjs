@@ -2,7 +2,7 @@ import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-export const PUBLIC_PAGES = ["index.html", "portfolio/index.html", "available_designs/index.html", "about/index.html", "faq/index.html", "faq/zapisy-i-ceny/index.html", "faq/projekt-i-sesja/index.html", "faq/przygotowanie/index.html", "faq/gojenie-i-pielegnacja/index.html", "terms_of_service/index.html", "404.html"];
+export const PUBLIC_PAGES = ["index.html", "portfolio/index.html", "available_designs/index.html", "about/index.html", "faq/index.html", "faq/zapisy-i-ceny/index.html", "faq/projekt-i-sesja/index.html", "faq/przygotowanie/index.html", "faq/gojenie-i-pielegnacja/index.html", "terms_of_service/index.html", "privacy/index.html", "404.html"];
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const ENTITIES = { amp: "&", quot: '"', apos: "'", nbsp: "\u00a0", lt: "<", gt: ">" };
 export const decode = value => value.replace(/&(#x[\da-f]+|#\d+|amp|quot|apos|nbsp|lt|gt);/gi, (match, entity) => entity[0] === "#" ? String.fromCodePoint(parseInt(entity.slice(entity[1].toLowerCase() === "x" ? 2 : 1), entity[1].toLowerCase() === "x" ? 16 : 10)) : ENTITIES[entity.toLowerCase()]);

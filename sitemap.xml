@@ -120,4 +120,16 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/terms_of_service/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/terms_of_service/" />
   </url>
+  <url>
+    <loc>https://lexietattoo.pl/privacy/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/privacy/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/privacy/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/privacy/" />
+  </url>
+  <url>
+    <loc>https://lexietattoo.pl/en/privacy/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://lexietattoo.pl/privacy/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://lexietattoo.pl/en/privacy/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://lexietattoo.pl/privacy/" />
+  </url>
 </urlset>
