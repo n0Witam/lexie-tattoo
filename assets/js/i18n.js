@@ -1,4 +1,4 @@
-import { EN } from "./locales/en.js?v=20261004-pl-en";
+import { EN } from "./locales/en.js?v=20261013-leads";
 
 export const getLanguage = () => document.documentElement.lang === "en" ? "en" : "pl";
 export const normalizeTranslationKey = value => String(value ?? "").replace(/\s+/g, " ").trim();

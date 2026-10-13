@@ -1,4 +1,4 @@
-import { initSite } from "./site.js?v=20261004-pl-en";
+import { initSite } from "./site.js?v=20261013-leads";
 
 document.addEventListener("DOMContentLoaded", () => {
     initSite();

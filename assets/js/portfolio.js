@@ -1,6 +1,6 @@
-import { t } from "./i18n.js?v=20261004-pl-en";
+import { t } from "./i18n.js?v=20261013-leads";
 import { fetchJSON, resolveUrl, qs } from "./util.js";
-import { initSite, openFreePatternModal } from "./site.js?v=20261004-pl-en";
+import { initSite, openFreePatternModal } from "./site.js?v=20261013-leads";
 import { galleryGroups, GROUP_IDS } from "./portfolio-data.js";
 
 const DATA_URL = new URL("../../data/portfolio.json", import.meta.url);

@@ -1,9 +1,9 @@
-import { t } from "./i18n.js?v=20261004-pl-en";
+import { t } from "./i18n.js?v=20261013-leads";
 import { createCarouselAutoplay } from "./carousel-autoplay.js";
 import { createCarouselScroller } from "./carousel-scroll.js?v=20261012-stable-snap";
 import { normalizePortfolio } from "./portfolio-data.js";
 import { fetchJSON, qs, qsa } from "./util.js";
-import { initSite, openFreePatternModal, setupContactForm } from "./site.js?v=20261004-pl-en";
+import { initSite, openFreePatternModal, setupContactForm } from "./site.js?v=20261013-leads";
 import { setupAnchorNavigation } from "./anchors.js?v=20260919-section-start";
 
 const DATA_URL = new URL("../../data/portfolio.json", import.meta.url);

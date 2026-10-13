@@ -430,5 +430,7 @@
   "Twoje prawa": "Your rights",
   "Możesz żądać dostępu do danych, ich sprostowania, usunięcia lub ograniczenia przetwarzania. W przypadkach przewidzianych prawem masz prawo do przenoszenia danych i sprzeciwu wobec przetwarzania opartego na uzasadnionym interesie. Zgodę na analitykę możesz wycofać w dowolnym momencie. Możesz też złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych.": "You can request access to, rectification, erasure or restriction of processing of your data. Where provided by law, you have the right to data portability and to object to processing based on legitimate interests. You can withdraw analytics consent at any time. You can also lodge a complaint with the President of Poland’s Personal Data Protection Office (UODO).",
   "Nie podejmujemy decyzji wywołujących skutki prawne wobec Ciebie wyłącznie na podstawie zautomatyzowanego przetwarzania danych.": "We do not make decisions producing legal effects concerning you solely on the basis of automated processing.",
-  "Urząd Ochrony Danych Osobowych": "Personal Data Protection Office"
+  "Urząd Ochrony Danych Osobowych": "Personal Data Protection Office",
+  "Nie udało się wysłać — spróbuj ponownie": "Could not send — please try again",
+  "Zapis odpowiedzi i potwierdzenie wysyłki obsługuje Google Apps Script. Techniczny identyfikator zgłoszenia pozwala zapobiegać duplikatom przy ponowieniu wysyłki.": "Google Apps Script handles saving responses and confirming submissions. A technical submission identifier helps prevent duplicates when a submission is retried."
 }

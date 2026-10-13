@@ -46,6 +46,10 @@
   let opener;
   let expiryTimer;
 
+  window.lexieConsent = Object.freeze({
+    hasAnalyticsConsent: () => choice?.analytics === true && choice.expiresAt > Date.now(),
+  });
+
   window.dataLayer = window.dataLayer || [];
   window[`ga-disable-${measurementId}`] = choice?.analytics !== true;
   // These commands are queued before gtm.js can run. No tag is loaded yet.

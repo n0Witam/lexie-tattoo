@@ -1,6 +1,8 @@
-import { t, getLanguage, localizeElement } from "./i18n.js?v=20261004-pl-en";
+import { t, getLanguage, localizeElement } from "./i18n.js?v=20261013-leads";
 import { qs, qsa } from "./util.js";
-import { GFORM_ACTION } from "./config.js";
+import { GFORM_ACTION, FORM_CONFIRMATION_URL } from "./config.js?v=20261013-leads";
+import { createSubmissionAttempt, submitConfirmedForm } from "./form-submission.js?v=20261013-leads";
+import { hasAnalyticsConsent, trackConfirmedLead } from "./lead-tracking.js?v=20261013-leads";
 
 // -----------------------------
 // Navbar (mobile hamburger)
@@ -456,6 +458,7 @@ export async function setupContactForm() {
   let activeAttempt = 0;
   let responseTimer;
   let restoreMessage = () => {};
+  let pendingSubmission;
 
   const setState = (next) => {
     state = next;
@@ -466,6 +469,7 @@ export async function setupContactForm() {
     submitLabel.textContent = next === "sending" ? t("Wysyłanie…")
       : next === "unconfirmed" ? t("Brak potwierdzenia — spróbuj ponownie")
       : next === "offline" ? t("Brak internetu — spróbuj ponownie")
+      : next === "failed" ? t("Nie udało się wysłać — spróbuj ponownie")
       : defaultSubmitLabel;
     confirmation.hidden = next !== "success";
   };
@@ -484,7 +488,7 @@ export async function setupContactForm() {
     void celebrateContact(confirmation);
   });
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     if (e.defaultPrevented) return;
     if (state === "sending" || state === "success") {
       e.preventDefault();
@@ -503,6 +507,39 @@ export async function setupContactForm() {
     restoreMessage();
     const attempt = ++activeAttempt;
     setState("sending");
+
+    collector?.sync();
+    const urls = collector?.getUrls ? collector.getUrls() : [];
+    if (uploadUrlsEl) uploadUrlsEl.value = urls.join("\n");
+    const trimmed = String(msgEl.value || "").trim();
+    // The existing email parser understands this section in both languages.
+    const hiddenMessage = urls.length > 0
+      ? `${trimmed}\n\n---\nZdjęcia:${urls.map((u) => `\n${u}`).join("")}`
+      : trimmed;
+
+    if (FORM_CONFIRMATION_URL) {
+      e.preventDefault();
+      pendingSubmission = createSubmissionAttempt({
+        name: normalizeSpaces(nameEl.value), email: emailEl.value.trim(),
+        message: hiddenMessage, formType: "contact",
+      }, pendingSubmission, hasAnalyticsConsent());
+      try {
+        const receipt = await submitConfirmedForm(FORM_CONFIRMATION_URL, pendingSubmission);
+        const restoreFocus = document.activeElement === submitButton || document.activeElement === document.body;
+        trackConfirmedLead(receipt, { formType: "contact", consentAtSubmission: pendingSubmission.consentAtSubmission });
+        pendingSubmission = null;
+        setState("success");
+        form.reset();
+        ctxEl?.getAPI?.()?.removeAllFiles?.();
+        collector?.sync();
+        if (restoreFocus) confirmation.focus({ preventScroll: true });
+        void celebrateContact(confirmation);
+      } catch (error) {
+        // Keep all input and the request ID, so retrying cannot duplicate a save.
+        setState(error.message === "TIMEOUT" ? "unconfirmed" : "failed");
+      }
+      return;
+    }
 
     // A fresh frame prevents a late response from a previous attempt completing a retry.
     const nextFrame = iframe.cloneNode(false);
@@ -527,14 +564,6 @@ export async function setupContactForm() {
       void celebrateContact(confirmation);
     });
 
-    collector?.sync();
-    const urls = collector?.getUrls ? collector.getUrls() : [];
-    if (uploadUrlsEl) uploadUrlsEl.value = urls.join("\n");
-
-    const trimmed = String(msgEl.value || "").trim();
-    const hiddenMessage = urls.length > 0
-      ? `${trimmed}\n\n---\n${t("Zdjęcia:")}${urls.map((u) => `\n${u}`).join("")}`
-      : trimmed;
     const restore = setHiddenMessageField(form, msgEl, hiddenMessage);
     let restored = false;
     restoreMessage = () => {
@@ -687,15 +716,27 @@ function setupFreePatternForm(modal) {
   const emailEl = qs("#fp_email", form);
   const msgEl = qs("#fp_msg", form);
   const statusEl = qs("#fp_status", form);
+  const submitButton = qs('button[type="submit"]', form);
+  let sending = false;
+  let pendingSubmission;
 
   bindLiveValidation({ nameEl, emailEl, msgEl });
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    if (sending) return;
     if (statusEl) statusEl.textContent = "";
 
     const ok = validateAll({ nameEl, emailEl, msgEl });
     if (!ok) return;
+
+    if (!navigator.onLine) {
+      if (statusEl) statusEl.textContent = t("Brak internetu — spróbuj ponownie");
+      return;
+    }
+    sending = true;
+    submitButton.disabled = true;
+    submitButton.setAttribute("aria-busy", "true");
 
     if (statusEl) statusEl.textContent = t("Wysyłanie…");
 
@@ -707,14 +748,23 @@ function setupFreePatternForm(modal) {
       msgEl?.value || "",
       imgUrl,
     );
-    const restore = setHiddenMessageField(form, msgEl, hiddenMessage);
+    let restore = () => {};
 
     try {
-      await fetch(GFORM_ACTION, {
-        method: "POST",
-        mode: "no-cors",
-        body: new FormData(form),
-      });
+      if (FORM_CONFIRMATION_URL) {
+        pendingSubmission = createSubmissionAttempt({
+          name: normalizeSpaces(nameEl.value), email: emailEl.value.trim(),
+          message: hiddenMessage, formType: "available_design",
+        }, pendingSubmission, hasAnalyticsConsent());
+        const receipt = await submitConfirmedForm(FORM_CONFIRMATION_URL, pendingSubmission);
+        trackConfirmedLead(receipt, { formType: "available_design", consentAtSubmission: pendingSubmission.consentAtSubmission });
+        pendingSubmission = null;
+      } else {
+        // Preserve existing delivery until the endpoint is deployed. An opaque
+        // response must never count as a confirmed Analytics conversion.
+        restore = setHiddenMessageField(form, msgEl, hiddenMessage);
+        await fetch(GFORM_ACTION, { method: "POST", mode: "no-cors", body: new FormData(form) });
+      }
 
       if (statusEl) statusEl.textContent = t("Dziękuję! Odezwę się wkrótce 💌");
       form.reset();
@@ -729,6 +779,9 @@ function setupFreePatternForm(modal) {
         statusEl.textContent =
           t("Ups — nie udało się wysłać. Spróbuj ponownie albo napisz na IG.");
     } finally {
+      sending = false;
+      submitButton.disabled = false;
+      submitButton.setAttribute("aria-busy", "false");
       window.setTimeout(restore, 1500);
     }
   });
