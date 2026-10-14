@@ -41,13 +41,142 @@ function renderStars(rating = 5) {
   }).join("");
 }
 
+// Shared dots and playback controls for scrolling artwork and fading reviews.
+function createCarouselControls(root, {
+  track, count, isReviews = false, onSelect, autoplay, initiallyPaused,
+}) {
+  const dots = document.createElement("div");
+  dots.className = "carousel__dots";
+  dots.setAttribute("aria-label", isReviews ? t("Wskaźnik opinii") : t("Wskaźnik slajdów"));
+  const buttons = Array.from({ length: count }, (_, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "carousel__dot";
+    button.setAttribute("aria-label", isReviews
+      ? t("Przejdź do opinii {index}", { index: index + 1 })
+      : t("Przejdź do slajdu {index}", { index: index + 1 }));
+    button.setAttribute("aria-controls", track.id);
+    button.addEventListener("click", () => onSelect(index));
+    dots.appendChild(button);
+    return button;
+  });
+  const controls = document.createElement("div");
+  controls.className = "carousel__controls";
+  controls.setAttribute("role", "group");
+  controls.setAttribute("aria-label", isReviews
+    ? t("Sterowanie karuzelą opinii") : t("Sterowanie karuzelą prac"));
+  controls.appendChild(dots);
+  if (autoplay) {
+    let paused = initiallyPaused;
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "carousel__playback";
+    toggle.setAttribute("aria-controls", track.id);
+    const updateToggle = () => {
+      const label = paused ? t("Wznów automatyczne przewijanie") : t("Wstrzymaj automatyczne przewijanie");
+      toggle.setAttribute("aria-label", label);
+      toggle.title = label;
+      toggle.innerHTML = paused
+        ? '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5.5 19 12 9 18.5Z" fill="currentColor"/></svg>'
+        : '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6v12M15 6v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+    };
+    toggle.addEventListener("click", () => {
+      paused = !paused;
+      if (paused) autoplay.pause("manual");
+      else {
+        autoplay.resume("manual");
+        autoplay.start();
+        root.classList.add("has-autoplay");
+      }
+      updateToggle();
+    });
+    updateToggle();
+    controls.appendChild(toggle);
+  }
+  root.appendChild(controls);
+  return index => buttons.forEach((button, position) => {
+    const active = position === index;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-current", active ? "true" : "false");
+  });
+}
+
+// Pages overlap in one grid cell. All pages contribute to its height, so
+// long opinions never get clipped and a change cannot move the controls.
+function setupReviewFade(root, track) {
+  const originals = qsa(".review-card", track);
+  const count = originals.length;
+  if (!count) return;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let active = 0;
+  const pages = originals.map(card => {
+    const page = document.createElement("div");
+    page.className = "reviews__page";
+    page.appendChild(card);
+    page.setAttribute("aria-hidden", "true");
+    page.inert = true;
+    return page;
+  });
+  track.replaceChildren(...pages);
+  const duration = Number(root.dataset.autoplay || 6500);
+  const available = count > 1 && Number.isFinite(duration) && duration > 0;
+  const autoplay = createCarouselAutoplay({
+    duration: available ? duration : 0,
+    onAdvance: () => show(active + 1),
+    onProgress: progress => root.style.setProperty("--autoplay-progress", progress.toFixed(4)),
+  });
+  const updateDots = createCarouselControls(root, {
+    track, count, isReviews: true, onSelect: index => show(index),
+    autoplay: available ? autoplay : null, initiallyPaused: reduced,
+  });
+  function show(index) {
+    active = (index + count) % count;
+    pages.forEach((page, position) => {
+      const selected = position === active;
+      page.classList.toggle("is-active", selected);
+      page.setAttribute("aria-hidden", selected ? "false" : "true");
+      page.inert = !selected;
+    });
+    updateDots(active);
+    autoplay.reset();
+  }
+  show(0);
+  root.classList.toggle("has-autoplay", available && !reduced);
+  if (reduced) autoplay.pause("manual");
+  if (available && !reduced) autoplay.start();
+  const syncVisibility = () => document.hidden
+    ? autoplay.pause("hidden") : autoplay.resume("hidden");
+  document.addEventListener("visibilitychange", syncVisibility);
+  syncVisibility();
+  // A horizontal swipe selects the next review without moving the page.
+  // Vertical gestures retain normal page scrolling.
+  let gesture = null;
+  track.addEventListener("pointerdown", event => {
+    if (!event.isPrimary || event.button !== 0) return;
+    gesture = { x: event.clientX, y: event.clientY, id: event.pointerId };
+    autoplay.pause("pointer");
+  }, { passive: true });
+  window.addEventListener("pointerup", event => {
+    if (!gesture || event.pointerId !== gesture.id) return;
+    const dx = event.clientX - gesture.x;
+    const dy = event.clientY - gesture.y;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) show(active + (dx < 0 ? 1 : -1));
+    gesture = null;
+    autoplay.resume("pointer");
+  }, { passive: true });
+  window.addEventListener("pointercancel", () => {
+    gesture = null;
+    autoplay.resume("pointer");
+  }, { passive: true });
+}
+
 /* ============================================================
    Carousel
    - loop clones
    - click slide (desktop) to center
    - prev/next hit-areas (desktop via CSS)
    - CTA "Chcę ten wzór!" arms after 1s when a FREE slide is centered
-   - dots and autoplay progress for works and reviews
+   - dots and autoplay progress
    ============================================================ */
 function setupCarousel(root) {
   const track = qs("[data-track]", root);
@@ -55,6 +184,11 @@ function setupCarousel(root) {
 
   if (track.dataset.carouselInit === "1") return;
   track.dataset.carouselInit = "1";
+
+  if (track.id === "reviewsTrack") {
+    setupReviewFade(root, track);
+    return;
+  }
 
   // Anti-save (carousel only)
   track.addEventListener("contextmenu", (e) => {
@@ -256,74 +390,22 @@ function setupCarousel(root) {
     const originals = slidesOriginal();
     if (!originals.length) return;
 
-    const dots = document.createElement("div");
-    dots.className = "carousel__dots";
-    dots.setAttribute("aria-label", isReviews ? t("Wskaźnik opinii") : t("Wskaźnik slajdów"));
-
-    const dotButtons = originals.map((_, index) => {
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "carousel__dot";
-      btn.setAttribute("aria-label", isReviews ? t("Przejdź do opinii {index}", { index: index + 1 }) : t("Przejdź do slajdu {index}", { index: index + 1 }));
-      btn.setAttribute("aria-current", "false");
-
-      btn.addEventListener("click", () => {
-        const behavior = prefersReduced ? "auto" : "smooth";
-        const originalsNow = slidesOriginal();
-        const target = originalsNow[index];
-        if (!target) return;
-
-        centerToIndex(slidesAll().indexOf(target), behavior);
-      });
-
-      dots.appendChild(btn);
-      return btn;
+    const selectDot = createCarouselControls(root, {
+      track, count: originals.length, isReviews,
+      autoplay: availableAutoplay ? autoplay : null,
+      initiallyPaused: manuallyPaused,
+      onSelect: index => {
+        const target = slidesOriginal()[index];
+        if (target) centerToIndex(slidesAll().indexOf(target), prefersReduced ? "auto" : "smooth");
+      },
     });
-
-    const controls = document.createElement("div");
-    controls.className = "carousel__controls";
-    controls.setAttribute("role", "group");
-    controls.setAttribute("aria-label", isReviews ? t("Sterowanie karuzelą opinii") : t("Sterowanie karuzelą prac"));
-    controls.appendChild(dots);
-
-    if (availableAutoplay) {
-      const toggle = document.createElement("button");
-      toggle.type = "button";
-      toggle.className = "carousel__playback";
-      toggle.setAttribute("aria-controls", track.id);
-      const updateToggle = () => {
-        const label = manuallyPaused ? t("Wznów automatyczne przewijanie") : t("Wstrzymaj automatyczne przewijanie");
-        toggle.setAttribute("aria-label", label);
-        toggle.title = label;
-        toggle.innerHTML = manuallyPaused
-          ? '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5.5 19 12 9 18.5Z" fill="currentColor"/></svg>'
-          : '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 6v12M15 6v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
-      };
-      toggle.addEventListener("click", () => {
-        manuallyPaused = !manuallyPaused;
-        if (manuallyPaused) autoplay.pause("manual");
-        else {
-          autoplay.resume("manual");
-          autoplay.start();
-          root.classList.add("has-autoplay");
-        }
-        updateToggle();
-      });
-      updateToggle();
-      controls.appendChild(toggle);
-    }
-    root.appendChild(controls);
 
     let rafId = 0;
 
     updateDots = () => {
       const activeIndex = getOriginalCenteredIndex();
 
-      dotButtons.forEach((btn, index) => {
-        const isActive = index === activeIndex;
-        btn.classList.toggle("is-active", isActive);
-        btn.setAttribute("aria-current", isActive ? "true" : "false");
-      });
+      selectDot(activeIndex);
     };
 
     const scheduleDotsUpdate = () => {
@@ -708,7 +790,7 @@ async function renderFeatured() {
 }
 
 /* ============================================================
-   Reviews carousel
+   Reviews fade
    ============================================================ */
 async function renderReviews() {
   const track = qs("#reviewsTrack");
@@ -738,7 +820,7 @@ async function renderReviews() {
         const rating = Number(item.star) || 5;
 
         return `
-          <article class="slide review-card" data-slide="1" aria-label="${escapeHTML(t("Opinia klientki lub klienta od {name}", { name: item.name || t("Anonimowa opinia") }))}">
+          <article class="review-card" aria-label="${escapeHTML(t("Opinia klientki lub klienta od {name}", { name: item.name || t("Anonimowa opinia") }))}">
             <div class="review-card__top">
               <div class="review-card__identity">
                 <h3 class="review-card__name">${name}</h3>
@@ -748,7 +830,7 @@ async function renderReviews() {
                 ${renderStars(rating)}
               </div>
             </div>
-            <p class="review-card__text">${content}</p>
+            <blockquote class="review-card__text">${content}</blockquote>
           </article>`;
       })
       .join("");

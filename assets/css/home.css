@@ -722,7 +722,7 @@
 }
 
 .container-reviews {
-    width: min(100%, var(--container) * 1.25);
+    width: min(100% - 40px, var(--container));
     margin-inline: auto;
 }
 
@@ -733,34 +733,62 @@
 }
 
 .carousel--reviews {
-    --slide-w: clamp(300px, 58vw, 500px);
-    --gap: 28px;
+    margin-inline: 0;
 }
 
 .carousel__track--reviews {
-    align-items: stretch;
-    padding-block: 10px 22px;
+    display: grid;
+    overflow: visible;
+    padding: 10px 0 22px;
+    scroll-snap-type: none;
+    scroll-padding: 0;
+    -webkit-mask-image: none;
+    mask-image: none;
+    touch-action: pan-y;
+}
+
+.reviews__page {
+    grid-area: 1 / 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    min-width: 0;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 550ms ease-in-out, visibility 0s 550ms;
+}
+
+.reviews__page.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition-delay: 0s;
 }
 
 .review-card {
-    aspect-ratio: auto;
     display: flex;
     flex-direction: column;
-    border: 1px solid color-mix(in srgb, var(--border) 86%, transparent);
-    padding: 28px;
-    gap: 22px;
-    min-height: 370px;
-    border-radius: var(--radius);
-    border-color: var(--border);
+    min-width: 0;
+    padding: 28px 0;
+    gap: 28px;
+    border: 0;
+    border-radius: 0;
     background: transparent;
-    box-shadow: var(--shadow);
+    box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reviews__page {
+        transition: none;
+    }
 }
 
 .review-card__top {
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 24px;
 }
 
 .review-card__identity {
@@ -811,12 +839,13 @@
 
 .review-card__text {
     margin: 0;
-    color: var(--muted);
+    color: var(--text);
     /* Let the full review determine the card height; do not clamp its lines. */
     display: block;
-    font-size: 16px;
-    line-height: 1.75;
-    min-height: 16em;
+    font-size: clamp(17px, 1.25vw, 19px);
+    line-height: 1.65;
+    font-weight: 400;
+    overflow-wrap: anywhere;
 }
 
 /* Featured artwork: depth changes the surface, never the snap geometry. */
@@ -1125,27 +1154,6 @@
         aspect-ratio: 8 / 7;
     }
 
-    .carousel--reviews {
-        --slide-w: min(90vw, 560px);
-    }
-
-    .review-card {
-        padding: 26px 24px;
-    }
-
-    .review-card__top {
-        flex-direction: row;
-        align-items: flex-start;
-    }
-
-    .review-card__stars {
-        justify-content: flex-start;
-    }
-
-    .container-reviews {
-        width: min(100%, var(--container));
-    }
-
     .hero__actions .btn {
         font-size: 16px;
         min-height: 52px;
@@ -1212,11 +1220,6 @@
         padding-left: 0;
     }
 
-    .review-card__text {
-        font-size: 17px;
-        min-height: 15em;
-    }
-
     #works .carousel {
         --slide-w: 76vw;
     }
@@ -1279,11 +1282,6 @@
 
     #contactForm {
         grid-template-columns: minmax(0, 1fr);
-    }
-
-    .review-card__top {
-        flex-wrap: wrap;
-        gap: 14px;
     }
 
     .location-card__icon {
