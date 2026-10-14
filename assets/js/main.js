@@ -41,7 +41,7 @@ function renderStars(rating = 5) {
   }).join("");
 }
 
-// Shared dots and playback controls for scrolling artwork and fading reviews.
+// Shared dots and playback controls for artwork and review carousels.
 function createCarouselControls(root, {
   track, count, isReviews = false, onSelect, autoplay, initiallyPaused,
 }) {
@@ -101,104 +101,6 @@ function createCarouselControls(root, {
   });
 }
 
-// Pages overlap in one grid cell. All pages contribute to its height, so
-// long opinions never get clipped and a change cannot move the controls.
-function setupReviewFade(root, track) {
-  const originals = qsa(".review-card", track);
-  const count = originals.length;
-  if (!count) return;
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let active = 0;
-  let requested = 0;
-  let transitioning = false;
-  const pages = originals.map(card => {
-    const page = document.createElement("div");
-    page.className = "reviews__page";
-    page.appendChild(card);
-    page.setAttribute("aria-hidden", "true");
-    page.inert = true;
-    return page;
-  });
-  track.replaceChildren(...pages);
-  const duration = Number(root.dataset.autoplay || 6500);
-  const available = count > 1 && Number.isFinite(duration) && duration > 0;
-  const autoplay = createCarouselAutoplay({
-    duration: available ? duration : 0,
-    onAdvance: () => show(active + 1),
-    onProgress: progress => root.style.setProperty("--autoplay-progress", progress.toFixed(4)),
-  });
-  const updateDots = createCarouselControls(root, {
-    track, count, isReviews: true, onSelect: index => show(index),
-    autoplay: available ? autoplay : null, initiallyPaused: reduced,
-  });
-  function select(index) {
-    active = index;
-    pages.forEach((page, position) => {
-      const selected = position === active;
-      page.classList.toggle("is-active", selected);
-      page.setAttribute("aria-hidden", selected ? "false" : "true");
-      page.inert = !selected;
-    });
-    updateDots(active);
-  }
-  async function fade(page, from, to) {
-    if (reduced) return;
-    const animation = page.animate([{ opacity: from }, { opacity: to }], {
-      duration: 450, easing: "ease-in-out", fill: "forwards",
-    });
-    await animation.finished;
-    animation.cancel();
-  }
-  async function show(index) {
-    requested = (index + count) % count;
-    if (transitioning || requested === active) return;
-    transitioning = true;
-    autoplay.pause("transition");
-    autoplay.reset();
-    try {
-      // Finish hiding the current opinion before revealing the next one.
-      // Rapid clicks update the destination without stacking animations.
-      while (requested !== active) {
-        await fade(pages[active], 1, 0);
-        select(requested);
-        await fade(pages[active], 0, 1);
-      }
-    } finally {
-      transitioning = false;
-      autoplay.reset();
-      autoplay.resume("transition");
-    }
-  }
-  select(0);
-  root.classList.toggle("has-autoplay", available && !reduced);
-  if (reduced) autoplay.pause("manual");
-  if (available && !reduced) autoplay.start();
-  const syncVisibility = () => document.hidden
-    ? autoplay.pause("hidden") : autoplay.resume("hidden");
-  document.addEventListener("visibilitychange", syncVisibility);
-  syncVisibility();
-  // A horizontal swipe selects the next review without moving the page.
-  // Vertical gestures retain normal page scrolling.
-  let gesture = null;
-  track.addEventListener("pointerdown", event => {
-    if (!event.isPrimary || event.button !== 0) return;
-    gesture = { x: event.clientX, y: event.clientY, id: event.pointerId };
-    autoplay.pause("pointer");
-  }, { passive: true });
-  window.addEventListener("pointerup", event => {
-    if (!gesture || event.pointerId !== gesture.id) return;
-    const dx = event.clientX - gesture.x;
-    const dy = event.clientY - gesture.y;
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) show(requested + (dx < 0 ? 1 : -1));
-    gesture = null;
-    autoplay.resume("pointer");
-  }, { passive: true });
-  window.addEventListener("pointercancel", () => {
-    gesture = null;
-    autoplay.resume("pointer");
-  }, { passive: true });
-}
-
 /* ============================================================
    Carousel
    - loop clones
@@ -214,10 +116,7 @@ function setupCarousel(root) {
   if (track.dataset.carouselInit === "1") return;
   track.dataset.carouselInit = "1";
 
-  if (track.id === "reviewsTrack") {
-    setupReviewFade(root, track);
-    return;
-  }
+  const isReviews = track.id === "reviewsTrack";
 
   // Anti-save (carousel only)
   track.addEventListener("contextmenu", (e) => {
@@ -309,7 +208,7 @@ function setupCarousel(root) {
   const isDesktopPointer = window.matchMedia(
     "(hover: hover) and (pointer: fine)",
   ).matches;
-  const scroller = track.id === "featuredTrack" && isDesktopPointer
+  const scroller = (track.id === "featuredTrack" || isReviews) && isDesktopPointer
     ? createCarouselScroller(track, { onUpdate: () => updateSlideDepth?.() })
     : null;
   const scrollTo = (left, behavior = "auto") => {
@@ -396,18 +295,19 @@ function setupCarousel(root) {
     btnPrev.type = "button";
     btnPrev.className = "carousel__nav carousel__nav--prev";
     btnPrev.setAttribute("aria-label", t("Poprzedni slajd"));
+    if (isReviews) btnPrev.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5-7 7 7 7"/></svg>';
     btnPrev.addEventListener("click", () => prev());
 
     const btnNext = document.createElement("button");
     btnNext.type = "button";
     btnNext.className = "carousel__nav carousel__nav--next";
     btnNext.setAttribute("aria-label", t("Następny slajd"));
+    if (isReviews) btnNext.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 5 7 7-7 7"/></svg>';
     btnNext.addEventListener("click", () => next());
 
     root.append(btnPrev, btnNext);
   }
 
-  const isReviews = track.id === "reviewsTrack";
   const shouldRenderDots = track.id === "featuredTrack" || isReviews;
 
   let updateDots = null;
@@ -452,6 +352,40 @@ function setupCarousel(root) {
   };
 
   const setupSlideDepth = () => {
+    if (isReviews) {
+      const desktop = window.matchMedia("(min-width: 901px)");
+      let frame = 0;
+      updateSlideDepth = () => {
+        const center = getTrackCenterX();
+        const step = getStep();
+        if (step <= 0) return;
+        const positions = slidesAll().map(slide => ({
+          slide, offset: (getSlideCenterX(slide) - center) / step,
+        }));
+        for (const { slide, offset } of positions) {
+          const distance = Math.abs(offset) < 0.01 ? 0 : Math.abs(offset);
+          const depth = Math.min(distance, 2);
+          const near = Math.min(depth, 1);
+          const far = Math.max(0, depth - 1);
+          const shift = desktop.matches ? -Math.sign(offset) * Math.min(distance, 1) * step * 0.28 : 0;
+          slide.style.setProperty("--review-shift", `${shift.toFixed(3)}px`);
+          slide.style.setProperty("--review-scale", (1 - near * 0.1 - far * 0.05).toFixed(4));
+          slide.style.setProperty("--review-opacity", (1 - near * 0.65 - far * 0.15).toFixed(4));
+          slide.style.setProperty("--review-blur", `${desktop.matches ? (near * 1.2).toFixed(3) : 0}px`);
+          slide.style.zIndex = String(Math.max(0, 10 - Math.round(distance * 2)));
+          slide.setAttribute("aria-hidden", distance < 0.5 ? "false" : "true");
+        }
+      };
+      const schedule = () => {
+        if (frame || scroller?.isAnimating) return;
+        frame = requestAnimationFrame(() => { frame = 0; updateSlideDepth(); });
+      };
+      track.addEventListener("scroll", schedule, { passive: true });
+      desktop.addEventListener("change", schedule);
+      new ResizeObserver(schedule).observe(track);
+      updateSlideDepth();
+      return;
+    }
     if (track.id !== "featuredTrack") return;
 
     const desktopDepth = window.matchMedia(
@@ -819,7 +753,7 @@ async function renderFeatured() {
 }
 
 /* ============================================================
-   Reviews fade
+   Reviews carousel
    ============================================================ */
 async function renderReviews() {
   const track = qs("#reviewsTrack");
@@ -849,7 +783,9 @@ async function renderReviews() {
         const rating = Number(item.star) || 5;
 
         return `
+          <div class="slide review-slide" data-slide="1">
           <article class="review-card" aria-label="${escapeHTML(t("Opinia klientki lub klienta od {name}", { name: item.name || t("Anonimowa opinia") }))}">
+            <span class="review-card__quote" aria-hidden="true">”</span>
             <div class="review-card__top">
               <div class="review-card__identity">
                 <h3 class="review-card__name">${name}</h3>
@@ -860,7 +796,8 @@ async function renderReviews() {
               </div>
             </div>
             <blockquote class="review-card__text">${content}</blockquote>
-          </article>`;
+          </article>
+          </div>`;
       })
       .join("");
   } catch (error) {
