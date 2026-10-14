@@ -843,6 +843,17 @@
     overflow-wrap: anywhere;
 }
 
+@media (min-width: 901px) {
+    .carousel--reviews {
+        width: 70%;
+        margin-inline: auto;
+    }
+
+    .review-card__top {
+        max-width: none;
+    }
+}
+
 /* Featured artwork: depth changes the surface, never the snap geometry. */
 #featuredTrack.has-scripted-scroll {
     scroll-snap-type: none;
