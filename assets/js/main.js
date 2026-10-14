@@ -109,6 +109,8 @@ function setupReviewFade(root, track) {
   if (!count) return;
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let active = 0;
+  let requested = 0;
+  let transitioning = false;
   const pages = originals.map(card => {
     const page = document.createElement("div");
     page.className = "reviews__page";
@@ -129,8 +131,8 @@ function setupReviewFade(root, track) {
     track, count, isReviews: true, onSelect: index => show(index),
     autoplay: available ? autoplay : null, initiallyPaused: reduced,
   });
-  function show(index) {
-    active = (index + count) % count;
+  function select(index) {
+    active = index;
     pages.forEach((page, position) => {
       const selected = position === active;
       page.classList.toggle("is-active", selected);
@@ -138,9 +140,36 @@ function setupReviewFade(root, track) {
       page.inert = !selected;
     });
     updateDots(active);
-    autoplay.reset();
   }
-  show(0);
+  async function fade(page, from, to) {
+    if (reduced) return;
+    const animation = page.animate([{ opacity: from }, { opacity: to }], {
+      duration: 450, easing: "ease-in-out", fill: "forwards",
+    });
+    await animation.finished;
+    animation.cancel();
+  }
+  async function show(index) {
+    requested = (index + count) % count;
+    if (transitioning || requested === active) return;
+    transitioning = true;
+    autoplay.pause("transition");
+    autoplay.reset();
+    try {
+      // Finish hiding the current opinion before revealing the next one.
+      // Rapid clicks update the destination without stacking animations.
+      while (requested !== active) {
+        await fade(pages[active], 1, 0);
+        select(requested);
+        await fade(pages[active], 0, 1);
+      }
+    } finally {
+      transitioning = false;
+      autoplay.reset();
+      autoplay.resume("transition");
+    }
+  }
+  select(0);
   root.classList.toggle("has-autoplay", available && !reduced);
   if (reduced) autoplay.pause("manual");
   if (available && !reduced) autoplay.start();
@@ -160,7 +189,7 @@ function setupReviewFade(root, track) {
     if (!gesture || event.pointerId !== gesture.id) return;
     const dx = event.clientX - gesture.x;
     const dy = event.clientY - gesture.y;
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) show(active + (dx < 0 ? 1 : -1));
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) show(requested + (dx < 0 ? 1 : -1));
     gesture = null;
     autoplay.resume("pointer");
   }, { passive: true });

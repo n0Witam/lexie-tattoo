@@ -756,14 +756,12 @@
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: opacity 550ms ease-in-out, visibility 0s 550ms;
 }
 
 .reviews__page.is-active {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    transition-delay: 0s;
 }
 
 .review-card {
@@ -778,16 +776,12 @@
     box-shadow: none;
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .reviews__page {
-        transition: none;
-    }
-}
-
 .review-card__top {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
+    width: 100%;
+    max-width: 380px;
     gap: 16px 24px;
 }
 
@@ -802,6 +796,7 @@
     letter-spacing: 0.5px;
     font-size: 26px;
     line-height: 1.2;
+    overflow-wrap: anywhere;
 }
 
 .review-card__year {
@@ -842,7 +837,7 @@
     color: var(--text);
     /* Let the full review determine the card height; do not clamp its lines. */
     display: block;
-    font-size: clamp(17px, 1.25vw, 19px);
+    font-size: 16px;
     line-height: 1.65;
     font-weight: 400;
     overflow-wrap: anywhere;
