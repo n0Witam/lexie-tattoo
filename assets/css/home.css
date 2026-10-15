@@ -19,7 +19,7 @@
     --artwork-shadow: 0 12px 20px -8px rgba(52, 42, 35, .22),
         0 3px 8px rgba(52, 42, 35, .12);
     --review-star: #94641e;
-    --review-surface: #ede9e4;
+    --review-surface: #ede3d8;
 }
 
 @media (prefers-color-scheme: light) {
@@ -30,7 +30,7 @@
         --artwork-shadow: 0 12px 20px -8px rgba(52, 42, 35, .22),
             0 3px 8px rgba(52, 42, 35, .12);
         --review-star: #94641e;
-        --review-surface: #faf6f0;
+        --review-surface: #ede3d8;
     }
 }
 
