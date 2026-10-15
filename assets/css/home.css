@@ -838,6 +838,39 @@
     overflow-wrap: anywhere;
 }
 
+/* Cache only nearby surfaces so text shadows are not repainted while sliding. */
+.review-slide.has-render-layer .review-card {
+    will-change: transform, opacity;
+}
+
+/* A fixed glyph shadow softens side text without a filter around the card. */
+.review-slide.has-soft-copy .review-card__name {
+    color: transparent;
+    text-shadow: 0 0 2.4px var(--text);
+}
+
+.review-slide.has-soft-copy .review-card__text {
+    color: transparent;
+    text-shadow: 0 0 2.4px var(--muted);
+}
+
+.review-slide.has-soft-copy :is(.review-card__name, .review-card__text)::selection {
+    color: var(--text);
+    text-shadow: none;
+}
+
+@media (forced-colors: active), print {
+    .review-slide.has-soft-copy .review-card__name {
+        color: var(--text);
+        text-shadow: none;
+    }
+
+    .review-slide.has-soft-copy .review-card__text {
+        color: var(--muted);
+        text-shadow: none;
+    }
+}
+
 .carousel--reviews .carousel__nav {
     display: grid;
     place-items: center;
