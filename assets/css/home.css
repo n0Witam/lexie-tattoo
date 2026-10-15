@@ -92,7 +92,7 @@
     text-align: center;
     text-wrap: balance;
     color: var(--text);
-    font-size: clamp(26px, 2.3vw, 36px);
+    font-size: clamp(20px, 2.3vw, 26px);
     line-height: 1.45;
 }
 
@@ -1163,7 +1163,7 @@
         grid-area: about;
         margin-inline: auto;
         max-width: 34ch;
-        font-size: clamp(24px, 4vw, 30px);
+        font-size: clamp(16px, 4vw, 20px);
     }
 
     .hero__about::before {
