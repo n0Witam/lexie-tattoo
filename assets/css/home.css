@@ -774,7 +774,7 @@
     transform: translateX(var(--review-shift, 0px)) scale(var(--review-scale, 1));
     transform-origin: center;
     opacity: var(--review-opacity, 1);
-    filter: blur(var(--review-blur, 0px));
+    /* Avoid filtering the moving rounded surface and its shadow in WebKit. */
 }
 
 .review-card__top {

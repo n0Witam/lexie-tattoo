@@ -371,7 +371,6 @@ function setupCarousel(root) {
           slide.style.setProperty("--review-shift", `${shift.toFixed(3)}px`);
           slide.style.setProperty("--review-scale", (1 - near * 0.1 - far * 0.05).toFixed(4));
           slide.style.setProperty("--review-opacity", (1 - near * 0.65 - far * 0.15).toFixed(4));
-          slide.style.setProperty("--review-blur", `${desktop.matches ? (near * 1.2).toFixed(3) : 0}px`);
           slide.style.zIndex = String(Math.max(0, 10 - Math.round(distance * 2)));
           slide.setAttribute("aria-hidden", distance < 0.5 ? "false" : "true");
         }
