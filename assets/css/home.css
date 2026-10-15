@@ -9,7 +9,7 @@
     --artwork-shadow: 0 12px 20px -8px rgba(0, 0, 0, .42),
         0 3px 8px rgba(0, 0, 0, .18);
     --review-star: #f6c470;
-    --review-surface: #484036;
+    --review-surface: #3e362d;
 }
 
 :root[data-theme="light"] {
@@ -770,7 +770,7 @@
     border: 1px solid color-mix(in srgb, var(--border) 40%, transparent);
     border-radius: 28px;
     background: var(--review-surface);
-    box-shadow: 0 20px 40px -20px color-mix(in srgb, var(--text) 18%, transparent);
+    box-shadow: 0 20px 40px -20px color-mix(in srgb, var(--muted) 18%, transparent);
     transform: translateX(var(--review-shift, 0px)) scale(var(--review-scale, 1));
     transform-origin: center;
     opacity: var(--review-opacity, 1);
@@ -1175,7 +1175,7 @@
         grid-area: kicker;
         margin: 0 auto;
         margin-top: 4px;
-        font-size: clamp(11px, 2.6vw, 15px);
+        font-size: clamp(10px, 2.6vw, 14px);
         letter-spacing: .15em;
     }
 
